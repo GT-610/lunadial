@@ -4,8 +4,8 @@ import 'package:analog_clock/analog_clock.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'main.dart';
 import 'settings_page.dart'; // 导入 settings_page.dart
+import 'app_data.dart'; // 导入 app_data.dart
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});

@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'main.dart';
+import 'app_data.dart'; // 导入 app_data.dart
+
+/// Dropdown for selecting theme modes.
+class ThemeModeSelectionDropdown extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final appData = Provider.of<AppData>(context);
+    return DropdownButton<ThemeMode>(
+      value: appData.themeMode,
+      items: const [
+        DropdownMenuItem(
+          value: ThemeMode.system,
+          child: Text('System'),
+        ),
+        DropdownMenuItem(
+          value: ThemeMode.light,
+          child: Text('Light'),
+        ),
+        DropdownMenuItem(
+          value: ThemeMode.dark,
+          child: Text('Dark'),
+        ),
+      ],
+      onChanged: (ThemeMode? value) {
+        if (value != null) {
+          appData.setThemeMode(value);
+        }
+      },
+    );
+  }
+}
 
 /// Settings page for customizing application preferences.
 class SettingsPage extends StatelessWidget {
@@ -16,6 +46,36 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
+          // Appearance section
+          ListTile(
+            title: const Text('Theme Color'),
+            trailing: ColorSelectionDropdown(),
+          ),
+          ListTile(
+            title: const Text('Theme Mode'),
+            trailing: ThemeModeSelectionDropdown(),
+          ),
+
+          const SizedBox(height: 20), // 添加间距
+          const Divider(height: 1),
+          const SizedBox(height: 20), // 添加间距
+          
+          // Clock Style section
+          ListTile(
+            title: const Text('Digital Clock'),
+            trailing: Switch(
+              value: appData.isDigitalClock,
+              onChanged: (value) {
+                appData.toggleClockStyle();
+              },
+            ),
+          ),
+
+          const SizedBox(height: 20), // 添加间距
+          const Divider(height: 1),
+          const SizedBox(height: 20), // 添加间距
+          
+          // About section
           ListTile(
             title: const Text('About'),
             onTap: () {
@@ -24,7 +84,7 @@ class SettingsPage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("About"),
-                    content: const Text("Desuclock \n Version: 0.0.1"),
+                    content: const Text("Desuclock \n Version: 0.0.5"),
                     actions: [
                       TextButton(
                         child: const Text("Close"),
@@ -37,19 +97,6 @@ class SettingsPage extends StatelessWidget {
                 },
               );
             },
-          ),
-          ListTile(
-            title: const Text('Theme Color'),
-            trailing: ColorSelectionDropdown(),
-          ),
-          ListTile(
-            title: const Text('Clock Style'),
-            trailing: Switch(
-              value: appData.isDigitalClock,
-              onChanged: (value) {
-                appData.toggleClockStyle();
-              },
-            ),
           ),
         ],
       ),

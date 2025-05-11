@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'clock_home_page.dart';
+import 'app_data.dart';
 
 /// Main entry point of the application.
 void main() {
@@ -10,27 +11,6 @@ void main() {
       child: const MyApp(),
     ),
   );
-}
-
-/// Data model for application settings.
-class AppData extends ChangeNotifier {
-  Color _selectedColor = Colors.green;
-  bool _isDigitalClock = true;
-
-  Color get selectedColor => _selectedColor;
-  bool get isDigitalClock => _isDigitalClock;
-
-  /// Set the selected theme color.
-  void setSelectedColor(Color color) {
-    _selectedColor = color;
-    notifyListeners();
-  }
-
-  /// Toggle between digital and analog clock styles.
-  void toggleClockStyle() {
-    _isDigitalClock = !_isDigitalClock;
-    notifyListeners();
-  }
 }
 
 /// Main application widget.
@@ -54,7 +34,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
             scaffoldBackgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
           ),
-          themeMode: ThemeMode.system,
+          themeMode: appData.themeMode, // 动态设置主题模式
           home: const ClockHomePage(), // Use ClockHomePage as the home screen
         );
       },
