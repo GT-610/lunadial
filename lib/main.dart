@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:analog_clock/analog_clock.dart'; // 新增：引入 analog_clock 包
+import 'package:table_calendar/table_calendar.dart'; // 新增：引入 table_calendar 包
 
 void main() {
   runApp(
@@ -69,6 +70,9 @@ class ClockHomePage extends StatefulWidget {
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
   String _currentTime = '';
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
 
   // 新增方法：根据屏幕尺寸动态计算字体大小
   double _calculateFontSize(BuildContext context) {
@@ -136,7 +140,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                 ],
               ),
             )
-          : Row( // 新增：模拟时钟和留空布局
+          : Row( // 新增：模拟时钟和日历布局
               children: [
                 Expanded(
                   child: Center(
@@ -161,7 +165,56 @@ class _ClockHomePageState extends State<ClockHomePage> {
                   ),
                 ),
                 Expanded(
-                  child: Container(), // 空容器，用于留空
+                  child: Center( // 新增：将日历组件包裹在 Center 中
+                    child: TableCalendar( // 新增：TableCalendar 组件
+                      firstDay: DateTime.utc(2010, 10, 16),
+                      lastDay: DateTime.utc(2030, 3, 14),
+                      focusedDay: _focusedDay,
+                      calendarFormat: _calendarFormat,
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        if (!isSameDay(_selectedDay, selectedDay)) {
+                          setState(() {
+                            _selectedDay = selectedDay;
+                            _focusedDay = focusedDay;
+                          });
+                        }
+                      },
+                      onFormatChanged: (format) {
+                        if (_calendarFormat != format) {
+                          setState(() {
+                            _calendarFormat = format;
+                          });
+                        }
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                      },
+                      calendarStyle: CalendarStyle(
+                        outsideDaysVisible: false,
+                        isTodayHighlighted: true,
+                        selectedDecoration: BoxDecoration(
+                          color: appData.selectedColor,
+                          shape: BoxShape.circle,
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: appData.selectedColor.withOpacity(0.3),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        titleTextStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: appData.selectedColor,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
