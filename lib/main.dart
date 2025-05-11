@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:analog_clock/analog_clock.dart'; // 新增：引入 analog_clock 包
 
 void main() {
   runApp(
@@ -14,11 +15,18 @@ void main() {
 
 class AppData extends ChangeNotifier {
   Color _selectedColor = Colors.green;
+  bool _isDigitalClock = true; // 新增：用于控制时钟样式，默认为数字时钟
 
   Color get selectedColor => _selectedColor;
+  bool get isDigitalClock => _isDigitalClock; // 新增：获取当前时钟样式
 
   void setSelectedColor(Color color) {
     _selectedColor = color;
+    notifyListeners();
+  }
+
+  void toggleClockStyle() { // 新增：切换时钟样式
+    _isDigitalClock = !_isDigitalClock;
     notifyListeners();
   }
 }
@@ -66,7 +74,6 @@ class _ClockHomePageState extends State<ClockHomePage> {
   double _calculateFontSize(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    // 动态计算字体大小，取屏幕宽度和高度的较小值的一定比例
     return (screenWidth < screenHeight ? screenWidth : screenHeight) * 0.35;
   }
 
@@ -110,24 +117,54 @@ class _ClockHomePageState extends State<ClockHomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _currentDate,
-              style: TextStyle(fontSize: fontSize * 0.3), // 将日期字体大小调整为原来的70%
-              textAlign: TextAlign.center,
+      body: appData.isDigitalClock // 根据时钟样式选择显示内容
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _currentDate,
+                    style: TextStyle(fontSize: fontSize * 0.3),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _currentTime,
+                    style: TextStyle(fontSize: fontSize),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          : Row( // 新增：模拟时钟和留空布局
+              children: [
+                Expanded(
+                  child: Center(
+                    child: AnalogClock( // 替换为 analog_clock 包中的 AnalogClock 组件
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2.0, color: Colors.white),
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      width: 400.0,
+                      isLive: true,
+                      hourHandColor: Colors.white,
+                      minuteHandColor: Colors.white,
+                      showSecondHand: true,
+                      numberColor: Colors.white,
+                      showNumbers: true,
+                      showAllNumbers: true,
+                      textScaleFactor: 1.4,
+                      showTicks: false,
+                      showDigitalClock: false,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(), // 空容器，用于留空
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              _currentTime,
-              style: TextStyle(fontSize: fontSize), // 时间字体大小保持不变
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }
@@ -171,6 +208,15 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             title: const Text('Theme Color'),
             trailing: ColorSelectionDropdown(),
+          ),
+          ListTile( // 新增：时钟样式切换选项
+            title: const Text('Clock Style'),
+            trailing: Switch(
+              value: appData.isDigitalClock,
+              onChanged: (value) {
+                appData.toggleClockStyle(); // 切换时钟样式
+              },
+            ),
           ),
         ],
       ),
