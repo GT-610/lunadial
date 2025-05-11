@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(
@@ -13,10 +13,6 @@ void main() {
 }
 
 class AppData extends ChangeNotifier {
-  List<WidgetData> widgets = [
-    WidgetData(type: 'clock', x: 0.0, y: 0.0),
-  ];
-
   Color _selectedColor = Colors.green;
 
   Color get selectedColor => _selectedColor;
@@ -25,30 +21,6 @@ class AppData extends ChangeNotifier {
     _selectedColor = color;
     notifyListeners();
   }
-
-  void addWidget(String type) {
-    widgets.add(WidgetData(type: type, x: 0.0, y: 0.0));
-    notifyListeners();
-  }
-
-  void removeWidget(WidgetData widget) {
-    widgets.remove(widget);
-    notifyListeners();
-  }
-
-  void updateWidgetPosition(WidgetData widget, double x, double y) {
-    widget.x = x;
-    widget.y = y;
-    notifyListeners();
-  }
-}
-
-class WidgetData {
-  String type;
-  double x;
-  double y;
-
-  WidgetData({required this.type, required this.x, required this.y});
 }
 
 class MyApp extends StatelessWidget {
@@ -87,9 +59,40 @@ class ClockHomePage extends StatefulWidget {
 }
 
 class _ClockHomePageState extends State<ClockHomePage> {
+  String _currentDate = '';
+  String _currentTime = '';
+
+  // 新增方法：根据屏幕尺寸动态计算字体大小
+  double _calculateFontSize(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    // 动态计算字体大小，取屏幕宽度和高度的较小值的一定比例
+    return (screenWidth < screenHeight ? screenWidth : screenHeight) * 0.35;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateDateTime();
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateDateTime();
+    });
+  }
+
+  void _updateDateTime() {
+    setState(() {
+      final now = DateTime.now();
+      _currentDate = DateFormat('yyyy-MM-dd, EEEE').format(now);
+      _currentTime = DateFormat('HH:mm:ss').format(now);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
+
+    // 动态计算字体大小
+    final fontSize = _calculateFontSize(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -107,150 +110,25 @@ class _ClockHomePageState extends State<ClockHomePage> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            children: appData.widgets.map((widgetData) {
-              if (widgetData.type == 'clock') {
-                return DraggableClock(
-                  widgetData: widgetData,
-                  constraints: constraints,
-                );
-              }
-              return Container(); // Placeholder for other widget types
-            }).toList(),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddWidgetDialog(context);
-        },
-        child: const Icon(Icons.add),
-      ),
-      backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
-    );
-  }
-
-  void _showAddWidgetDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Widget'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('Clock'),
-                onTap: () {
-                  Provider.of<AppData>(context, listen: false).addWidget('clock');
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class DraggableClock extends StatefulWidget {
-  final WidgetData widgetData;
-  final BoxConstraints constraints;
-
-  const DraggableClock({Key? key, required this.widgetData, required this.constraints}) : super(key: key);
-
-  @override
-  State<DraggableClock> createState() => _DraggableClockState();
-}
-
-class _DraggableClockState extends State<DraggableClock> {
-  String _currentTime = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _updateTime();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      _updateTime();
-    });
-  }
-
-  void _updateTime() {
-    setState(() {
-      final now = DateTime.now();
-      final weekday = DateFormat('EEEE').format(now);
-      final dateTime = DateFormat('yyyy-MM-dd \nHH:mm:ss').format(now);
-      _currentTime = '$weekday\n$dateTime';
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final appData = Provider.of<AppData>(context);
-    return Positioned(
-      left: widget.widgetData.x,
-      top: widget.widgetData.y,
-      child: GestureDetector(
-        onLongPress: () {
-          _showDeleteWidgetDialog(context, widget.widgetData);
-        },
-        child: Draggable(
-          feedback: Material(
-            child: Text(
-              _currentTime,
-              style: const TextStyle(fontSize: 30),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _currentDate,
+              style: TextStyle(fontSize: fontSize * 0.3), // 将日期字体大小调整为原来的70%
               textAlign: TextAlign.center,
             ),
-          ),
-          childWhenDragging: Container(),
-          onDragEnd: (details) {
-            double x = details.offset.dx;
-            double y = details.offset.dy;
-
-            // Keep the widget within the bounds of the screen
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-            if (x > widget.constraints.maxWidth - 100) x = widget.constraints.maxWidth - 100; // subtracting width of text
-            if (y > widget.constraints.maxHeight - 100) y = widget.constraints.maxHeight - 100; // subtracting height of text
-
-            appData.updateWidgetPosition(widget.widgetData, x, y);
-          },
-          child: Text(
-            _currentTime,
-            style: const TextStyle(fontSize: 30),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showDeleteWidgetDialog(BuildContext context, WidgetData widgetData) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete Widget?'),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Delete'),
-              onPressed: () {
-                Provider.of<AppData>(context, listen: false).removeWidget(widgetData);
-                Navigator.of(context).pop();
-              },
+            const SizedBox(height: 10),
+            Text(
+              _currentTime,
+              style: TextStyle(fontSize: fontSize), // 时间字体大小保持不变
+              textAlign: TextAlign.center,
             ),
           ],
-        );
-      },
+        ),
+      ),
+      backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }
 }
@@ -276,7 +154,7 @@ class SettingsPage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("About"),
-                    content: const Text("Desuclock \n Version: 0.01-A"),
+                    content: const Text("Desuclock \n Version: 0.0.1"),
                     actions: [
                       TextButton(
                         child: const Text("Close"),
