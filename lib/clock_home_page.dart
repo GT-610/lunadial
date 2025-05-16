@@ -1,11 +1,11 @@
+import '../widgets/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:analog_clock/analog_clock.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'settings_page.dart'; // 导入 settings_page.dart
-import 'app_data.dart'; // 导入 app_data.dart
+import 'settings_page.dart';
+import 'app_data.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -17,7 +17,7 @@ class ClockHomePage extends StatefulWidget {
 /// State class for ClockHomePage, managing UI state and logic.
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
-  String _currentTime = '';
+  DateTime _currentTime = DateTime.now();  // 修改类型为DateTime
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -43,7 +43,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
     setState(() {
       final now = DateTime.now();
       _currentDate = DateFormat('yyyy-MM-dd, EEEE').format(now);
-      _currentTime = DateFormat('HH:mm:ss').format(now);
+      _currentTime = now;  // 直接存储DateTime对象
     });
   }
 
@@ -81,7 +81,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    _currentTime,
+                    DateFormat('HH:mm:ss').format(_currentTime),  // 显示时格式化
                     style: TextStyle(fontSize: fontSize),
                     textAlign: TextAlign.center,
                   ),
@@ -89,83 +89,78 @@ class _ClockHomePageState extends State<ClockHomePage> {
               ),
             )
           : Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: AnalogClock(
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2.0, color: Colors.white),
-                        color: Colors.transparent,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2.0, color: Colors.white),
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    width: 400.0,
+                    height: 400.0,
+                    child: CustomPaint(
+                      painter: ClockPainter(
+                          time: _currentTime, context: context),  // 直接传递DateTime对象
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: TableCalendar(
+                    firstDay: DateTime.utc(2010, 10, 16),
+                    lastDay: DateTime.utc(2030, 3, 14),
+                    focusedDay: _focusedDay,
+                    calendarFormat: _calendarFormat,
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      if (!isSameDay(_selectedDay, selectedDay)) {
+                        setState(() {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                        });
+                      }
+                    },
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                    calendarStyle: CalendarStyle(
+                      outsideDaysVisible: false,
+                      isTodayHighlighted: true,
+                      selectedDecoration: BoxDecoration(
+                        color: appData.selectedColor,
                         shape: BoxShape.circle,
                       ),
-                      width: 400.0,
-                      isLive: true,
-                      hourHandColor: Colors.white,
-                      minuteHandColor: Colors.white,
-                      showSecondHand: true,
-                      numberColor: Colors.white,
-                      showNumbers: true,
-                      showAllNumbers: true,
-                      textScaleFactor: 1.4,
-                      showTicks: false,
-                      showDigitalClock: false,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: TableCalendar(
-                      firstDay: DateTime.utc(2010, 10, 16),
-                      lastDay: DateTime.utc(2030, 3, 14),
-                      focusedDay: _focusedDay,
-                      calendarFormat: _calendarFormat,
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
-                      onDaySelected: (selectedDay, focusedDay) {
-                        if (!isSameDay(_selectedDay, selectedDay)) {
-                          setState(() {
-                            _selectedDay = selectedDay;
-                            _focusedDay = focusedDay;
-                          });
-                        }
-                      },
-                      onFormatChanged: (format) {
-                        if (_calendarFormat != format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        }
-                      },
-                      onPageChanged: (focusedDay) {
-                        _focusedDay = focusedDay;
-                      },
-                      calendarStyle: CalendarStyle(
-                        outsideDaysVisible: false,
-                        isTodayHighlighted: true,
-                        selectedDecoration: BoxDecoration(
-                          color: appData.selectedColor,
-                          shape: BoxShape.circle,
-                        ),
-                        todayDecoration: BoxDecoration(
-                          color: appData.selectedColor.withOpacity(0.3),
-                          shape: BoxShape.circle,
-                        ),
+                      todayDecoration: BoxDecoration(
+                        color: appData.selectedColor.withOpacity(0.3),
+                        shape: BoxShape.circle,
                       ),
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                        titleTextStyle: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: appData.selectedColor,
-                        ),
+                    ),
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                      titleTextStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: appData.selectedColor,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }
