@@ -39,14 +39,7 @@ class _CalendarPageState extends State<CalendarPage> {
       body: Column(
         children: [
           _buildHeader(),
-          _buildWeekdayLabels(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: _buildCalendar(),
-            ),
-          ),
+          _buildCalendar(),
         ],
       ),
     );
@@ -55,73 +48,45 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          IconButton(
-            iconSize: 24.0,
-            icon: const Icon(Icons.chevron_left),
-            onPressed: () {
-              setState(() {
-                _focusedDay = DateTime(
-                  _focusedDay.year,
-                  _focusedDay.month - 1,
-                  _focusedDay.day,
-                );
-              });
-            },
-          ),
-          Text(
-            DateFormat('MMMM yyyy').format(_focusedDay),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          IconButton(
-            iconSize: 24.0,
-            icon: const Icon(Icons.chevron_right),
-            onPressed: () {
-              setState(() {
-                _focusedDay = DateTime(
-                  _focusedDay.year,
-                  _focusedDay.month + 1,
-                  _focusedDay.day,
-                );
-              });
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                iconSize: 24.0,
+                icon: const Icon(Icons.chevron_left),
+                onPressed: () {
+                  setState(() {
+                    _focusedDay = DateTime(
+                      _focusedDay.year,
+                      _focusedDay.month - 1,
+                      _focusedDay.day,
+                    );
+                  });
+                },
+              ),
+              Text(
+                DateFormat('MMMM yyyy').format(_focusedDay),
+                style:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                iconSize: 24.0,
+                icon: const Icon(Icons.chevron_right),
+                onPressed: () {
+                  setState(() {
+                    _focusedDay = DateTime(
+                      _focusedDay.year,
+                      _focusedDay.month + 1,
+                      _focusedDay.day,
+                    );
+                  });
+                },
+              ),
+            ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildWeekdayLabels() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 1.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildWeekdayLabel('S'),
-          _buildWeekdayLabel('M'),
-          _buildWeekdayLabel('T'),
-          _buildWeekdayLabel('W'),
-          _buildWeekdayLabel('T'),
-          _buildWeekdayLabel('F'),
-          _buildWeekdayLabel('S'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWeekdayLabel(String day) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9 / 7,
-      child: Center(
-        child: Text(
-          day,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[600],
-          ),
-        ),
       ),
     );
   }
@@ -150,50 +115,66 @@ class _CalendarPageState extends State<CalendarPage> {
       days.add(DateTime(_focusedDay.year, _focusedDay.month + 1, i));
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(8.0),
-      itemCount: days.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-        mainAxisSpacing: 8.0,
-        crossAxisSpacing: 4.0,
-        childAspectRatio: 1.0,
-      ),
-      itemBuilder: (context, index) {
-        final day = days[index];
-        final isSameDay =
-            _selectedDay.year == day.year &&
-            _selectedDay.month == day.month &&
-            _selectedDay.day == day.day;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildWeekdayLabel('S'),
+              _buildWeekdayLabel('M'),
+              _buildWeekdayLabel('T'),
+              _buildWeekdayLabel('W'),
+              _buildWeekdayLabel('T'),
+              _buildWeekdayLabel('F'),
+              _buildWeekdayLabel('S'),
+            ],
+          ),
+        ),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(8.0),
+          itemCount: days.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 4.0,
+            childAspectRatio: 1.0,
+          ),
+          itemBuilder: (context, index) {
+            final day = days[index];
+            final isSameDay =
+                _selectedDay.year == day.year &&
+                    _selectedDay.month == day.month &&
+                    _selectedDay.day == day.day;
 
-        final isToday =
-            DateTime.now().year == day.year &&
-            DateTime.now().month == day.month &&
-            DateTime.now().day == day.day;
+            final isToday =
+                DateTime.now().year == day.year &&
+                    DateTime.now().month == day.month &&
+                    DateTime.now().day == day.day;
 
-        final isOutsideMonth = day.month != _focusedDay.month;
+            final isOutsideMonth = day.month != _focusedDay.month;
 
-        return SizedBox(
-          width: MediaQuery.of(context).size.width * 0.9 / 7,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedDay = day;
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: isSameDay ? Theme.of(context).colorScheme.primary : null,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Center(
-                child: Text(
-                  day.day.toString(),
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color:
+            return SizedBox(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedDay = day;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isSameDay ? Theme.of(context).colorScheme.primary : null,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color:
                         isSameDay
                             ? Theme.of(context).colorScheme.onPrimary
                             : isToday
@@ -201,17 +182,33 @@ class _CalendarPageState extends State<CalendarPage> {
                             : isOutsideMonth
                             ? Colors.grey
                             : Colors.black,
-                    fontWeight:
+                        fontWeight:
                         isSameDay || isToday
                             ? FontWeight.bold
                             : FontWeight.normal,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeekdayLabel(String day) {
+    return Expanded(
+      child: Center(
+        child: Text(
+          day,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[600],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
