@@ -12,12 +12,12 @@ class CalendarPage extends StatefulWidget {
   final Function(DateTime) onPageChanged;
 
   const CalendarPage({
-    Key? key,
+    super.key,
     required this.focusedDay,
     required this.selectedDay,
     required this.onDaySelected,
     required this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   _CalendarPageState createState() => _CalendarPageState();
@@ -28,72 +28,98 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 日历头部（显示月份和年份）
+        // Display the month and year at the top of the calendar, with navigation buttons
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            DateFormat.yMMMM().format(widget.focusedDay),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  final newFocusedDay = widget.focusedDay.subtract(const Duration(days: 30));
+                  widget.onPageChanged(newFocusedDay);
+                },
+              ),
+              Text(
+                DateFormat.yMMMM().format(widget.focusedDay),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed: () {
+                  final newFocusedDay = widget.focusedDay.add(const Duration(days: 30));
+                  widget.onPageChanged(newFocusedDay);
+                },
+              ),
+            ],
           ),
         ),
-        // 日历网格
+        // Show the names of the days of the week
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            for (var day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
+              Text(
+                day,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+          ],
+        ),
+        // Calendar grid
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 42, // 6周 x 7天
+          itemCount: 42, // 6 weeks x 7 days
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
             mainAxisSpacing: 4.0,
             crossAxisSpacing: 4.0,
           ),
           itemBuilder: (context, index) {
-            final day = widget.focusedDay.subtract(Duration(days: widget.focusedDay.weekday - 1)) // 当前月的第一天
-                .add(Duration(days: index));
+            // Get the first day of the month
+            final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
+            // Calculate the day of the week for the first day of the month (0 for Sunday, 6 for Saturday)
+            final firstDayOfWeek = firstDayOfMonth.weekday - 1;
+            // Adjust the index to align the first day of the month correctly
+            final adjustedIndex = index - firstDayOfWeek;
+            // If the adjusted index is negative, it means this position is empty
+            if (adjustedIndex < 0) {
+              return Container(); // Empty container for spacing
+            }
+            // Calculate the current date
+            final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
             final isSelected = isSameDay(day, widget.selectedDay);
-            final isToday = isSameDay(day, DateTime.now()); // 新增：判断是否为今天
+            final isToday = isSameDay(day, DateTime.now()); // Check if it's today
+
+            // Get the theme colors
+            final theme = Theme.of(context);
+            final todayColor = theme.colorScheme.primary; // Color for today
+            final selectedColor = theme.colorScheme.secondary; // Color for selected date
+            final onSurfaceColor = theme.colorScheme.onSurface; // Color that follows the main program's light or dark mode
 
             return GestureDetector(
               onTap: () {
-                if (isToday) { // 只允许选择今天
+                if (isToday) { // Only allow selecting today
                   widget.onDaySelected(day);
                 }
               },
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isToday ? Colors.red : isSelected ? Colors.blue : Colors.transparent, // 突出标注今天
+                  color: isToday ? todayColor : isSelected ? selectedColor : Colors.transparent, // Use theme colors
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
                   DateFormat.d().format(day),
                   style: TextStyle(
-                    color: isToday ? Colors.white : isSelected ? Colors.white : Colors.black,
+                    color: isToday ? theme.colorScheme.onPrimary : isSelected ? theme.colorScheme.onSecondary : onSurfaceColor, // Use onSurfaceColor
                     fontWeight: isToday ? FontWeight.bold : isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
             );
           },
-        ),
-        // 导航按钮（上个月/下个月）
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                final newFocusedDay = widget.focusedDay.subtract(const Duration(days: 30));
-                widget.onPageChanged(newFocusedDay);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_forward),
-              onPressed: () {
-                final newFocusedDay = widget.focusedDay.add(const Duration(days: 30));
-                widget.onPageChanged(newFocusedDay);
-              },
-            ),
-          ],
         ),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'app_data.dart'; // 导入 app_data.dart
+import 'app_data.dart';
 
 /// Dropdown for selecting theme modes.
 class ThemeModeSelectionDropdown extends StatelessWidget {
@@ -56,9 +56,9 @@ class SettingsPage extends StatelessWidget {
             trailing: ThemeModeSelectionDropdown(),
           ),
 
-          const SizedBox(height: 20), // 添加间距
+          const SizedBox(height: 20),
           const Divider(height: 1),
-          const SizedBox(height: 20), // 添加间距
+          const SizedBox(height: 20),
           
           // Clock Style section
           ListTile(
@@ -71,9 +71,9 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20), // 添加间距
+          const SizedBox(height: 20),
           const Divider(height: 1),
-          const SizedBox(height: 20), // 添加间距
+          const SizedBox(height: 20),
           
           // About section
           ListTile(
@@ -84,7 +84,7 @@ class SettingsPage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("About"),
-                    content: const Text("Desuclock \n Version: 0.0.5"),
+                    content: const Text("Desuclock \n Version: 0.2.0"),
                     actions: [
                       TextButton(
                         child: const Text("Close"),

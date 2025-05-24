@@ -29,7 +29,7 @@ class ClockPainter extends CustomPainter {
 
     // Draw minute markers
     Paint minuteMarkerPaint = Paint()
-      ..color = onSurface.withOpacity(0.3)
+      ..color = onSurface.withValues(alpha: 0.3)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
@@ -123,7 +123,7 @@ class ClockPainter extends CustomPainter {
     canvas.drawLine(center, secondHandEnd, secondHandPaint);
 
     // Center dot
-    Paint centerDotPaint = Paint()..color = onSurface;
+    Paint centerDotPaint = Paint()..color = primary;
     canvas.drawCircle(center, 5, centerDotPaint);
   }
 
