@@ -1,11 +1,11 @@
 import '../widgets/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'settings_page.dart';
 import 'app_data.dart';
+import 'widgets/table_calendar.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -18,7 +18,7 @@ class ClockHomePage extends StatefulWidget {
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
   DateTime _currentTime = DateTime.now();  // 修改类型为DateTime
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -47,9 +47,15 @@ class _ClockHomePageState extends State<ClockHomePage> {
     });
   }
 
+  // 新增: 定义 isSameDay 方法
+  bool isSameDay(DateTime? a, DateTime? b) {
+    if (a == null || b == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appData = Provider.of<AppData>(context); // Access AppData from Provider
+    final appData = Provider.of<AppData>(context);
 
     final fontSize = _calculateFontSize(context);
 
@@ -63,7 +69,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()), // Navigate to SettingsPage
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
           ),
@@ -81,7 +87,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    DateFormat('HH:mm:ss').format(_currentTime),  // 显示时格式化
+                    DateFormat('HH:mm:ss').format(_currentTime),
                     style: TextStyle(fontSize: fontSize),
                     textAlign: TextAlign.center,
                   ),
@@ -102,60 +108,27 @@ class _ClockHomePageState extends State<ClockHomePage> {
                     height: 400.0,
                     child: CustomPaint(
                       painter: ClockPainter(
-                          time: _currentTime, context: context),  // 直接传递DateTime对象
+                          time: _currentTime, context: context),
                     ),
                   ),
                 ),
               ),
               Expanded(
                 child: Center(
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2010, 10, 16),
-                    lastDay: DateTime.utc(2030, 3, 14),
+                  child: CalendarPage(
                     focusedDay: _focusedDay,
-                    calendarFormat: _calendarFormat,
-                    selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
+                    selectedDay: _selectedDay,
+                    onDaySelected: (selectedDay) {
                       if (!isSameDay(_selectedDay, selectedDay)) {
                         setState(() {
                           _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                        });
-                      }
-                    },
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
+                          _focusedDay = selectedDay;  // 修改: 更新 _focusedDay
                         });
                       }
                     },
                     onPageChanged: (focusedDay) {
                       _focusedDay = focusedDay;
                     },
-                    calendarStyle: CalendarStyle(
-                      outsideDaysVisible: false,
-                      isTodayHighlighted: true,
-                      selectedDecoration: BoxDecoration(
-                        color: appData.selectedColor,
-                        shape: BoxShape.circle,
-                      ),
-                      todayDecoration: BoxDecoration(
-                        color: appData.selectedColor.withOpacity(0.3),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      titleTextStyle: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: appData.selectedColor,
-                      ),
-                    ),
                   ),
                 ),
               ),

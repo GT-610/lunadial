@@ -7,8 +7,8 @@
 ## Features
 
 - **Material You Design**: Modern, elegant design with your favourite Material You colors.
-- **Cross-Platform**: We plan to support Android, iOS, Windows, macOS, and Linux, and maybe web.
-- **Free and Open-Source**: This project is, and will be forever  free and open-source.
+- **Cross-Platform**: We plan to support Android first, but we're also planning to support iOS, desktop, and maybe web!
+- **Free and Open-Source**: This project is, and will be forever free and open-source.
 
 ## Getting Started
 

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
             scaffoldBackgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
           ),
-          themeMode: appData.themeMode, // 动态设置主题模式
+          themeMode: appData.themeMode,
           home: const ClockHomePage(), // Use ClockHomePage as the home screen
         );
       },
