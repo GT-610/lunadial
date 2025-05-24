@@ -50,19 +50,25 @@ class _CalendarPageState extends State<CalendarPage> {
             final day = widget.focusedDay.subtract(Duration(days: widget.focusedDay.weekday - 1)) // 当前月的第一天
                 .add(Duration(days: index));
             final isSelected = isSameDay(day, widget.selectedDay);
+            final isToday = isSameDay(day, DateTime.now()); // 新增：判断是否为今天
+
             return GestureDetector(
-              onTap: () => widget.onDaySelected(day),
+              onTap: () {
+                if (isToday) { // 只允许选择今天
+                  widget.onDaySelected(day);
+                }
+              },
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.blue : Colors.transparent,
+                  color: isToday ? Colors.red : isSelected ? Colors.blue : Colors.transparent, // 突出标注今天
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
                   DateFormat.d().format(day),
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isToday ? Colors.white : isSelected ? Colors.white : Colors.black,
+                    fontWeight: isToday ? FontWeight.bold : isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),

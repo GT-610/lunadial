@@ -18,7 +18,6 @@ class ClockHomePage extends StatefulWidget {
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
   DateTime _currentTime = DateTime.now();  // 修改类型为DateTime
-  final CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
