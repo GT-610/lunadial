@@ -107,8 +107,8 @@ class _ClockHomePageState extends State<ClockHomePage> {
                             color: Colors.transparent,
                             shape: BoxShape.circle,
                           ),
-                          width: 400.0,
-                          height: 400.0,
+                          width: MediaQuery.of(context).size.shortestSide * 0.8,  // 修改为动态尺寸
+                          height: MediaQuery.of(context).size.shortestSide * 0.8, // 修改为动态尺寸
                           child: CustomPaint(
                             painter: ClockPainter(
                                 time: _currentTime, context: context),
@@ -123,9 +123,9 @@ class _ClockHomePageState extends State<ClockHomePage> {
                             border: Border.all(width: 2.0, color: Colors.white),
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          width: 400.0,  // 新增固定宽度
-                          height: 400.0, // 新增固定高度
-                          child: CalendarPage(  // 修改: 添加尺寸约束容器
+                          width: MediaQuery.of(context).size.shortestSide * 0.8,  // 修改为动态尺寸
+                          height: MediaQuery.of(context).size.shortestSide * 0.8, // 修改为动态尺寸
+                          child: CalendarPage(
                             focusedDay: _focusedDay,
                             selectedDay: _selectedDay,
                             onDaySelected: (selectedDay) {

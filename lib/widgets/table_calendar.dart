@@ -82,7 +82,7 @@ class _CalendarPageState extends State<CalendarPage> {
               crossAxisCount: 7,
               mainAxisSpacing: 2.0,  // 减少纵向间距
               crossAxisSpacing: 2.0,  // 减少横向间距
-              childAspectRatio: 1.1,  // 新增宽高比调整
+              childAspectRatio: 1.0,  // 新增宽高比调整
             ),
             itemBuilder: (context, index) {
               // Get the first day of the month
