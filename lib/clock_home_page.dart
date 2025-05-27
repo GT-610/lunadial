@@ -93,46 +93,60 @@ class _ClockHomePageState extends State<ClockHomePage> {
                 ],
               ),
             )
-          : Row(
-            children: [
-              Expanded(
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2.0, color: Colors.white),
-                      color: Colors.transparent,
-                      shape: BoxShape.circle,
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,  // 修改: 改为Column布局并添加居中
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,  // 新增: 垂直居中
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2.0, color: Colors.white),
+                            color: Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                          width: 400.0,
+                          height: 400.0,
+                          child: CustomPaint(
+                            painter: ClockPainter(
+                                time: _currentTime, context: context),
+                          ),
+                        ),
+                      ),
                     ),
-                    width: 400.0,
-                    height: 400.0,
-                    child: CustomPaint(
-                      painter: ClockPainter(
-                          time: _currentTime, context: context),
+                    Expanded(
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2.0, color: Colors.white),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          width: 400.0,  // 新增固定宽度
+                          height: 400.0, // 新增固定高度
+                          child: CalendarPage(  // 修改: 添加尺寸约束容器
+                            focusedDay: _focusedDay,
+                            selectedDay: _selectedDay,
+                            onDaySelected: (selectedDay) {
+                              if (!isSameDay(_selectedDay, selectedDay)) {
+                                setState(() {
+                                  _selectedDay = selectedDay;
+                                  _focusedDay = selectedDay;  // 修改: 更新 _focusedDay
+                                });
+                              }
+                            },
+                            onPageChanged: (focusedDay) {
+                              _focusedDay = focusedDay;
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-              Expanded(
-                child: Center(
-                  child: CalendarPage(
-                    focusedDay: _focusedDay,
-                    selectedDay: _selectedDay,
-                    onDaySelected: (selectedDay) {
-                      if (!isSameDay(_selectedDay, selectedDay)) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                          _focusedDay = selectedDay;  // 修改: 更新 _focusedDay
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }

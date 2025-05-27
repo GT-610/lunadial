@@ -62,7 +62,13 @@ class _CalendarPageState extends State<CalendarPage> {
             for (var day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
               Text(
                 day,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: day == 'Sun' || day == 'Sat'
+                      ? Theme.of(context).colorScheme.secondary // 使用主题中的次要颜色
+                      : Theme.of(context).colorScheme.onSurface, // 其他日期使用默认颜色
+                ),
               ),
           ],
         ),
