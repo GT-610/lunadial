@@ -28,7 +28,6 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Display the month and year at the top of the calendar, with navigation buttons
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
@@ -55,7 +54,6 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
         ),
-        // Show the names of the days of the week
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -66,49 +64,42 @@ class _CalendarPageState extends State<CalendarPage> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: day == 'Sun' || day == 'Sat'
-                      ? Theme.of(context).colorScheme.secondary // 使用主题中的次要颜色
-                      : Theme.of(context).colorScheme.onSurface, // 其他日期使用默认颜色
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
           ],
         ),
-        // Calendar grid
-        Expanded( // 新增 Expanded 使网格占据可用空间
+        Expanded(
           child: GridView.builder(
-            shrinkWrap: false, // 改为 false 以允许 Expanded 控制布局
+            shrinkWrap: false,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 42, // 6 weeks x 7 days
+            itemCount: 42,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
-              mainAxisSpacing: 2.0,  // 减少纵向间距
-              crossAxisSpacing: 2.0,  // 减少横向间距
-              childAspectRatio: 1.0,  // 新增宽高比调整
+              mainAxisSpacing: 2.0,
+              crossAxisSpacing: 2.0,
+              childAspectRatio: 1.0,
             ),
             itemBuilder: (context, index) {
-              // Get the first day of the month
               final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
-              // Calculate the day of the week for the first day of the month (0 for Sunday, 6 for Saturday)
               final firstDayOfWeek = firstDayOfMonth.weekday - 1;
-              // Adjust the index to align the first day of the month correctly
               final adjustedIndex = index - firstDayOfWeek;
-              // If the adjusted index is negative, it means this position is empty
               if (adjustedIndex < 0) {
-                return Container(); // Empty container for spacing
+                return Container();
               }
-              // Calculate the current date
               final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
               final isSelected = isSameDay(day, widget.selectedDay);
-              final isToday = isSameDay(day, DateTime.now()); // Check if it's today
+              final isToday = isSameDay(day, DateTime.now());
 
-              // Get the theme colors
               final theme = Theme.of(context);
-              final todayColor = theme.colorScheme.primary; // Color for today
-              final selectedColor = theme.colorScheme.secondary; // Color for selected date
-              final onSurfaceColor = theme.colorScheme.onSurface; // Color that follows the main program's light or dark mode
+              final todayColor = theme.colorScheme.primary;
+              final selectedColor = theme.colorScheme.secondary;
+              final onSurfaceColor = theme.colorScheme.onSurface;
 
               return GestureDetector(
                 onTap: () {
-                  if (isToday) { // Only allow selecting today
+                  if (isToday) {
                     widget.onDaySelected(day);
                   }
                 },
@@ -116,12 +107,12 @@ class _CalendarPageState extends State<CalendarPage> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: isToday ? todayColor : isSelected ? selectedColor : Colors.transparent,
-                    borderRadius: BorderRadius.circular(4.0),  // 缩小圆角半径
+                    borderRadius: BorderRadius.circular(4.0),
                   ),
                   child: Text(
                     DateFormat.d().format(day),
                     style: TextStyle(
-                      fontSize: 14,  // 新增字体大小约束
+                      fontSize: 14,
                       color: isToday ? theme.colorScheme.onPrimary : isSelected ? theme.colorScheme.onSecondary : onSurfaceColor,
                       fontWeight: isToday ? FontWeight.bold : isSelected ? FontWeight.bold : FontWeight.normal,
                     ),

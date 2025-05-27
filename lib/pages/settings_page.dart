@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'app_data.dart';
+import '../app_data.dart';
+import 'about_page.dart';
 
 /// Dropdown for selecting theme modes.
 class ThemeModeSelectionDropdown extends StatelessWidget {
@@ -79,25 +80,13 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             title: const Text('About'),
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("About"),
-                    content: const Text("Desuclock \n Version: 0.2.0"),
-                    actions: [
-                      TextButton(
-                        child: const Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                },
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AboutPage()),
               );
             },
           ),
+
         ],
       ),
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,

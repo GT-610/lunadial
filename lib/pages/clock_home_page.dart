@@ -1,11 +1,11 @@
-import '../widgets/analog_clock.dart';
+import '../../widgets/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'settings_page.dart';
-import 'app_data.dart';
-import 'widgets/table_calendar.dart';
+import '../app_data.dart';
+import '../widgets/table_calendar.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -17,7 +17,7 @@ class ClockHomePage extends StatefulWidget {
 /// State class for ClockHomePage, managing UI state and logic.
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
-  DateTime _currentTime = DateTime.now();  // 修改类型为DateTime
+  DateTime _currentTime = DateTime.now();  // Store current time as DateTime
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -42,11 +42,11 @@ class _ClockHomePageState extends State<ClockHomePage> {
     setState(() {
       final now = DateTime.now();
       _currentDate = DateFormat('yyyy-MM-dd, EEEE').format(now);
-      _currentTime = now;  // 直接存储DateTime对象
+      _currentTime = now;
     });
   }
 
-  // 新增: 定义 isSameDay 方法
+  // Define isSameDay method
   bool isSameDay(DateTime? a, DateTime? b) {
     if (a == null || b == null) return false;
     return a.year == b.year && a.month == b.month && a.day == b.day;
@@ -94,10 +94,10 @@ class _ClockHomePageState extends State<ClockHomePage> {
               ),
             )
           : Column(
-              mainAxisAlignment: MainAxisAlignment.center,  // 修改: 改为Column布局并添加居中
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,  // 新增: 垂直居中
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Center(
@@ -107,8 +107,8 @@ class _ClockHomePageState extends State<ClockHomePage> {
                             color: Colors.transparent,
                             shape: BoxShape.circle,
                           ),
-                          width: MediaQuery.of(context).size.shortestSide * 0.8,  // 修改为动态尺寸
-                          height: MediaQuery.of(context).size.shortestSide * 0.8, // 修改为动态尺寸
+                          width: MediaQuery.of(context).size.shortestSide * 0.8,
+                          height: MediaQuery.of(context).size.shortestSide * 0.8,
                           child: CustomPaint(
                             painter: ClockPainter(
                                 time: _currentTime, context: context),
@@ -123,8 +123,8 @@ class _ClockHomePageState extends State<ClockHomePage> {
                             border: Border.all(width: 2.0, color: Colors.white),
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          width: MediaQuery.of(context).size.shortestSide * 0.8,  // 修改为动态尺寸
-                          height: MediaQuery.of(context).size.shortestSide * 0.8, // 修改为动态尺寸
+                          width: MediaQuery.of(context).size.shortestSide * 0.8,
+                          height: MediaQuery.of(context).size.shortestSide * 0.8,
                           child: CalendarPage(
                             focusedDay: _focusedDay,
                             selectedDay: _selectedDay,
@@ -132,7 +132,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                               if (!isSameDay(_selectedDay, selectedDay)) {
                                 setState(() {
                                   _selectedDay = selectedDay;
-                                  _focusedDay = selectedDay;  // 修改: 更新 _focusedDay
+                                  _focusedDay = selectedDay;
                                 });
                               }
                             },

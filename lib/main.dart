@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'clock_home_page.dart';
+import 'pages/clock_home_page.dart';
 import 'app_data.dart';
 import 'dart:io' show Platform;
 
@@ -9,16 +9,13 @@ import 'dart:io' show Platform;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 仅针对Android/iOS平台设置全屏横屏
+  // Set full-screen immersive mode for Android/iOS platforms.
   if (Platform.isAndroid || Platform.isIOS) {
-    // 设置全屏沉浸模式（隐藏状态栏和导航栏）
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
-    // 设置屏幕方向为双横屏
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    // 隐藏系统界面后强制更新布局
     await SystemChrome.restoreSystemUIOverlays();
   }
 
