@@ -27,4 +27,21 @@ class AppData extends ChangeNotifier {
     _themeMode = mode;
     notifyListeners();
   }
+
+  // Serialize data to a map.
+  void loadFromMap(Map<String, dynamic> map) {
+    _selectedColor = Color(map['selectedColor'] ?? Colors.green.value);
+    _isDigitalClock = map['isDigitalClock'] ?? true;
+    _themeMode = ThemeMode.values[map['themeMode'] ?? ThemeMode.system.index];
+    notifyListeners();
+  }
+
+  // Deserialize data from a map.
+  Map<String, dynamic> toMap() {
+    return {
+      'selectedColor': _selectedColor.value,
+      'isDigitalClock': _isDigitalClock,
+      'themeMode': _themeMode.index,
+    };
+  }
 }

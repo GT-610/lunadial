@@ -1,27 +1,29 @@
+import 'package:DesuClock/utils/settings_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'pages/clock_home_page.dart';
-import 'app_data.dart';
-import 'dart:io' show Platform;
+import 'utils/app_data.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// Main entry point of the application.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set full-screen immersive mode for Android/iOS platforms.
-  if (Platform.isAndroid || Platform.isIOS) {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    await SystemChrome.restoreSystemUIOverlays();
+  final appData = AppData();
+  
+  if (!kIsWeb) {
+    final settings = await SettingsManager.loadSettings();
+    
+    if (settings.isEmpty) {
+      await SettingsManager.saveSettings(appData.toMap());
+    } else {
+      appData.loadFromMap(settings);
+    }
   }
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppData(),
+    ChangeNotifierProvider.value(
+      value: appData,
       child: const MyApp(),
     ),
   );
@@ -55,4 +57,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
