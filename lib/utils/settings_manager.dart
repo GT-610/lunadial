@@ -4,26 +4,30 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class SettingsManager {
+  // Get the local path for storing settings
   static Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
+  // Get the local file for settings
   static Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/settings.json');
   }
 
+  // Load settings from the local file
   static Future<Map<String, dynamic>> loadSettings() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString(encoding: utf8);
       return json.decode(contents) as Map<String, dynamic>;
     } catch (e) {
-      return {}; // 返回空设置当文件不存在时
+      return {}; // Return empty settings if file doesn't exist
     }
   }
 
+  // Save settings to the local file
   static Future<void> saveSettings(Map<String, dynamic> settings) async {
     final file = await _localFile;
     await file.writeAsString(
