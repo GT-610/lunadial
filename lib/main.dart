@@ -2,12 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'pages/clock_home_page.dart';
-import 'app_data.dart';
+import 'utils/app_data.dart';
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
+import 'utils/settings_manager.dart';
 
 /// Main entry point of the application.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final appData = AppData();
+  
+  if (!kIsWeb) {
+    final settings = await SettingsManager.loadSettings();
+    
+    if (settings.isEmpty) {
+      print('[DEBUG] 未找到配置文件，正在创建默认配置...');
+      await SettingsManager.saveSettings(appData.toMap());
+      print('[DEBUG] 默认配置已保存: ${appData.toMap()}');
+    } else {
+      try {
+        print('[DEBUG] 找到现有配置: $settings');
+        appData.loadFromMap(settings);
+        print('[DEBUG] 配置加载完成: ${appData.toMap()}');
+      } catch (e) {
+        print('[ERROR] 配置加载失败: $e');
+        print('[DEBUG] 配置损坏，正在覆盖写入默认配置...');
+        await SettingsManager.saveSettings(appData.toMap());
+        print('[DEBUG] 默认配置已覆盖保存: ${appData.toMap()}');
+        appData.loadFromMap(appData.toMap());
+      }
+    }
+  }
   
   // Set full-screen immersive mode for Android/iOS platforms.
   if (Platform.isAndroid || Platform.isIOS) {

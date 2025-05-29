@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../app_data.dart';
+import '../utils/app_data.dart';
 import 'about_page.dart';
 
 /// Dropdown for selecting theme modes.
