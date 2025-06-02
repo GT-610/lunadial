@@ -5,10 +5,12 @@ class AppData extends ChangeNotifier {
   Color _selectedColor = Colors.green;
   bool _isDigitalClock = true;
   ThemeMode _themeMode = ThemeMode.system;
+  bool _keepScreenOn = false; // 新增屏幕常亮状态
 
   Color get selectedColor => _selectedColor;
   bool get isDigitalClock => _isDigitalClock;
   ThemeMode get themeMode => _themeMode;
+  bool get keepScreenOn => _keepScreenOn; // 新增getter
 
   /// Set the selected theme color.
   void setSelectedColor(Color color) {
@@ -25,6 +27,12 @@ class AppData extends ChangeNotifier {
   /// Set the theme mode (Light, Dark, System).
   void setThemeMode(ThemeMode mode) {
     _themeMode = mode;
+    notifyListeners();
+  }
+
+  /// 设置屏幕常亮状态
+  void setKeepScreenOn(bool value) {
+    _keepScreenOn = value;
     notifyListeners();
   }
 
@@ -54,9 +62,15 @@ class AppData extends ChangeNotifier {
       throw FormatException('时钟样式类型异常');
     }
 
+    final keepOn = map['keepScreenOn'];
+    if (keepOn is! bool) {
+      throw FormatException('屏幕常亮状态类型异常');
+    }
+    
     _selectedColor = Color(colorValue);
     _isDigitalClock = isDigital;
     _themeMode = ThemeMode.values[themeIndex];
+    _keepScreenOn = keepOn;
 
     print('''
 [DEBUG] 配置校验通过：
@@ -73,6 +87,7 @@ class AppData extends ChangeNotifier {
       'selectedColor': _selectedColor.value,
       'isDigitalClock': _isDigitalClock,
       'themeMode': _themeMode.index,
+      'keepScreenOn': _keepScreenOn,
     };
     print('[DEBUG] 序列化结果: $configMap');
     return configMap;

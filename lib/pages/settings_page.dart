@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_data.dart';
 import 'about_page.dart';
+import 'dart:io' show Platform;
 
 /// Dropdown for selecting theme modes.
 class ThemeModeSelectionDropdown extends StatelessWidget {
@@ -56,6 +57,37 @@ class SettingsPage extends StatelessWidget {
             title: const Text('Theme Mode'),
             trailing: ThemeModeSelectionDropdown(),
           ),
+
+          const SizedBox(height: 20),
+          const Divider(height: 1),
+          const SizedBox(height: 20),
+          
+          // 修改屏幕常亮设置项为不可用状态
+          if (Platform.isAndroid)
+            ListTile(
+              title: RichText(
+                text: const TextSpan(
+                  style: TextStyle(color: Colors.black),
+                  children: [
+                    TextSpan(text: 'Screen Wake Lock\n'),
+                    TextSpan(
+                      text: 'Coming soon',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              trailing: Switch(
+                value: false, // 强制保持关闭状态
+                activeColor: Colors.grey,
+                inactiveThumbColor: Colors.grey,
+                onChanged: null, // 禁用交互
+              ),
+            ),
 
           const SizedBox(height: 20),
           const Divider(height: 1),
