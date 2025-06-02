@@ -60,7 +60,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DesuClock'),
+        title: const Text('LunaDial'),
         backgroundColor: appData.selectedColor == Colors.black ? Colors.grey[900] : null,
         actions: [
           IconButton(

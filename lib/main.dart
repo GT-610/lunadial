@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return Consumer<AppData>(
       builder: (context, appData, child) {
         return MaterialApp(
-          title: 'DesuClock',
+          title: 'LunaDial',
           theme: ThemeData(
             useMaterial3: true,
             colorSchemeSeed: appData.selectedColor,

@@ -4,15 +4,17 @@ import '../pages/settings_page.dart'; // 新增导入语句以访问ColorSelecti
 
 /// Data model for application settings.
 class AppData extends ChangeNotifier {
-  // 修改颜色校验方法的引用方式
-  void validateColor(int colorValue) {
-    final colors = ColorSelectionDropdown.colorsList
-        .map((e) => (e['color'] as Color).value)
-        .toList();
-    
-    if (!colors.contains(colorValue)) {
-      throw FormatException('非法颜色值: 0x${colorValue.toRadixString(16)}');
-    }
+  void copyWith({
+    int? colorValue,
+    bool? isDigital,
+    int? themeIndex,
+    bool? keepOn,
+  }) {
+    _selectedColor = Color(colorValue ?? _selectedColor.value);
+    _isDigitalClock = isDigital ?? _isDigitalClock;
+    _themeMode = ThemeMode.values[themeIndex ?? _themeMode.index];
+    _keepScreenOn = keepOn ?? _keepScreenOn;
+    notifyListeners();
   }
 
   // 修改初始化方法确保完整加载配置
@@ -64,23 +66,6 @@ class AppData extends ChangeNotifier {
   /// 设置屏幕常亮状态
   void setKeepScreenOn(bool value) {
     _keepScreenOn = value;
-    notifyListeners();
-  }
-
-  void copyWith({
-    int? colorValue,
-    bool? isDigital,
-    int? themeIndex,
-    bool? keepOn,
-  }) {
-    // 添加颜色校验
-    if (colorValue != null) {
-      validateColor(colorValue);
-    }
-    _selectedColor = Color(colorValue ?? _selectedColor.value);
-    _isDigitalClock = isDigital ?? _isDigitalClock;
-    _themeMode = ThemeMode.values[themeIndex ?? _themeMode.index];
-    _keepScreenOn = keepOn ?? _keepScreenOn;
     notifyListeners();
   }
 

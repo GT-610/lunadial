@@ -22,6 +22,8 @@ class SettingsManager {
     try {
       final file = await _localFile;
       final contents = await file.readAsString(encoding: utf8);
+      // 新增配置文件内容输出
+      print('[DEBUG] 加载的配置文件内容: $contents');
       return json.decode(contents) as Map<String, dynamic>;
     } catch (e) {
       return {};

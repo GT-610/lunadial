@@ -64,15 +64,52 @@ class _SettingsPageState extends State<SettingsPage> {
         body: ListView(
           children: <Widget>[
             // Appearance section
-            ListTile(
-              title: const Text('Theme Color'),
-              trailing: ColorSelectionDropdown(),
+            Column(
+              children: [
+                ListTile(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Colors'),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Coming soon',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('Theme Mode'),
-              trailing: ThemeModeSelectionDropdown(),
+            Column(
+              children: [
+                ListTile(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Theme mode'),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Coming soon',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
+                ),
+              ],
             ),
-
             const SizedBox(height: 20),
             const Divider(height: 1),
             const SizedBox(height: 20),
@@ -81,9 +118,6 @@ class _SettingsPageState extends State<SettingsPage> {
             if (Platform.isAndroid)
               Column(
                 children: [
-                  const SizedBox(height: 20),
-                  const Divider(height: 1),
-                  const SizedBox(height: 20),
                   ListTile(
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,45 +174,6 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
       ),
-    );
-  }
-}
-
-/// Dropdown for selecting theme colors.
-class ColorSelectionDropdown extends StatelessWidget {
-  // 新增颜色定义列表
-  static const List<Map<String, dynamic>> colorsList = [
-    {'color': Colors.red, 'name': 'Red'},
-    {'color': Colors.green, 'name': 'Green'},
-    {'color': Colors.lightGreen, 'name': 'Light Green'},  // 确保浅绿色存在
-    {'color': Colors.blue, 'name': 'Blue'},
-    {'color': Colors.purple, 'name': 'Purple'},
-    {'color': Colors.amber, 'name': 'Amber'},
-    {'color': Colors.black, 'name': 'Pure black'},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final appData = Provider.of<AppData>(context);
-    return DropdownButton<Color>(
-      value: appData.selectedColor,
-      items: [
-        // 生成唯一值的菜单项
-        for (final entry in colorsList)
-          DropdownMenuItem(
-            value: entry['color'],
-            child: Text(entry['name']),
-            // 添加唯一性校验
-            key: ValueKey((entry['color'] as Color).value),
-          ),
-      ],
-      onChanged: (Color? value) {
-        if (value != null) {
-          appData.setSelectedColor(value);
-          // 添加颜色变化日志
-          print('[COLOR] 颜色已切换至: ${value.toString()}');
-        }
-      },
     );
   }
 }

@@ -12,7 +12,7 @@ class AboutPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Desuclock',
+              'LunaDial',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 10),
