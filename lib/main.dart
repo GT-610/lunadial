@@ -14,7 +14,7 @@ void main() async {
   final appData = AppData();
   
   if (!kIsWeb) {
-    final settings = await SettingsManager.loadSettings();
+    final settings = await SettingsManager().loadSettings();
     
     if (settings.isEmpty) {
       print('[DEBUG] 未找到配置文件，正在创建默认配置...');

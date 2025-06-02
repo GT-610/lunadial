@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'settings_manager.dart';
 
 /// Data model for application settings.
 class AppData extends ChangeNotifier {
+  // 新增初始化方法
+  static Future<AppData> initialize() async {
+    final appData = AppData();
+    final settings = await SettingsManager().loadSettings();
+    if (settings.isNotEmpty) {
+      appData.loadFromMap(settings);
+    }
+    return appData;
+  }
+
   Color _selectedColor = Colors.green;
   bool _isDigitalClock = true;
   ThemeMode _themeMode = ThemeMode.system;
