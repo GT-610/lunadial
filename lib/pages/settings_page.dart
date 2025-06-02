@@ -77,30 +77,33 @@ class _SettingsPageState extends State<SettingsPage> {
             const Divider(height: 1),
             const SizedBox(height: 20),
             
-            // 修改屏幕常亮设置项为不可用状态
+            // 修改屏幕常亮设置项布局结构
             if (Platform.isAndroid)
-              ListTile(
-                title: RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(text: 'Screen Wake Lock\n'),
-                      TextSpan(
-                        text: 'Coming soon',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  const Divider(height: 1),
+                  const SizedBox(height: 20),
+                  ListTile(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Screen Wake Lock'),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Coming soon',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
                   ),
-                ),
-                trailing: Switch(
-                  value: false, // 强制保持关闭状态
-                  activeColor: Colors.grey,
-                  inactiveThumbColor: Colors.grey,
-                  onChanged: null, // 禁用交互
-                ),
+                ],
               ),
 
             const SizedBox(height: 20),
@@ -143,40 +146,37 @@ class _SettingsPageState extends State<SettingsPage> {
 
 /// Dropdown for selecting theme colors.
 class ColorSelectionDropdown extends StatelessWidget {
+  // 新增颜色定义列表
+  static const List<Map<String, dynamic>> colorsList = [
+    {'color': Colors.red, 'name': 'Red'},
+    {'color': Colors.green, 'name': 'Green'},
+    {'color': Colors.lightGreen, 'name': 'Light Green'},  // 确保浅绿色存在
+    {'color': Colors.blue, 'name': 'Blue'},
+    {'color': Colors.purple, 'name': 'Purple'},
+    {'color': Colors.amber, 'name': 'Amber'},
+    {'color': Colors.black, 'name': 'Pure black'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
     return DropdownButton<Color>(
       value: appData.selectedColor,
-      items: const [
-        DropdownMenuItem(
-          value: Colors.red,
-          child: Text('Red'),
-        ),
-        DropdownMenuItem(
-          value: Colors.green,
-          child: Text('Green'),
-        ),
-        DropdownMenuItem(
-          value: Colors.blue,
-          child: Text('Blue'),
-        ),
-        DropdownMenuItem(
-          value: Colors.purple,
-          child: Text('Purple'),
-        ),
-        DropdownMenuItem(
-          value: Colors.amber,
-          child: Text('Amber'),
-        ),
-        DropdownMenuItem(
-          value: Colors.black,
-          child: Text('Pure black'),
-        ),
+      items: [
+        // 生成唯一值的菜单项
+        for (final entry in colorsList)
+          DropdownMenuItem(
+            value: entry['color'],
+            child: Text(entry['name']),
+            // 添加唯一性校验
+            key: ValueKey((entry['color'] as Color).value),
+          ),
       ],
       onChanged: (Color? value) {
         if (value != null) {
           appData.setSelectedColor(value);
+          // 添加颜色变化日志
+          print('[COLOR] 颜色已切换至: ${value.toString()}');
         }
       },
     );
