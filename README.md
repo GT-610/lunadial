@@ -1,8 +1,8 @@
 **Note**: This README is a work in progress. More detailed information will be added as the project develops.
 
-# Desuclock
+# LunaDial
 
-**Desuclock** is a cross-platform, free, and open-source desk clock application designed to transform your device into an elegant timepiece. It is built using Flutter, allowing it to run on various platforms.
+**LunaDial** (formerly **DesuClock**) is a cross-platform, free, and open-source desk clock application designed to transform your device into an elegant timepiece. It is built using Flutter, allowing it to run on various platforms.
 
 ## Features
 
