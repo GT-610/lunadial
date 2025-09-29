@@ -109,9 +109,11 @@ class _ClockHomePageState extends State<ClockHomePage> {
                           ),
                           width: MediaQuery.of(context).size.shortestSide * 0.8,
                           height: MediaQuery.of(context).size.shortestSide * 0.8,
-                          child: CustomPaint(
-                            painter: ClockPainter(
-                                time: _currentTime, context: context),
+                          child: RepaintBoundary(
+                            child: CustomPaint(
+                              painter: ClockPainter(
+                                  time: _currentTime, context: context),
+                            ),
                           ),
                         ),
                       ),
