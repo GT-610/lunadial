@@ -93,28 +93,27 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const SizedBox(height: 24),
               
-              if (Platform.isAndroid)
-                _buildSettingsCard(
-                  context,
-                  title: 'Screen',
-                  subtitle: 'Configure screen behavior',
-                  children: [
-                    _buildSettingItem(
-                      context,
-                      title: 'Keep Screen On',
-                      description: 'Prevent the screen from turning off',
-                      trailing: Switch(
-                        value: appData.keepScreenOn,
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        onChanged: (value) {
-                          appData.setKeepScreenOn(value);
-                        },
-                      ),
+              _buildSettingsCard(
+                context,
+                title: 'Screen',
+                subtitle: 'Configure screen behavior',
+                children: [
+                  _buildSettingItem(
+                    context,
+                    title: 'Keep Screen On',
+                    description: 'Prevent the screen from turning off',
+                    trailing: Switch(
+                      value: appData.keepScreenOn,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      onChanged: (value) {
+                        appData.setKeepScreenOn(value);
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
               
-              if (Platform.isAndroid) const SizedBox(height: 24),
+              const SizedBox(height: 24),
               
               _buildSettingsCard(
                 context,

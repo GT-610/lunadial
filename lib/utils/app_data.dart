@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'settings_manager.dart';
-import '../pages/settings_page.dart'; // 新增导入语句以访问ColorSelectionDropdown
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// Data model for application settings.
 class AppData extends ChangeNotifier {
@@ -69,6 +69,14 @@ class AppData extends ChangeNotifier {
   /// 设置屏幕常亮状态
   void setKeepScreenOn(bool value) {
     _keepScreenOn = value;
+    // 使用 wakelock_plus 实现全平台屏幕常亮功能
+    if (value) {
+      WakelockPlus.enable();
+      print('[DEBUG] 屏幕常亮已启用');
+    } else {
+      WakelockPlus.disable();
+      print('[DEBUG] 屏幕常亮已禁用');
+    }
     notifyListeners();
   }
 
