@@ -43,6 +43,68 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+class ColorSelectionGrid extends StatelessWidget {
+  final Function(Color) onColorSelected;
+  final Color selectedColor;
+
+  const ColorSelectionGrid({
+    Key? key,
+    required this.onColorSelected,
+    required this.selectedColor,
+  }) : super(key: key);
+
+  final List<Color> colorOptions = const [
+    Colors.red,
+    Colors.pink,
+    Colors.purple,
+    Colors.deepPurple,
+    Colors.indigo,
+    Colors.blue,
+    Colors.lightBlue,
+    Colors.cyan,
+    Colors.teal,
+    Colors.green,
+    Colors.lightGreen,
+    Colors.lime,
+    Colors.yellow,
+    Colors.amber,
+    Colors.orange,
+    Colors.deepOrange,
+    Colors.brown,
+    Colors.grey,
+    Colors.blueGrey,
+    Colors.black,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: colorOptions.map((color) {
+        return GestureDetector(
+          onTap: () => onColorSelected(color),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: color == selectedColor ? Colors.white : Colors.transparent,
+                width: 3,
+              ),
+            ),
+            child: color == selectedColor
+                ? const Icon(Icons.check, color: Colors.white, size: 20)
+                : null,
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
 class _SettingsPageState extends State<SettingsPage> {
 
   @override
@@ -67,46 +129,62 @@ class _SettingsPageState extends State<SettingsPage> {
             Column(
               children: [
                 ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  title: const Text('Theme Color'),
+                  trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Colors'),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Coming soon',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: appData.selectedColor,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.grey.shade300),
                         ),
                       ),
+                      const SizedBox(width: 10),
+                      const Icon(Icons.arrow_forward_ios),
                     ],
                   ),
-                  trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Select Theme Color'),
+                          content: SingleChildScrollView(
+                            child: Container(
+                              width: 300,
+                              padding: const EdgeInsets.all(10.0),
+                              child: ColorSelectionGrid(
+                                onColorSelected: (color) {
+                                  appData.setSelectedColor(color);
+                                  Navigator.of(context).pop();
+                                },
+                                selectedColor: appData.selectedColor,
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
             Column(
               children: [
                 ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('Theme mode'),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Coming soon',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
+                  title: const Text('Theme mode'),
+                  trailing: ThemeModeSelectionDropdown(),
                 ),
               ],
             ),
@@ -114,28 +192,18 @@ class _SettingsPageState extends State<SettingsPage> {
             const Divider(height: 1),
             const SizedBox(height: 20),
             
-            // 修改屏幕常亮设置项布局结构
+            // 屏幕常亮设置
             if (Platform.isAndroid)
               Column(
                 children: [
                   ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('Screen Wake Lock'),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Coming soon',
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
+                    title: const Text('Keep Screen On'),
+                    trailing: Switch(
+                      value: appData.keepScreenOn,
+                      onChanged: (value) {
+                        appData.setKeepScreenOn(value);
+                      },
                     ),
-                    trailing: const Icon(Icons.hourglass_empty, color: Colors.grey),
                   ),
                 ],
               ),
@@ -169,7 +237,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
-
           ],
         ),
         backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
