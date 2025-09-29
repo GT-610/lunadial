@@ -5,26 +5,160 @@ import 'about_page.dart';
 import 'dart:io' show Platform;
 import '../utils/settings_manager.dart';
 
-/// Dropdown for selecting theme modes.
-class ThemeModeSelectionDropdown extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isBlackTheme = appData.selectedColor == Colors.black;
+    
+    return WillPopScope(
+      onWillPop: () async {
+        print('[DEBUG] 正在触发保存操作...');
+        await SettingsManager.saveSettings(appData.toMap());
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Settings'),
+          backgroundColor: isBlackTheme ? Colors.grey[900] : null,
+          elevation: 0,
+        ),
+        body: Container(
+          color: isBlackTheme ? Colors.black : null,
+          child: ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: <Widget>[
+              _buildSettingsCard(
+                context,
+                title: 'Appearance',
+                subtitle: 'Customize the look and feel of LunaDial',
+                children: [
+                  _buildSettingItem(
+                    context,
+                    title: 'Theme Color',
+                    description: 'Choose the primary color for the clock',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: appData.selectedColor,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
+                      ],
+                    ),
+                    onTap: () {
+                      _showColorPickerDialog(context, appData);
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSettingItem(
+                    context,
+                    title: 'Theme Mode',
+                    description: 'Choose between light, dark, or system theme',
+                    trailing: _buildThemeModeDropdown(context, appData),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              
+              if (Platform.isAndroid)
+                _buildSettingsCard(
+                  context,
+                  title: 'Screen',
+                  subtitle: 'Configure screen behavior',
+                  children: [
+                    _buildSettingItem(
+                      context,
+                      title: 'Keep Screen On',
+                      description: 'Prevent the screen from turning off',
+                      trailing: Switch(
+                        value: appData.keepScreenOn,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        onChanged: (value) {
+                          appData.setKeepScreenOn(value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              
+              if (Platform.isAndroid) const SizedBox(height: 24),
+              
+              _buildSettingsCard(
+                context,
+                title: 'Clock Style',
+                subtitle: 'Change how the time is displayed',
+                children: [
+                  _buildSettingItem(
+                    context,
+                    title: 'Digital Clock',
+                    description: 'Use digital format instead of analog',
+                    trailing: Switch(
+                      value: appData.isDigitalClock,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      onChanged: (value) {
+                        appData.toggleClockStyle();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              
+              _buildSettingsCard(
+                context,
+                title: 'Information',
+                subtitle: 'Learn more about LunaDial',
+                children: [
+                  _buildSettingItem(
+                    context,
+                    title: 'About',
+                    description: 'Version, license, and more information',
+                    trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AboutPage()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildThemeModeDropdown(BuildContext context, AppData appData) {
     return DropdownButton<ThemeMode>(
       value: appData.themeMode,
+      dropdownColor: Theme.of(context).colorScheme.surface,
+      underline: Container(),
       items: const [
-        DropdownMenuItem(
-          value: ThemeMode.system,
-          child: Text('System'),
-        ),
-        DropdownMenuItem(
-          value: ThemeMode.light,
-          child: Text('Light'),
-        ),
-        DropdownMenuItem(
-          value: ThemeMode.dark,
-          child: Text('Dark'),
-        ),
+        DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
+        DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
+        DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
       ],
       onChanged: (ThemeMode? value) {
         if (value != null) {
@@ -33,213 +167,131 @@ class ThemeModeSelectionDropdown extends StatelessWidget {
       },
     );
   }
-}
-
-/// Settings page for customizing application preferences.
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class ColorSelectionGrid extends StatelessWidget {
-  final Function(Color) onColorSelected;
-  final Color selectedColor;
-
-  const ColorSelectionGrid({
-    Key? key,
-    required this.onColorSelected,
-    required this.selectedColor,
-  }) : super(key: key);
-
-  final List<Color> colorOptions = const [
-    Colors.red,
-    Colors.pink,
-    Colors.purple,
-    Colors.deepPurple,
-    Colors.indigo,
-    Colors.blue,
-    Colors.lightBlue,
-    Colors.cyan,
-    Colors.teal,
-    Colors.green,
-    Colors.lightGreen,
-    Colors.lime,
-    Colors.yellow,
-    Colors.amber,
-    Colors.orange,
-    Colors.deepOrange,
-    Colors.brown,
-    Colors.grey,
-    Colors.blueGrey,
-    Colors.black,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: colorOptions.map((color) {
-        return GestureDetector(
-          onTap: () => onColorSelected(color),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: color == selectedColor ? Colors.white : Colors.transparent,
-                width: 3,
-              ),
-            ),
-            child: color == selectedColor
-                ? const Icon(Icons.check, color: Colors.white, size: 20)
-                : null,
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-
-  @override
-  Widget build(BuildContext context) {
-    final appData = Provider.of<AppData>(context);
+  
+  void _showColorPickerDialog(BuildContext context, AppData appData) {
+    final List<Color> colorOptions = const [
+      Colors.red, Colors.pink, Colors.purple, Colors.deepPurple,
+      Colors.indigo, Colors.blue, Colors.lightBlue, Colors.cyan,
+      Colors.teal, Colors.green, Colors.lightGreen, Colors.lime,
+      Colors.yellow, Colors.amber, Colors.orange, Colors.deepOrange,
+      Colors.brown, Colors.grey, Colors.blueGrey, Colors.black,
+    ];
     
-    return WillPopScope(
-      onWillPop: () async {
-        // 在页面返回时保存配置
-        print('[DEBUG] 正在触发保存操作...');
-        await SettingsManager.saveSettings(appData.toMap());
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-          backgroundColor: appData.selectedColor == Colors.black ? Colors.grey[900] : null,
-        ),
-        body: ListView(
-          children: <Widget>[
-            // Appearance section
-            Column(
-              children: [
-                ListTile(
-                  title: const Text('Theme Color'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: appData.selectedColor,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.grey.shade300),
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Select Theme Color', style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 12.0,
+                runSpacing: 12.0,
+                alignment: WrapAlignment.center,
+                children: colorOptions.map((color) {
+                  final isSelected = color == appData.selectedColor;
+                  return GestureDetector(
+                    onTap: () {
+                      appData.setSelectedColor(color);
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Colors.transparent,
+                          width: 3,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Select Theme Color'),
-                          content: SingleChildScrollView(
-                            child: Container(
-                              width: 300,
-                              padding: const EdgeInsets.all(10.0),
-                              child: ColorSelectionGrid(
-                                onColorSelected: (color) {
-                                  appData.setSelectedColor(color);
-                                  Navigator.of(context).pop();
-                                },
-                                selectedColor: appData.selectedColor,
-                              ),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+                      child: isSelected
+                        ? Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary, size: 22)
+                        : null,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildSettingsCard(BuildContext context, {
+    required String title,
+    required String subtitle,
+    required List<Widget> children,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant,
+          width: 1.0,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
-            Column(
-              children: [
-                ListTile(
-                  title: const Text('Theme mode'),
-                  trailing: ThemeModeSelectionDropdown(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Divider(height: 1),
-            const SizedBox(height: 20),
-            
-            // 屏幕常亮设置
-            if (Platform.isAndroid)
-              Column(
+            const SizedBox(height: 16),
+            Column(children: children),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildSettingItem(BuildContext context, {
+    required String title,
+    required String description,
+    required Widget trailing,
+    void Function()? onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: const Text('Keep Screen On'),
-                    trailing: Switch(
-                      value: appData.keepScreenOn,
-                      onChanged: (value) {
-                        appData.setKeepScreenOn(value);
-                      },
+                  Text(title),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
                 ],
               ),
-
-            const SizedBox(height: 20),
-            const Divider(height: 1),
-            const SizedBox(height: 20),
-            
-            // Clock Style section
-            ListTile(
-              title: const Text('Digital Clock'),
-              trailing: Switch(
-                value: appData.isDigitalClock,
-                onChanged: (value) {
-                  appData.toggleClockStyle();
-                },
-              ),
             ),
-
-            const SizedBox(height: 20),
-            const Divider(height: 1),
-            const SizedBox(height: 20),
-            
-            // About section
-            ListTile(
-              title: const Text('About'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AboutPage()),
-                );
-              },
-            ),
+            trailing,
           ],
         ),
-        backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
       ),
     );
   }
