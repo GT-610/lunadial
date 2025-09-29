@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_data.dart';
-import 'about_page.dart';
 import 'dart:io' show Platform;
 import '../utils/settings_manager.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,6 +13,20 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String _appVersion = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = packageInfo.version;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
@@ -130,13 +144,56 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   _buildSettingItem(
                     context,
-                    title: 'About',
-                    description: 'Version, license, and more information',
+                    title: 'Version',
+                    description: 'Current version of LunaDial',
+                    trailing: Text(
+                      _appVersion,
+                      style: TextStyle(color: Theme.of(context).colorScheme.outline),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSettingItem(
+                    context,
+                    title: 'License',
+                    description: 'View license information',
                     trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AboutPage()),
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('License'),
+                          content: SingleChildScrollView(
+                            child: Text('GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.')
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Close'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSettingItem(
+                    context,
+                    title: 'Contributors',
+                    description: 'List of contributors to this project',
+                    trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Contributors'),
+                          content: Text('Contributors list placeholder\n\nMore contributors will be added here.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Close'),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),
