@@ -2,26 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'pages/clock_home_page.dart';
-import 'app_data.dart';
-import 'dart:io' show Platform;
+import 'utils/app_data.dart';
+import 'package:flutter/foundation.dart';
 
 /// Main entry point of the application.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set full-screen immersive mode for Android/iOS platforms.
-  if (Platform.isAndroid || Platform.isIOS) {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    await SystemChrome.restoreSystemUIOverlays();
-  }
+  // 修改为使用初始化方法创建 AppData 实例
+  final appData = await AppData.initialize();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppData(),
+    ChangeNotifierProvider.value(  // 使用.value构造函数传递已初始化实例
+      value: appData,
       child: const MyApp(),
     ),
   );
@@ -36,7 +29,7 @@ class MyApp extends StatelessWidget {
     return Consumer<AppData>(
       builder: (context, appData, child) {
         return MaterialApp(
-          title: 'DesuClock',
+          title: 'LunaDial',
           theme: ThemeData(
             useMaterial3: true,
             colorSchemeSeed: appData.selectedColor,

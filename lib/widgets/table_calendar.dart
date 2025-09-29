@@ -71,55 +71,62 @@ class _CalendarPageState extends State<CalendarPage> {
           ],
         ),
         Expanded(
-          child: GridView.builder(
-            shrinkWrap: false,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 42,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              mainAxisSpacing: 2.0,
-              crossAxisSpacing: 2.0,
-              childAspectRatio: 1.0,
-            ),
-            itemBuilder: (context, index) {
-              final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
-              final firstDayOfWeek = firstDayOfMonth.weekday - 1;
-              final adjustedIndex = index - firstDayOfWeek;
-              if (adjustedIndex < 0) {
-                return Container();
-              }
-              final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
-              final isSelected = isSameDay(day, widget.selectedDay);
-              final isToday = isSameDay(day, DateTime.now());
-
-              final theme = Theme.of(context);
-              final todayColor = theme.colorScheme.primary;
-              final selectedColor = theme.colorScheme.secondary;
-              final onSurfaceColor = theme.colorScheme.onSurface;
-
-              return GestureDetector(
-                onTap: () {
-                  if (isToday) {
-                    widget.onDaySelected(day);
-                  }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: isToday ? todayColor : isSelected ? selectedColor : Colors.transparent,
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: Text(
-                    DateFormat.d().format(day),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isToday ? theme.colorScheme.onPrimary : isSelected ? theme.colorScheme.onSecondary : onSurfaceColor,
-                      fontWeight: isToday ? FontWeight.bold : isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.5, // 设置最小高度
+              ),
+              child: GridView.builder(
+                shrinkWrap: true, // 允许 GridView 根据内容调整高度
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 42,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  mainAxisSpacing: 2.0,
+                  crossAxisSpacing: 2.0,
+                  childAspectRatio: 1.0,
                 ),
-              );
-            },
+                itemBuilder: (context, index) {
+                  final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
+                  final firstDayOfWeek = firstDayOfMonth.weekday - 1;
+                  final adjustedIndex = index - firstDayOfWeek;
+                  if (adjustedIndex < 0) {
+                    return Container();
+                  }
+                  final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
+                  final isSelected = isSameDay(day, widget.selectedDay);
+                  final isToday = isSameDay(day, DateTime.now());
+
+                  final theme = Theme.of(context);
+                  final todayColor = theme.colorScheme.primary;
+                  final selectedColor = theme.colorScheme.secondary;
+                  final onSurfaceColor = theme.colorScheme.onSurface;
+
+                  return GestureDetector(
+                    onTap: () {
+                      if (isToday) {
+                        widget.onDaySelected(day);
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: isToday ? todayColor : isSelected ? selectedColor : Colors.transparent,
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: Text(
+                        DateFormat.d().format(day),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isToday ? theme.colorScheme.onPrimary : isSelected ? theme.colorScheme.onSecondary : onSurfaceColor,
+                          fontWeight: isToday ? FontWeight.bold : isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ],

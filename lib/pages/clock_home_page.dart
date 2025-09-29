@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'settings_page.dart';
-import '../app_data.dart';
+import '../utils/app_data.dart';
 import '../widgets/table_calendar.dart';
 
 class ClockHomePage extends StatefulWidget {
@@ -60,7 +60,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DesuClock'),
+        title: const Text('LunaDial'),
         backgroundColor: appData.selectedColor == Colors.black ? Colors.grey[900] : null,
         actions: [
           IconButton(
