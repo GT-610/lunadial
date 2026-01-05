@@ -102,9 +102,7 @@ class CalendarPageState extends State<CalendarPage> {
 
                   return GestureDetector(
                     onTap: () {
-                      if (isToday) {
-                        widget.onDaySelected(day);
-                      }
+                      widget.onDaySelected(day);
                     },
                     child: Container(
                       alignment: Alignment.center,

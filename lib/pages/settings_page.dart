@@ -159,17 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('License'),
-                          content: SingleChildScrollView(
-                            child: Text('GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.')
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Close'),
-                            ),
-                          ],
+                        builder: (context) => _buildInfoDialog(
+                          title: 'License',
+                          content: 'GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.',
                         ),
                       );
                     },
@@ -183,15 +175,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Contributors'),
-                          content: Text('Contributors list placeholder\n\nMore contributors will be added here.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Close'),
-                            ),
-                          ],
+                        builder: (context) => _buildInfoDialog(
+                          title: 'Contributors',
+                          content: 'Contributors list placeholder\n\nMore contributors will be added here.',
                         ),
                       );
                     },
@@ -221,6 +207,24 @@ class _SettingsPageState extends State<SettingsPage> {
           appData.setThemeMode(value);
         }
       },
+    );
+  }
+  
+  Widget _buildInfoDialog({
+    required String title,
+    required String content,
+  }) {
+    return AlertDialog(
+      title: Text(title),
+      content: SingleChildScrollView(
+        child: Text(content),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
   

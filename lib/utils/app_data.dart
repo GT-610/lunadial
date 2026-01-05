@@ -4,16 +4,20 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 /// Data model for application settings.
 class AppData extends ChangeNotifier {
+  static const int configVersion = 1;
+  
   void copyWith({
     int? colorValue,
     bool? isDigital,
     int? themeIndex,
     bool? keepOn,
+    bool? fullscreen,
   }) {
     _selectedColor = Color(colorValue ?? _selectedColor.toARGB32());
     _isDigitalClock = isDigital ?? _isDigitalClock;
     _themeMode = ThemeMode.values[themeIndex ?? _themeMode.index];
     _keepScreenOn = keepOn ?? _keepScreenOn;
+    _isFullscreen = fullscreen ?? _isFullscreen;
     notifyListeners();
   }
 
@@ -37,12 +41,14 @@ class AppData extends ChangeNotifier {
   Color _selectedColor = Colors.green;
   bool _isDigitalClock = true;
   ThemeMode _themeMode = ThemeMode.system;
-  bool _keepScreenOn = false; // 新增屏幕常亮状态
+  bool _keepScreenOn = false;
+  bool _isFullscreen = false;
 
   Color get selectedColor => _selectedColor;
   bool get isDigitalClock => _isDigitalClock;
   ThemeMode get themeMode => _themeMode;
-  bool get keepScreenOn => _keepScreenOn; // 新增getter
+  bool get keepScreenOn => _keepScreenOn;
+  bool get isFullscreen => _isFullscreen;
 
   /// Set the selected theme color.
   void setSelectedColor(Color color) {
@@ -72,12 +78,38 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFullscreen(bool value) {
+    _isFullscreen = value;
+    notifyListeners();
+  }
+
   void loadFromMap(Map<String, dynamic> map) {
     if (!map.containsKey('selectedColor') ||
         !map.containsKey('isDigitalClock') ||
         !map.containsKey('themeMode')) {
       throw FormatException('配置文件缺少必要字段');
     }
+
+    final savedVersion = map['configVersion'] ?? 0;
+    if (savedVersion < configVersion) {
+      _migrateConfig(savedVersion, map);
+    } else {
+      _loadCurrentConfig(map);
+    }
+  }
+
+  void _migrateConfig(int fromVersion, Map<String, dynamic> map) {
+    switch (fromVersion) {
+      case 0:
+        _loadCurrentConfig(map);
+        break;
+      default:
+        _loadCurrentConfig(map);
+    }
+    notifyListeners();
+  }
+
+  void _loadCurrentConfig(Map<String, dynamic> map) {
 
     final colorValue = map['selectedColor'];
     if (colorValue is String) {
@@ -128,15 +160,24 @@ class AppData extends ChangeNotifier {
       _keepScreenOn = false;
     }
 
+    final fullscreen = map['isFullscreen'];
+    if (fullscreen is bool) {
+      _isFullscreen = fullscreen;
+    } else {
+      _isFullscreen = false;
+    }
+
     notifyListeners();
   }
 
   Map<String, dynamic> toMap() {
     final configMap = {
+      'configVersion': configVersion,
       'selectedColor': '#${_selectedColor.toARGB32().toRadixString(16).padLeft(8, '0')}',
       'isDigitalClock': _isDigitalClock,
       'themeMode': _themeMode.toString().split('.').last,
       'keepScreenOn': _keepScreenOn,
+      'isFullscreen': _isFullscreen,
     };
     return configMap;
   }

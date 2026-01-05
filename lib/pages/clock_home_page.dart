@@ -15,7 +15,6 @@ class ClockHomePage extends StatefulWidget {
   State<ClockHomePage> createState() => _ClockHomePageState();
 }
 
-/// State class for ClockHomePage, managing UI state and logic.
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
   DateTime _currentTime = DateTime.now();
@@ -23,7 +22,6 @@ class _ClockHomePageState extends State<ClockHomePage> {
   DateTime? _selectedDay;
   Timer? _timer;
 
-  /// Calculate font size based on screen dimensions.
   double _calculateFontSize(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -35,9 +33,19 @@ class _ClockHomePageState extends State<ClockHomePage> {
     super.initState();
     _updateDateTime();
     _handleWakeLock();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _startPreciseTimer();
+  }
+
+  void _startPreciseTimer() {
+    void updateTick() {
       _updateDateTime();
-    });
+      final now = DateTime.now();
+      final nextSecond = DateTime(now.year, now.month, now.day, now.hour, now.minute, now.second + 1);
+      final delay = nextSecond.difference(now);
+      _timer = Timer(delay, updateTick);
+    }
+    
+    updateTick();
   }
 
   void _handleWakeLock() {
@@ -49,6 +57,11 @@ class _ClockHomePageState extends State<ClockHomePage> {
     }
   }
 
+  void _toggleFullscreen() {
+    final appData = Provider.of<AppData>(context, listen: false);
+    appData.setFullscreen(!appData.isFullscreen);
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -56,7 +69,6 @@ class _ClockHomePageState extends State<ClockHomePage> {
     super.dispose();
   }
 
-  /// Update current date and time every second.
   void _updateDateTime() {
     setState(() {
       final now = DateTime.now();
@@ -65,36 +77,113 @@ class _ClockHomePageState extends State<ClockHomePage> {
     });
   }
 
-  // Define isSameDay method
   bool isSameDay(DateTime? a, DateTime? b) {
     if (a == null || b == null) return false;
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
+  bool isLandscape(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return size.width > size.height;
+  }
+
+  bool isTablet(BuildContext context) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    return shortestSide >= 600;
+  }
+
+  Widget _buildAnalogClock(BuildContext context) {
+    final isTab = isTablet(context);
+    final sizeFactor = isTab ? 0.7 : 0.8;
+    final clockSize = MediaQuery.of(context).size.shortestSide * sizeFactor;
+    
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 2.0, color: Colors.white),
+        color: Colors.transparent,
+        shape: BoxShape.circle,
+      ),
+      width: clockSize,
+      height: clockSize,
+      child: RepaintBoundary(
+        child: CustomPaint(
+          painter: ClockPainter(time: _currentTime, context: context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalendar(BuildContext context) {
+    final isTab = isTablet(context);
+    final sizeFactor = isTab ? 0.7 : 0.8;
+    final calendarSize = MediaQuery.of(context).size.shortestSide * sizeFactor;
+    
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 2.0, color: Colors.white),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      width: calendarSize,
+      height: calendarSize,
+      child: CalendarPage(
+        focusedDay: _focusedDay,
+        selectedDay: _selectedDay,
+        onDaySelected: (selectedDay) {
+          if (!isSameDay(_selectedDay, selectedDay)) {
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = selectedDay;
+            });
+          }
+        },
+        onPageChanged: (focusedDay) {
+          _focusedDay = focusedDay;
+        },
+      ),
+    );
+  }
+
+  Widget _buildAnalogLayout(BuildContext context) {
+    final isLand = isLandscape(context);
+    final isTab = isTablet(context);
+    
+    if (isLand && !isTab) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildAnalogClock(context),
+          _buildCalendar(context),
+        ],
+      );
+    } else if (isTab) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildAnalogClock(context),
+          _buildCalendar(context),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildAnalogClock(context),
+          const SizedBox(height: 20),
+          _buildCalendar(context),
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
-
     final fontSize = _calculateFontSize(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('LunaDial'),
-        backgroundColor: appData.selectedColor == Colors.black ? Colors.grey[900] : null,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: appData.isDigitalClock
-          ? Center(
+    final clockContent = appData.isDigitalClock
+        ? Semantics(
+            label: 'Digital clock showing current time',
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -111,63 +200,65 @@ class _ClockHomePageState extends State<ClockHomePage> {
                   ),
                 ],
               ),
-            )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2.0, color: Colors.white),
-                            color: Colors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                          width: MediaQuery.of(context).size.shortestSide * 0.8,
-                          height: MediaQuery.of(context).size.shortestSide * 0.8,
-                          child: RepaintBoundary(
-                            child: CustomPaint(
-                              painter: ClockPainter(
-                                  time: _currentTime, context: context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2.0, color: Colors.white),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          width: MediaQuery.of(context).size.shortestSide * 0.8,
-                          height: MediaQuery.of(context).size.shortestSide * 0.8,
-                          child: CalendarPage(
-                            focusedDay: _focusedDay,
-                            selectedDay: _selectedDay,
-                            onDaySelected: (selectedDay) {
-                              if (!isSameDay(_selectedDay, selectedDay)) {
-                                setState(() {
-                                  _selectedDay = selectedDay;
-                                  _focusedDay = selectedDay;
-                                });
-                              }
-                            },
-                            onPageChanged: (focusedDay) {
-                              _focusedDay = focusedDay;
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ),
+          )
+        : Semantics(
+            label: 'Analog clock with calendar',
+            child: _buildAnalogLayout(context),
+          );
+
+    if (appData.isFullscreen) {
+      return Scaffold(
+        backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
+        body: GestureDetector(
+          onTap: _toggleFullscreen,
+          behavior: HitTestBehavior.opaque,
+          child: Stack(
+            children: [
+              clockContent,
+              Positioned(
+                top: 20,
+                right: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.fullscreen_exit, color: Colors.grey),
+                  onPressed: _toggleFullscreen,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('LunaDial'),
+        backgroundColor: appData.selectedColor == Colors.black ? Colors.grey[900] : null,
+        actions: [
+          Semantics(
+            label: 'Enter fullscreen mode',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.fullscreen),
+              onPressed: _toggleFullscreen,
+            ),
+          ),
+          Semantics(
+            label: 'Open settings',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      body: clockContent,
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }
