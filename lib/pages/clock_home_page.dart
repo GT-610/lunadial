@@ -204,7 +204,9 @@ class _ClockHomePageState extends State<ClockHomePage> {
           )
         : Semantics(
             label: 'Analog clock with calendar',
-            child: _buildAnalogLayout(context),
+            child: Center(
+              child: _buildAnalogLayout(context),
+            ),
           );
 
     if (appData.isFullscreen) {
@@ -215,7 +217,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
           behavior: HitTestBehavior.opaque,
           child: Stack(
             children: [
-              clockContent,
+              Center(child: clockContent),
               Positioned(
                 top: 20,
                 right: 20,
