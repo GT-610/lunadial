@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_data.dart';
-import 'dart:io' show Platform;
 import '../utils/settings_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -33,11 +32,12 @@ class _SettingsPageState extends State<SettingsPage> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final isBlackTheme = appData.selectedColor == Colors.black;
     
-    return WillPopScope(
-      onWillPop: () async {
-        print('[DEBUG] 正在触发保存操作...');
-        await SettingsManager.saveSettings(appData.toMap());
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          await SettingsManager.saveSettings(appData.toMap());
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     description: 'Prevent the screen from turning off',
                     trailing: Switch(
                       value: appData.keepScreenOn,
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeThumbColor: Theme.of(context).colorScheme.primary,
                       onChanged: (value) {
                         appData.setKeepScreenOn(value);
                       },
@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     description: 'Use digital format instead of analog',
                     trailing: Switch(
                       value: appData.isDigitalClock,
-                      activeColor: Theme.of(context).colorScheme.primary,
+                      activeThumbColor: Theme.of(context).colorScheme.primary,
                       onChanged: (value) {
                         appData.toggleClockStyle();
                       },

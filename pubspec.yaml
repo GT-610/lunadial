@@ -1,4 +1,4 @@
-name: LunaDial
+name: lunadial
 description: "Elegant desk clock for all devices, free and open-source."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.4.0
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.10.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,9 +32,9 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
   provider: ^6.1.5
-  path_provider: ^2.1.1
+  path_provider: ^2.1.5
   package_info_plus: ^9.0.0
-  wakelock_plus: ^1.1.6
+  wakelock_plus: ^1.4.0
 
 dev_dependencies:
   flutter_test:

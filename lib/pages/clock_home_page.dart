@@ -6,6 +6,7 @@ import 'dart:async';
 import 'settings_page.dart';
 import '../utils/app_data.dart';
 import '../widgets/table_calendar.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -17,9 +18,10 @@ class ClockHomePage extends StatefulWidget {
 /// State class for ClockHomePage, managing UI state and logic.
 class _ClockHomePageState extends State<ClockHomePage> {
   String _currentDate = '';
-  DateTime _currentTime = DateTime.now();  // Store current time as DateTime
+  DateTime _currentTime = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  Timer? _timer;
 
   /// Calculate font size based on screen dimensions.
   double _calculateFontSize(BuildContext context) {
@@ -32,9 +34,26 @@ class _ClockHomePageState extends State<ClockHomePage> {
   void initState() {
     super.initState();
     _updateDateTime();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _handleWakeLock();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _updateDateTime();
     });
+  }
+
+  void _handleWakeLock() {
+    final appData = Provider.of<AppData>(context, listen: false);
+    if (appData.keepScreenOn) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   /// Update current date and time every second.

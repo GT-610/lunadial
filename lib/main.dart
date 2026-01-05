@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'pages/clock_home_page.dart';
 import 'utils/app_data.dart';
-import 'package:flutter/foundation.dart';
 
 /// Main entry point of the application.
 void main() async {

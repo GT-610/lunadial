@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum CalendarFormat { month }
-
 class CalendarPage extends StatefulWidget {
   final DateTime focusedDay;
   final DateTime? selectedDay;
@@ -20,10 +18,10 @@ class CalendarPage extends StatefulWidget {
   });
 
   @override
-  _CalendarPageState createState() => _CalendarPageState();
+  CalendarPageState createState() => CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage> {
+class CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
