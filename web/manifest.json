@@ -1,6 +1,6 @@
 {
-    "name": "desuclock",
-    "short_name": "desuclock",
+    "name": "lunadial",
+    "short_name": "lunadial",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
