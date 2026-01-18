@@ -116,15 +116,10 @@ class _ClockHomePageState extends State<ClockHomePage> {
   Widget _buildCalendar(BuildContext context) {
     final isTab = isTablet(context);
     final sizeFactor = isTab ? 0.7 : 0.8;
-    final calendarSize = MediaQuery.of(context).size.shortestSide * sizeFactor;
+    final calendarWidth = MediaQuery.of(context).size.shortestSide * sizeFactor;
     
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(width: 2.0, color: Colors.white),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      width: calendarSize,
-      height: calendarSize,
+    return SizedBox(
+      width: calendarWidth,
       child: CalendarPage(
         focusedDay: _focusedDay,
         selectedDay: _selectedDay,

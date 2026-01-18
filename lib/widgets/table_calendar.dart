@@ -29,18 +29,18 @@ class CalendarPageState extends State<CalendarPage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final availableHeight = constraints.maxHeight;
         final availableWidth = constraints.maxWidth;
-
-        final headerHeight = availableHeight * 0.15;
-        final weekRowHeight = availableHeight * 0.12;
-        final gridHeight = availableHeight - headerHeight - weekRowHeight;
-
-        final cellSize = (gridHeight / 6).clamp(0.0, availableWidth / 7);
+        final cellSize = availableWidth / 7;
+        final headerHeight = cellSize * 1.2;
+        final weekRowHeight = cellSize * 0.9;
         final fontSize = (cellSize * 0.35).clamp(10.0, 16.0);
         final iconSize = (headerHeight * 0.5).clamp(20.0, 30.0);
 
+        // Calculate the number of rows needed
+        final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
+
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
               height: headerHeight,
@@ -99,62 +99,60 @@ class CalendarPageState extends State<CalendarPage> {
                 }).toList(),
               ),
             ),
-            Expanded(
-              child: SizedBox(
-                height: gridHeight,
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                    mainAxisSpacing: gridHeight * 0.01,
-                    crossAxisSpacing: availableWidth * 0.01,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemCount: 42,
-                  itemBuilder: (context, index) {
-                    final adjustedIndex = index - firstDayOfWeek;
-                    if (adjustedIndex < 0 || adjustedIndex >= daysInMonth) {
-                      return const SizedBox.shrink();
-                    }
-                    final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
-                    final isSelected = isSameDay(day, widget.selectedDay);
-                    final isToday = isSameDay(day, DateTime.now());
+            SizedBox(
+              height: cellSize * rowsNeeded,
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  mainAxisSpacing: cellSize * 0.01,
+                  crossAxisSpacing: availableWidth * 0.01,
+                  childAspectRatio: 1.0,
+                ),
+                itemCount: 42,
+                itemBuilder: (context, index) {
+                  final adjustedIndex = index - firstDayOfWeek;
+                  if (adjustedIndex < 0 || adjustedIndex >= daysInMonth) {
+                    return const SizedBox.shrink();
+                  }
+                  final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
+                  final isSelected = isSameDay(day, widget.selectedDay);
+                  final isToday = isSameDay(day, DateTime.now());
 
-                    final theme = Theme.of(context);
-                    final todayColor = theme.colorScheme.primary;
-                    final selectedColor = theme.colorScheme.secondary;
-                    final onSurfaceColor = theme.colorScheme.onSurface;
+                  final theme = Theme.of(context);
+                  final todayColor = theme.colorScheme.primary;
+                  final selectedColor = theme.colorScheme.secondary;
+                  final onSurfaceColor = theme.colorScheme.onSurface;
 
-                    return GestureDetector(
-                      onTap: () {
-                        widget.onDaySelected(day);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
+                  return GestureDetector(
+                    onTap: () {
+                      widget.onDaySelected(day);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: isToday
+                            ? todayColor
+                            : isSelected
+                                ? selectedColor
+                                : Colors.transparent,
+                        borderRadius: BorderRadius.circular(cellSize * 0.1),
+                      ),
+                      child: Text(
+                        DateFormat.d().format(day),
+                        style: TextStyle(
+                          fontSize: fontSize,
                           color: isToday
-                              ? todayColor
+                              ? theme.colorScheme.onPrimary
                               : isSelected
-                                  ? selectedColor
-                                  : Colors.transparent,
-                          borderRadius: BorderRadius.circular(cellSize * 0.1),
-                        ),
-                        child: Text(
-                          DateFormat.d().format(day),
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            color: isToday
-                                ? theme.colorScheme.onPrimary
-                                : isSelected
-                                    ? theme.colorScheme.onSecondary
-                                    : onSurfaceColor,
-                            fontWeight: isToday || isSelected ? FontWeight.bold : FontWeight.normal,
-                          ),
+                                  ? theme.colorScheme.onSecondary
+                                  : onSurfaceColor,
+                          fontWeight: isToday || isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
