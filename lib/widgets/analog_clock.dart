@@ -18,12 +18,11 @@ class ClockPainter extends CustomPainter {
 
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color onSurface = colorScheme.onSurface;
-    final Color surface = colorScheme.surface;
     final Color primary = colorScheme.primary;
 
-    // Draw clock face
+    // Draw clock face (transparent)
     Paint facePaint = Paint()
-      ..color = surface
+      ..color = Colors.transparent
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, radius, facePaint);
 

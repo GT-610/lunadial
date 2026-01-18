@@ -15,12 +15,17 @@ class ClockHomePage extends StatefulWidget {
   State<ClockHomePage> createState() => _ClockHomePageState();
 }
 
-class _ClockHomePageState extends State<ClockHomePage> {
+class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProviderStateMixin {
   String _currentDate = '';
   DateTime _currentTime = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Timer? _timer;
+  Timer? _buttonHideTimer;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+  bool _isButtonVisible = true;
 
   double _calculateFontSize(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,6 +39,16 @@ class _ClockHomePageState extends State<ClockHomePage> {
     _updateDateTime();
     _handleWakeLock();
     _startPreciseTimer();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
   }
 
   void _startPreciseTimer() {
@@ -59,12 +74,34 @@ class _ClockHomePageState extends State<ClockHomePage> {
 
   void _toggleFullscreen() {
     final appData = Provider.of<AppData>(context, listen: false);
+    if (appData.isFullscreen) {
+      _animationController.reverse();
+    } else {
+      _animationController.forward();
+      _showButtonTemporarily();
+    }
     appData.setFullscreen(!appData.isFullscreen);
+  }
+
+  void _showButtonTemporarily() {
+    setState(() {
+      _isButtonVisible = true;
+    });
+    _buttonHideTimer?.cancel();
+    _buttonHideTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _isButtonVisible = false;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _buttonHideTimer?.cancel();
+    _animationController.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -206,19 +243,31 @@ class _ClockHomePageState extends State<ClockHomePage> {
 
     if (appData.isFullscreen) {
       return Scaffold(
-        backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
+        backgroundColor: Colors.black,
         body: GestureDetector(
-          onTap: _toggleFullscreen,
+          onTap: _showButtonTemporarily,
           behavior: HitTestBehavior.opaque,
           child: Stack(
             children: [
-              Center(child: clockContent),
+              Center(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: clockContent,
+                  ),
+                ),
+              ),
               Positioned(
                 top: 20,
                 right: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.fullscreen_exit, color: Colors.grey),
-                  onPressed: _toggleFullscreen,
+                child: AnimatedOpacity(
+                  opacity: _isButtonVisible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: IconButton(
+                    icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
+                    onPressed: _toggleFullscreen,
+                  ),
                 ),
               ),
             ],
@@ -255,7 +304,29 @@ class _ClockHomePageState extends State<ClockHomePage> {
           ),
         ],
       ),
-      body: clockContent,
+      body: TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+        builder: (context, opacity, child) {
+          return TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.9, end: 1.0),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+            builder: (context, scale, child) {
+              return Transform.scale(
+                scale: scale,
+                child: Opacity(
+                  opacity: opacity,
+                  child: child,
+                ),
+              );
+            },
+            child: child,
+          );
+        },
+        child: clockContent,
+      ),
       backgroundColor: appData.selectedColor == Colors.black ? Colors.black : null,
     );
   }
