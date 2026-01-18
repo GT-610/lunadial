@@ -1,0 +1,134 @@
+{
+  "appTitle": "LunaDial",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Appearance settings section title"
+  },
+  "appearanceDescription": "Customize the look and feel of LunaDial",
+  "@appearanceDescription": {
+    "description": "Appearance settings section description"
+  },
+  "themeColor": "Theme Color",
+  "@themeColor": {
+    "description": "Theme color setting title"
+  },
+  "themeColorDescription": "Choose the primary color for the clock",
+  "@themeColorDescription": {
+    "description": "Theme color setting description"
+  },
+  "themeMode": "Theme Mode",
+  "@themeMode": {
+    "description": "Theme mode setting title"
+  },
+  "themeModeDescription": "Choose between light, dark, or system theme",
+  "@themeModeDescription": {
+    "description": "Theme mode setting description"
+  },
+  "screen": "Screen",
+  "@screen": {
+    "description": "Screen settings section title"
+  },
+  "screenDescription": "Configure screen behavior",
+  "@screenDescription": {
+    "description": "Screen settings section description"
+  },
+  "keepScreenOn": "Keep Screen On",
+  "@keepScreenOn": {
+    "description": "Keep screen on setting title"
+  },
+  "keepScreenOnDescription": "Prevent the screen from turning off",
+  "@keepScreenOnDescription": {
+    "description": "Keep screen on setting description"
+  },
+  "clockStyle": "Clock Style",
+  "@clockStyle": {
+    "description": "Clock style settings section title"
+  },
+  "clockStyleDescription": "Change how the time is displayed",
+  "@clockStyleDescription": {
+    "description": "Clock style settings section description"
+  },
+  "digitalClock": "Digital Clock",
+  "@digitalClock": {
+    "description": "Digital clock setting title"
+  },
+  "digitalClockDescription": "Use digital format instead of analog",
+  "@digitalClockDescription": {
+    "description": "Digital clock setting description"
+  },
+  "information": "Information",
+  "@information": {
+    "description": "Information settings section title"
+  },
+  "informationDescription": "Learn more about LunaDial",
+  "@informationDescription": {
+    "description": "Information settings section description"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Version setting title"
+  },
+  "versionDescription": "Current version of LunaDial",
+  "@versionDescription": {
+    "description": "Version setting description"
+  },
+  "license": "License",
+  "@license": {
+    "description": "License setting title"
+  },
+  "licenseDescription": "View license information",
+  "@licenseDescription": {
+    "description": "License setting description"
+  },
+  "contributors": "Contributors",
+  "@contributors": {
+    "description": "Contributors setting title"
+  },
+  "contributorsDescription": "List of contributors to this project",
+  "@contributorsDescription": {
+    "description": "Contributors setting description"
+  },
+  "system": "System",
+  "@system": {
+    "description": "System theme mode option"
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Light theme mode option"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Dark theme mode option"
+  },
+  "selectThemeColor": "Select Theme Color",
+  "@selectThemeColor": {
+    "description": "Dialog title for selecting theme color"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting title"
+  },
+  "languageDescription": "Choose the app language",
+  "@languageDescription": {
+    "description": "Language setting description"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "chinese": "Chinese",
+  "@chinese": {
+    "description": "Chinese language option"
+  }
+}

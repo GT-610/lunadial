@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'l10n/app_localizations.dart';
 import 'pages/clock_home_page.dart';
 import 'utils/app_data.dart';
 import 'widgets/error_boundary.dart';
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'LunaDial',
             debugShowCheckedModeBanner: false,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: _getLocale(appData.selectedLocale),
             theme: ThemeData(
               useMaterial3: true,
               colorSchemeSeed: appData.selectedColor,
@@ -47,6 +51,18 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Locale? _getLocale(String selectedLocale) {
+    switch (selectedLocale) {
+      case 'en':
+        return const Locale('en');
+      case 'zh':
+        return const Locale('zh', 'CN');
+      case 'system':
+      default:
+        return null;
+    }
   }
 }
 

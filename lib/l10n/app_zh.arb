@@ -1,0 +1,134 @@
+{
+  "appTitle": "LunaDial",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "settings": "设置",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  "appearance": "外观",
+  "@appearance": {
+    "description": "Appearance settings section title"
+  },
+  "appearanceDescription": "自定义 LunaDial 的外观",
+  "@appearanceDescription": {
+    "description": "Appearance settings section description"
+  },
+  "themeColor": "主题颜色",
+  "@themeColor": {
+    "description": "Theme color setting title"
+  },
+  "themeColorDescription": "选择时钟的主色调",
+  "@themeColorDescription": {
+    "description": "Theme color setting description"
+  },
+  "themeMode": "主题模式",
+  "@themeMode": {
+    "description": "Theme mode setting title"
+  },
+  "themeModeDescription": "选择浅色、深色或跟随系统主题",
+  "@themeModeDescription": {
+    "description": "Theme mode setting description"
+  },
+  "screen": "屏幕",
+  "@screen": {
+    "description": "Screen settings section title"
+  },
+  "screenDescription": "配置屏幕行为",
+  "@screenDescription": {
+    "description": "Screen settings section description"
+  },
+  "keepScreenOn": "保持屏幕常亮",
+  "@keepScreenOn": {
+    "description": "Keep screen on setting title"
+  },
+  "keepScreenOnDescription": "防止屏幕关闭",
+  "@keepScreenOnDescription": {
+    "description": "Keep screen on setting description"
+  },
+  "clockStyle": "时钟样式",
+  "@clockStyle": {
+    "description": "Clock style settings section title"
+  },
+  "clockStyleDescription": "更改时间的显示方式",
+  "@clockStyleDescription": {
+    "description": "Clock style settings section description"
+  },
+  "digitalClock": "数字时钟",
+  "@digitalClock": {
+    "description": "Digital clock setting title"
+  },
+  "digitalClockDescription": "使用数字格式而非模拟时钟",
+  "@digitalClockDescription": {
+    "description": "Digital clock setting description"
+  },
+  "information": "关于",
+  "@information": {
+    "description": "Information settings section title"
+  },
+  "informationDescription": "了解更多关于 LunaDial 的信息",
+  "@informationDescription": {
+    "description": "Information settings section description"
+  },
+  "version": "版本",
+  "@version": {
+    "description": "Version setting title"
+  },
+  "versionDescription": "LunaDial 当前版本",
+  "@versionDescription": {
+    "description": "Version setting description"
+  },
+  "license": "许可证",
+  "@license": {
+    "description": "License setting title"
+  },
+  "licenseDescription": "查看许可证信息",
+  "@licenseDescription": {
+    "description": "License setting description"
+  },
+  "contributors": "贡献者",
+  "@contributors": {
+    "description": "Contributors setting title"
+  },
+  "contributorsDescription": "项目贡献者列表",
+  "@contributorsDescription": {
+    "description": "Contributors setting description"
+  },
+  "system": "跟随系统",
+  "@system": {
+    "description": "System theme mode option"
+  },
+  "light": "浅色",
+  "@light": {
+    "description": "Light theme mode option"
+  },
+  "dark": "深色",
+  "@dark": {
+    "description": "Dark theme mode option"
+  },
+  "selectThemeColor": "选择主题颜色",
+  "@selectThemeColor": {
+    "description": "Dialog title for selecting theme color"
+  },
+  "close": "关闭",
+  "@close": {
+    "description": "Close button text"
+  },
+  "language": "语言",
+  "@language": {
+    "description": "Language setting title"
+  },
+  "languageDescription": "选择应用语言",
+  "@languageDescription": {
+    "description": "Language setting description"
+  },
+  "english": "英语",
+  "@english": {
+    "description": "English language option"
+  },
+  "chinese": "中文",
+  "@chinese": {
+    "description": "Chinese language option"
+  }
+}

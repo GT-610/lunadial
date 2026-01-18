@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_data.dart';
 import '../utils/settings_manager.dart';
+import '../l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
+    final translations = AppLocalizations.of(context)!;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final isBlackTheme = appData.selectedColor == Colors.black;
     
@@ -41,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: Text(translations.settings),
           backgroundColor: isBlackTheme ? Colors.grey[900] : null,
           elevation: 0,
         ),
@@ -52,13 +54,13 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               _buildSettingsCard(
                 context,
-                title: 'Appearance',
-                subtitle: 'Customize the look and feel of LunaDial',
+                title: translations.appearance,
+                subtitle: translations.appearanceDescription,
                 children: [
                   _buildSettingItem(
                     context,
-                    title: 'Theme Color',
-                    description: 'Choose the primary color for the clock',
+                    title: translations.themeColor,
+                    description: translations.themeColorDescription,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -85,9 +87,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 8),
                   _buildSettingItem(
                     context,
-                    title: 'Theme Mode',
-                    description: 'Choose between light, dark, or system theme',
+                    title: translations.themeMode,
+                    description: translations.themeModeDescription,
                     trailing: _buildThemeModeDropdown(context, appData),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSettingItem(
+                    context,
+                    title: translations.language,
+                    description: translations.languageDescription,
+                    trailing: _buildLanguageDropdown(context, appData),
                   ),
                 ],
               ),
@@ -95,13 +104,13 @@ class _SettingsPageState extends State<SettingsPage> {
               
               _buildSettingsCard(
                 context,
-                title: 'Screen',
-                subtitle: 'Configure screen behavior',
+                title: translations.screen,
+                subtitle: translations.screenDescription,
                 children: [
                   _buildSettingItem(
                     context,
-                    title: 'Keep Screen On',
-                    description: 'Prevent the screen from turning off',
+                    title: translations.keepScreenOn,
+                    description: translations.keepScreenOnDescription,
                     trailing: Switch(
                       value: appData.keepScreenOn,
                       activeThumbColor: Theme.of(context).colorScheme.primary,
@@ -117,13 +126,13 @@ class _SettingsPageState extends State<SettingsPage> {
               
               _buildSettingsCard(
                 context,
-                title: 'Clock Style',
-                subtitle: 'Change how the time is displayed',
+                title: translations.clockStyle,
+                subtitle: translations.clockStyleDescription,
                 children: [
                   _buildSettingItem(
                     context,
-                    title: 'Digital Clock',
-                    description: 'Use digital format instead of analog',
+                    title: translations.digitalClock,
+                    description: translations.digitalClockDescription,
                     trailing: Switch(
                       value: appData.isDigitalClock,
                       activeThumbColor: Theme.of(context).colorScheme.primary,
@@ -138,13 +147,13 @@ class _SettingsPageState extends State<SettingsPage> {
               
               _buildSettingsCard(
                 context,
-                title: 'Information',
-                subtitle: 'Learn more about LunaDial',
+                title: translations.information,
+                subtitle: translations.informationDescription,
                 children: [
                   _buildSettingItem(
                     context,
-                    title: 'Version',
-                    description: 'Current version of LunaDial',
+                    title: translations.version,
+                    description: translations.versionDescription,
                     trailing: Text(
                       _appVersion,
                       style: TextStyle(color: Theme.of(context).colorScheme.outline),
@@ -153,14 +162,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 8),
                   _buildSettingItem(
                     context,
-                    title: 'License',
-                    description: 'View license information',
+                    title: translations.license,
+                    description: translations.licenseDescription,
                     trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (context) => _buildInfoDialog(
-                          title: 'License',
+                          title: translations.license,
                           content: 'GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.',
                         ),
                       );
@@ -169,14 +178,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 8),
                   _buildSettingItem(
                     context,
-                    title: 'Contributors',
-                    description: 'List of contributors to this project',
+                    title: translations.contributors,
+                    description: translations.contributorsDescription,
                     trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (context) => _buildInfoDialog(
-                          title: 'Contributors',
+                          title: translations.contributors,
                           content: 'Contributors list placeholder\n\nMore contributors will be added here.',
                         ),
                       );
@@ -193,18 +202,38 @@ class _SettingsPageState extends State<SettingsPage> {
   }
   
   Widget _buildThemeModeDropdown(BuildContext context, AppData appData) {
+    final translations = AppLocalizations.of(context)!;
     return DropdownButton<ThemeMode>(
       value: appData.themeMode,
       dropdownColor: Theme.of(context).colorScheme.surface,
       underline: Container(),
-      items: const [
-        DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-        DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-        DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+      items: [
+        DropdownMenuItem(value: ThemeMode.system, child: Text(translations.system)),
+        DropdownMenuItem(value: ThemeMode.light, child: Text(translations.light)),
+        DropdownMenuItem(value: ThemeMode.dark, child: Text(translations.dark)),
       ],
       onChanged: (ThemeMode? value) {
         if (value != null) {
           appData.setThemeMode(value);
+        }
+      },
+    );
+  }
+
+  Widget _buildLanguageDropdown(BuildContext context, AppData appData) {
+    final translations = AppLocalizations.of(context)!;
+    return DropdownButton<String>(
+      value: appData.selectedLocale,
+      dropdownColor: Theme.of(context).colorScheme.surface,
+      underline: Container(),
+      items: [
+        DropdownMenuItem(value: 'system', child: Text(translations.system)),
+        DropdownMenuItem(value: 'en', child: Text(translations.english)),
+        DropdownMenuItem(value: 'zh', child: Text(translations.chinese)),
+      ],
+      onChanged: (String? value) {
+        if (value != null) {
+          appData.setLocale(value);
         }
       },
     );
@@ -214,6 +243,7 @@ class _SettingsPageState extends State<SettingsPage> {
     required String title,
     required String content,
   }) {
+    final translations = AppLocalizations.of(context)!;
     return AlertDialog(
       title: Text(title),
       content: SingleChildScrollView(
@@ -222,13 +252,14 @@ class _SettingsPageState extends State<SettingsPage> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+          child: Text(translations.close),
         ),
       ],
     );
   }
   
   void _showColorPickerDialog(BuildContext context, AppData appData) {
+    final translations = AppLocalizations.of(context)!;
     final List<Color> colorOptions = const [
       Colors.red, Colors.pink, Colors.purple, Colors.deepPurple,
       Colors.indigo, Colors.blue, Colors.lightBlue, Colors.cyan,
@@ -248,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Select Theme Color', style: Theme.of(context).textTheme.headlineSmall),
+              Text(translations.selectThemeColor, style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 20),
               Wrap(
                 spacing: 12.0,

@@ -43,12 +43,14 @@ class AppData extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   bool _keepScreenOn = false;
   bool _isFullscreen = false;
+  String _selectedLocale = 'system';
 
   Color get selectedColor => _selectedColor;
   bool get isDigitalClock => _isDigitalClock;
   ThemeMode get themeMode => _themeMode;
   bool get keepScreenOn => _keepScreenOn;
   bool get isFullscreen => _isFullscreen;
+  String get selectedLocale => _selectedLocale;
 
   /// Set the selected theme color.
   void setSelectedColor(Color color) {
@@ -83,10 +85,16 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setLocale(String locale) {
+    _selectedLocale = locale;
+    notifyListeners();
+  }
+
   void loadFromMap(Map<String, dynamic> map) {
     if (!map.containsKey('selectedColor') ||
         !map.containsKey('isDigitalClock') ||
-        !map.containsKey('themeMode')) {
+        !map.containsKey('themeMode') ||
+        !map.containsKey('selectedLocale')) {
       throw FormatException('配置文件缺少必要字段');
     }
 
@@ -167,6 +175,13 @@ class AppData extends ChangeNotifier {
       _isFullscreen = false;
     }
 
+    final locale = map['selectedLocale'];
+    if (locale is String && (locale == 'system' || locale == 'en' || locale == 'zh')) {
+      _selectedLocale = locale;
+    } else {
+      _selectedLocale = 'system';
+    }
+
     notifyListeners();
   }
 
@@ -178,6 +193,7 @@ class AppData extends ChangeNotifier {
       'themeMode': _themeMode.toString().split('.').last,
       'keepScreenOn': _keepScreenOn,
       'isFullscreen': _isFullscreen,
+      'selectedLocale': _selectedLocale,
     };
     return configMap;
   }
