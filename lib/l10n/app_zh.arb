@@ -127,9 +127,9 @@
   "@english": {
     "description": "English language option"
   },
-  "chinese": "中文",
+  "chinese": "简体中文",
   "@chinese": {
-    "description": "Chinese language option"
+    "description": "Simplified Chinese language option"
   },
   "sunday": "日",
   "@sunday": {

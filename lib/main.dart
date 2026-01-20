@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
@@ -32,7 +34,10 @@ class MyApp extends StatelessWidget {
             title: 'LunaDial',
             debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
+            supportedLocales: const [
+              Locale('en'),
+              Locale('zh', 'CN'),
+            ],
             locale: _getLocale(appData.selectedLocale),
             theme: ThemeData(
               useMaterial3: true,
@@ -57,11 +62,18 @@ class MyApp extends StatelessWidget {
     switch (selectedLocale) {
       case 'en':
         return const Locale('en');
-      case 'zh':
+      case 'zh_CN':
         return const Locale('zh', 'CN');
       case 'system':
+        final systemLocale = PlatformDispatcher.instance.locale;
+        final languageCode = systemLocale.languageCode;
+        if (languageCode == 'zh_CN' || languageCode == 'zh') {
+          return const Locale('zh', 'CN');
+        } else {
+          return const Locale('en');
+        }
       default:
-        return null;
+        return const Locale('en');
     }
   }
 }

@@ -287,10 +287,10 @@ abstract class AppLocalizations {
   /// **'English'**
   String get english;
 
-  /// Chinese language option
+  /// Simplified Chinese language option
   ///
   /// In en, this message translates to:
-  /// **'Chinese'**
+  /// **'Simplified Chinese'**
   String get chinese;
 
   /// Sunday abbreviation

@@ -230,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
       items: [
         DropdownMenuItem(value: 'system', child: Text(translations.system)),
         DropdownMenuItem(value: 'en', child: Text(translations.english)),
-        DropdownMenuItem(value: 'zh', child: Text(translations.chinese)),
+        DropdownMenuItem(value: 'zh_CN', child: Text(translations.chinese)),
       ],
       onChanged: (String? value) {
         if (value != null) {

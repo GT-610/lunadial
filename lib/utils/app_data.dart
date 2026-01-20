@@ -177,7 +177,7 @@ class AppData extends ChangeNotifier {
     }
 
     final locale = map['selectedLocale'];
-    if (locale is String && (locale == 'system' || locale == 'en' || locale == 'zh')) {
+    if (locale is String && (locale == 'system' || locale == 'en' || locale == 'zh_CN')) {
       _selectedLocale = locale;
     } else {
       _selectedLocale = 'system';
