@@ -130,5 +130,33 @@
   "chinese": "中文",
   "@chinese": {
     "description": "Chinese language option"
+  },
+  "sunday": "日",
+  "@sunday": {
+    "description": "Sunday abbreviation"
+  },
+  "monday": "一",
+  "@monday": {
+    "description": "Monday abbreviation"
+  },
+  "tuesday": "二",
+  "@tuesday": {
+    "description": "Tuesday abbreviation"
+  },
+  "wednesday": "三",
+  "@wednesday": {
+    "description": "Wednesday abbreviation"
+  },
+  "thursday": "四",
+  "@thursday": {
+    "description": "Thursday abbreviation"
+  },
+  "friday": "五",
+  "@friday": {
+    "description": "Friday abbreviation"
+  },
+  "saturday": "六",
+  "@saturday": {
+    "description": "Saturday abbreviation"
   }
 }

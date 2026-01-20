@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../l10n/app_localizations.dart';
 
 class CalendarPage extends StatefulWidget {
   final DateTime focusedDay;
@@ -22,7 +23,16 @@ class CalendarPage extends StatefulWidget {
 class CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
-    final dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final translations = AppLocalizations.of(context)!;
+    final dayLabels = [
+      translations.sunday,
+      translations.monday,
+      translations.tuesday,
+      translations.wednesday,
+      translations.thursday,
+      translations.friday,
+      translations.saturday,
+    ];
     final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
     final firstDayOfWeek = firstDayOfMonth.weekday - 1;
     final daysInMonth = DateUtils.getDaysInMonth(widget.focusedDay.year, widget.focusedDay.month);

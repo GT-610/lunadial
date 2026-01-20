@@ -106,4 +106,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chinese => 'Chinese';
+
+  @override
+  String get sunday => 'Sun';
+
+  @override
+  String get monday => 'Mon';
+
+  @override
+  String get tuesday => 'Tue';
+
+  @override
+  String get wednesday => 'Wed';
+
+  @override
+  String get thursday => 'Thu';
+
+  @override
+  String get friday => 'Fri';
+
+  @override
+  String get saturday => 'Sat';
 }

@@ -1,12 +1,14 @@
-import '../../widgets/analog_clock.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
-import 'settings_page.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+
+import '../../widgets/analog_clock.dart';
 import '../utils/app_data.dart';
 import '../widgets/table_calendar.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
+import 'settings_page.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -102,7 +104,10 @@ class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProvider
     _timer?.cancel();
     _buttonHideTimer?.cancel();
     _animationController.dispose();
-    WakelockPlus.disable();
+    final appData = Provider.of<AppData>(context, listen: false);
+    if (appData.keepScreenOn) {
+      WakelockPlus.disable();
+    }
     super.dispose();
   }
 
@@ -176,18 +181,9 @@ class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProvider
   }
 
   Widget _buildAnalogLayout(BuildContext context) {
-    final isLand = isLandscape(context);
-    final isTab = isTablet(context);
+    final useHorizontalLayout = isLandscape(context) || isTablet(context);
     
-    if (isLand && !isTab) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildAnalogClock(context),
-          _buildCalendar(context),
-        ],
-      );
-    } else if (isTab) {
+    if (useHorizontalLayout) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

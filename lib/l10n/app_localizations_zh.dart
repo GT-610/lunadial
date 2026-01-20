@@ -106,4 +106,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chinese => '中文';
+
+  @override
+  String get sunday => '日';
+
+  @override
+  String get monday => '一';
+
+  @override
+  String get tuesday => '二';
+
+  @override
+  String get wednesday => '三';
+
+  @override
+  String get thursday => '四';
+
+  @override
+  String get friday => '五';
+
+  @override
+  String get saturday => '六';
 }

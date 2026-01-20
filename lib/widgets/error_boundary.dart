@@ -19,11 +19,6 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   Object? error;
   StackTrace? stackTrace;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void _handleError(dynamic error, StackTrace stackTrace) {
     setState(() {
       hasError = true;

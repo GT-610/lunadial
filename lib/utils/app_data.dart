@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'settings_manager.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+import 'settings_manager.dart';
 
 /// Data model for application settings.
 class AppData extends ChangeNotifier {
@@ -181,8 +182,6 @@ class AppData extends ChangeNotifier {
     } else {
       _selectedLocale = 'system';
     }
-
-    notifyListeners();
   }
 
   Map<String, dynamic> toMap() {
