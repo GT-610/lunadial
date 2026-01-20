@@ -48,6 +48,8 @@ class CalendarPageState extends State<CalendarPage> {
 
         // Calculate the number of rows needed
         final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
+        final locale = Localizations.localeOf(context);
+        final headerFormat = DateFormat(translations.calendarHeaderFormat, locale.languageCode);
 
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -70,7 +72,7 @@ class CalendarPageState extends State<CalendarPage> {
                     },
                   ),
                   Text(
-                    DateFormat.yMMMM().format(widget.focusedDay),
+                    headerFormat.format(widget.focusedDay),
                     style: TextStyle(
                       fontSize: headerHeight * 0.4,
                       fontWeight: FontWeight.bold,
@@ -95,18 +97,19 @@ class CalendarPageState extends State<CalendarPage> {
               height: weekRowHeight,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: dayLabels.map((day) {
+                children: List.generate(dayLabels.length, (index) {
+                  final day = dayLabels[index];
                   return Text(
                     day,
                     style: TextStyle(
                       fontSize: fontSize * 0.9,
                       fontWeight: FontWeight.bold,
-                      color: day == 'Sun' || day == 'Sat'
+                      color: index == 0 || index == 6
                           ? Theme.of(context).colorScheme.secondary
                           : Theme.of(context).colorScheme.onSurface,
                     ),
                   );
-                }).toList(),
+                }),
               ),
             ),
             SizedBox(
@@ -119,13 +122,13 @@ class CalendarPageState extends State<CalendarPage> {
                   crossAxisSpacing: availableWidth * 0.01,
                   childAspectRatio: 1.0,
                 ),
-                itemCount: 42,
+                itemCount: rowsNeeded * 7,
                 itemBuilder: (context, index) {
-                  final adjustedIndex = index - firstDayOfWeek;
-                  if (adjustedIndex < 0 || adjustedIndex >= daysInMonth) {
+                  final dayNumber = index - firstDayOfWeek + 1;
+                  if (dayNumber < 1 || dayNumber > daysInMonth) {
                     return const SizedBox.shrink();
                   }
-                  final day = firstDayOfMonth.add(Duration(days: adjustedIndex));
+                  final day = firstDayOfMonth.add(Duration(days: dayNumber - 1));
                   final isSelected = isSameDay(day, widget.selectedDay);
                   final isToday = isSameDay(day, DateTime.now());
 

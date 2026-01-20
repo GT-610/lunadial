@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../widgets/analog_clock.dart';
 import '../utils/app_data.dart';
 import '../widgets/table_calendar.dart';
@@ -18,7 +19,6 @@ class ClockHomePage extends StatefulWidget {
 }
 
 class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProviderStateMixin {
-  String _currentDate = '';
   DateTime _currentTime = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -113,9 +113,7 @@ class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProvider
 
   void _updateDateTime() {
     setState(() {
-      final now = DateTime.now();
-      _currentDate = DateFormat('yyyy-MM-dd, EEEE').format(now);
-      _currentTime = now;
+      _currentTime = DateTime.now();
     });
   }
 
@@ -206,7 +204,10 @@ class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final appData = Provider.of<AppData>(context);
+    final translations = AppLocalizations.of(context)!;
     final fontSize = _calculateFontSize(context);
+    final locale = Localizations.localeOf(context);
+    final dateFormat = DateFormat(translations.dateFormat, locale.languageCode);
 
     final clockContent = appData.isDigitalClock
         ? Semantics(
@@ -216,7 +217,7 @@ class _ClockHomePageState extends State<ClockHomePage> with SingleTickerProvider
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _currentDate,
+                    dateFormat.format(_currentTime),
                     style: TextStyle(fontSize: fontSize * 0.3),
                     textAlign: TextAlign.center,
                   ),

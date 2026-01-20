@@ -334,6 +334,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sat'**
   String get saturday;
+
+  /// Date format pattern for digital clock display
+  ///
+  /// In en, this message translates to:
+  /// **'EEEE, MMMM d, yyyy'**
+  String get dateFormat;
+
+  /// Format pattern for calendar header showing month and year
+  ///
+  /// In en, this message translates to:
+  /// **'MMMM yyyy'**
+  String get calendarHeaderFormat;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

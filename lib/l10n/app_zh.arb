@@ -158,5 +158,13 @@
   "saturday": "六",
   "@saturday": {
     "description": "Saturday abbreviation"
+  },
+  "dateFormat": "yyyy年M月d日 EEEE",
+  "@dateFormat": {
+    "description": "Date format pattern for digital clock display"
+  },
+  "calendarHeaderFormat": "yyyy年M月",
+  "@calendarHeaderFormat": {
+    "description": "Format pattern for calendar header showing month and year"
   }
 }

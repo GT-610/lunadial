@@ -127,4 +127,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saturday => 'Sat';
+
+  @override
+  String get dateFormat => 'EEEE, MMMM d, yyyy';
+
+  @override
+  String get calendarHeaderFormat => 'MMMM yyyy';
 }

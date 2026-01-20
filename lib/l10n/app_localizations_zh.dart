@@ -127,4 +127,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get saturday => '六';
+
+  @override
+  String get dateFormat => 'yyyy年M月d日 EEEE';
+
+  @override
+  String get calendarHeaderFormat => 'yyyy年M月';
 }
