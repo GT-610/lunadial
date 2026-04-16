@@ -32,6 +32,7 @@ class JsonAppSettingsRepository implements AppSettingsRepository {
   @override
   Future<void> save(AppSettings settings) async {
     final file = await _localFile;
+    await file.parent.create(recursive: true);
     await file.writeAsString(
       json.encode(settings.toMap()),
       encoding: utf8,

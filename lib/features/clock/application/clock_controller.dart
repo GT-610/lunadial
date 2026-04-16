@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 class ClockController extends ChangeNotifier {
-  ClockController() {
-    _currentTime = DateTime.now();
-    _focusedDay = DateTime(
-      _currentTime.year,
-      _currentTime.month,
-      _currentTime.day,
-    );
-    _startPreciseTimer();
+  final DateTime Function() _now;
+
+  ClockController({DateTime Function()? now, bool startTicker = true})
+    : _now = now ?? DateTime.now {
+    _currentTime = _now();
+    _focusedDay = DateTime(_currentTime.year, _currentTime.month, 1);
+    if (startTicker) {
+      _startPreciseTimer();
+    }
   }
 
   late DateTime _currentTime;
@@ -40,12 +41,17 @@ class ClockController extends ChangeNotifier {
     }
 
     _selectedDay = selectedDay;
-    _focusedDay = selectedDay;
+    _focusedDay = DateTime(selectedDay.year, selectedDay.month, 1);
     notifyListeners();
   }
 
   void focusDay(DateTime focusedDay) {
-    _focusedDay = DateTime(focusedDay.year, focusedDay.month, 1);
+    final normalizedDay = DateTime(focusedDay.year, focusedDay.month, 1);
+    if (_focusedDay == normalizedDay) {
+      return;
+    }
+
+    _focusedDay = normalizedDay;
     notifyListeners();
   }
 
@@ -61,7 +67,7 @@ class ClockController extends ChangeNotifier {
 
   void _startPreciseTimer() {
     void tick() {
-      _currentTime = DateTime.now();
+      _currentTime = _now();
       notifyListeners();
       _timer = Timer(delayUntilNextSecond(_currentTime), tick);
     }

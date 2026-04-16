@@ -12,6 +12,7 @@ import 'package:lunadial/features/settings/application/app_settings_controller.d
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
+import 'package:lunadial/shared/presentation/app_theme_utils.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -22,18 +23,28 @@ class ClockHomePage extends StatefulWidget {
 
 class _ClockHomePageState extends State<ClockHomePage> {
   late final ClockController _clockController = ClockController();
-  bool _fullscreenButtonSignal = false;
+  late final FullscreenExitButtonController _fullscreenExitController =
+      FullscreenExitButtonController();
 
   @override
   void dispose() {
+    _fullscreenExitController.dispose();
     _clockController.dispose();
     super.dispose();
   }
 
+  void _enterFullscreen(AppSessionController session) {
+    _fullscreenExitController.showTemporarily();
+    session.setFullscreen(true);
+  }
+
+  void _exitFullscreen(AppSessionController session) {
+    _fullscreenExitController.hide();
+    session.setFullscreen(false);
+  }
+
   void _revealFullscreenButton() {
-    setState(() {
-      _fullscreenButtonSignal = !_fullscreenButtonSignal;
-    });
+    _fullscreenExitController.showTemporarily();
   }
 
   @override
@@ -43,7 +54,6 @@ class _ClockHomePageState extends State<ClockHomePage> {
     final translations = AppLocalizations.of(context)!;
     final size = MediaQuery.sizeOf(context);
     final fontSize = calculateDigitalFontSize(size);
-    final isBlackTheme = settings.themeColor == Colors.black;
 
     return AnimatedBuilder(
       animation: _clockController,
@@ -68,6 +78,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
           return Scaffold(
             backgroundColor: Colors.black,
             body: GestureDetector(
+              key: const Key('fullscreen-surface'),
               onTap: _revealFullscreenButton,
               behavior: HitTestBehavior.opaque,
               child: Stack(
@@ -77,8 +88,8 @@ class _ClockHomePageState extends State<ClockHomePage> {
                     top: 20,
                     right: 20,
                     child: FullscreenExitButton(
-                      visibleSignal: _fullscreenButtonSignal,
-                      onExit: session.toggleFullscreen,
+                      controller: _fullscreenExitController,
+                      onExit: () => _exitFullscreen(session),
                     ),
                   ),
                 ],
@@ -90,14 +101,15 @@ class _ClockHomePageState extends State<ClockHomePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text(translations.appTitle),
-            backgroundColor: isBlackTheme ? Colors.grey.shade900 : null,
+            backgroundColor: pureBlackAppBarBackground(settings.themeColor),
             actions: [
               Semantics(
                 label: 'Enter fullscreen mode',
                 button: true,
                 child: IconButton(
+                  key: const Key('enter-fullscreen-button'),
                   icon: const Icon(Icons.fullscreen),
-                  onPressed: session.toggleFullscreen,
+                  onPressed: () => _enterFullscreen(session),
                 ),
               ),
               Semantics(
@@ -116,7 +128,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
               ),
             ],
           ),
-          backgroundColor: isBlackTheme ? Colors.black : null,
+          backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
           body: Center(child: content),
         );
       },

@@ -16,14 +16,28 @@ void main() {
     });
 
     test('selectDay updates selected and focused day', () {
-      final controller = ClockController();
+      final controller = ClockController(startTicker: false);
       final day = DateTime(2026, 4, 16);
 
       controller.selectDay(day);
 
       expect(controller.selectedDay, day);
-      expect(controller.focusedDay, day);
+      expect(controller.focusedDay, DateTime(2026, 4, 1));
 
+      controller.dispose();
+    });
+
+    test('focusDay does not notify when month is unchanged', () {
+      final controller = ClockController(
+        startTicker: false,
+        now: () => DateTime(2026, 4, 16, 12),
+      );
+      var notifications = 0;
+      controller.addListener(() => notifications++);
+
+      controller.focusDay(DateTime(2026, 4, 20));
+
+      expect(notifications, 0);
       controller.dispose();
     });
   });

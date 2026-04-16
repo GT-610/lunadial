@@ -7,14 +7,22 @@ import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 
+enum AppSettingsSaveState { idle, saving, error }
+
 class AppSettingsController extends ChangeNotifier {
   final AppSettingsRepository repository;
 
   AppSettingsController({required this.repository});
 
   AppSettings _settings = AppSettings.defaults();
+  AppSettingsSaveState _saveState = AppSettingsSaveState.idle;
+  Object? _saveError;
+  int _saveOperationId = 0;
 
   AppSettings get settings => _settings;
+  AppSettingsSaveState get saveState => _saveState;
+  Object? get saveError => _saveError;
+  bool get hasSaveError => _saveState == AppSettingsSaveState.error;
 
   Future<void> initialize() async {
     _settings = await repository.load();
@@ -36,13 +44,43 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setLocaleOption(AppLocaleOption option) =>
       _update(_settings.copyWith(localeOption: option));
 
+  Future<void> retrySave() => _persist(_settings);
+
   Future<void> _update(AppSettings nextSettings) async {
     if (_settings == nextSettings) {
       return;
     }
 
     _settings = nextSettings;
+    _saveState = AppSettingsSaveState.saving;
+    _saveError = null;
     notifyListeners();
-    unawaited(repository.save(_settings));
+    unawaited(_persist(nextSettings));
+  }
+
+  Future<void> _persist(AppSettings settingsToPersist) async {
+    final operationId = ++_saveOperationId;
+    if (_saveState != AppSettingsSaveState.saving || _saveError != null) {
+      _saveState = AppSettingsSaveState.saving;
+      _saveError = null;
+      notifyListeners();
+    }
+
+    try {
+      await repository.save(settingsToPersist);
+      if (operationId != _saveOperationId) {
+        return;
+      }
+      _saveState = AppSettingsSaveState.idle;
+      _saveError = null;
+      notifyListeners();
+    } catch (error) {
+      if (operationId != _saveOperationId) {
+        return;
+      }
+      _saveState = AppSettingsSaveState.error;
+      _saveError = error;
+      notifyListeners();
+    }
   }
 }
