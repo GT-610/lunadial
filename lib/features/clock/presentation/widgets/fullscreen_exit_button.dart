@@ -2,36 +2,34 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class FullscreenExitButton extends StatefulWidget {
-  final VoidCallback onExit;
-  final bool visibleSignal;
+class FullscreenExitButtonController extends ChangeNotifier {
+  final Duration visibilityDuration;
 
-  const FullscreenExitButton({
-    super.key,
-    required this.onExit,
-    required this.visibleSignal,
+  FullscreenExitButtonController({
+    this.visibilityDuration = const Duration(seconds: 3),
   });
 
-  @override
-  State<FullscreenExitButton> createState() => _FullscreenExitButtonState();
-}
-
-class _FullscreenExitButtonState extends State<FullscreenExitButton> {
   Timer? _timer;
-  bool _isVisible = true;
+  bool _isVisible = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _restartHideTimer();
+  bool get isVisible => _isVisible;
+
+  void showTemporarily() {
+    _isVisible = true;
+    notifyListeners();
+    _timer?.cancel();
+    _timer = Timer(visibilityDuration, hide);
   }
 
-  @override
-  void didUpdateWidget(covariant FullscreenExitButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.visibleSignal != widget.visibleSignal) {
-      _showTemporarily();
+  void hide() {
+    if (!_isVisible) {
+      return;
     }
+
+    _timer?.cancel();
+    _timer = null;
+    _isVisible = false;
+    notifyListeners();
   }
 
   @override
@@ -39,35 +37,37 @@ class _FullscreenExitButtonState extends State<FullscreenExitButton> {
     _timer?.cancel();
     super.dispose();
   }
+}
 
-  void _showTemporarily() {
-    setState(() {
-      _isVisible = true;
-    });
-    _restartHideTimer();
-  }
+class FullscreenExitButton extends StatelessWidget {
+  final FullscreenExitButtonController controller;
+  final VoidCallback onExit;
 
-  void _restartHideTimer() {
-    _timer?.cancel();
-    _timer = Timer(const Duration(seconds: 3), () {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isVisible = false;
-      });
-    });
-  }
+  const FullscreenExitButton({
+    super.key,
+    required this.controller,
+    required this.onExit,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: _isVisible ? 1 : 0,
-      duration: const Duration(milliseconds: 300),
-      child: IconButton(
-        icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
-        onPressed: widget.onExit,
-      ),
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return IgnorePointer(
+          key: const Key('fullscreen-exit-ignore-pointer'),
+          ignoring: !controller.isVisible,
+          child: AnimatedOpacity(
+            opacity: controller.isVisible ? 1 : 0,
+            duration: const Duration(milliseconds: 300),
+            child: IconButton(
+              key: const Key('fullscreen-exit-button'),
+              icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
+              onPressed: onExit,
+            ),
+          ),
+        );
+      },
     );
   }
 }

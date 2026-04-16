@@ -6,8 +6,10 @@ import 'package:lunadial/features/settings/application/app_settings_controller.d
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/presentation/widgets/settings_item.dart';
+import 'package:lunadial/features/settings/presentation/widgets/settings_save_error_banner.dart';
 import 'package:lunadial/features/settings/presentation/widgets/settings_section_card.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
+import 'package:lunadial/shared/presentation/app_theme_utils.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -64,17 +66,25 @@ class _SettingsPageState extends State<SettingsPage> {
     final settingsController = context.watch<AppSettingsController>();
     final settings = settingsController.settings;
     final translations = AppLocalizations.of(context)!;
-    final isBlackTheme = settings.themeColor == Colors.black;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(translations.settings),
-        backgroundColor: isBlackTheme ? Colors.grey.shade900 : null,
+        backgroundColor: pureBlackAppBarBackground(settings.themeColor),
       ),
-      backgroundColor: isBlackTheme ? Colors.black : null,
+      backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (settingsController.hasSaveError) ...[
+            SettingsSaveErrorBanner(
+              error: settingsController.saveError,
+              onRetry: settingsController.retrySave,
+            ),
+            const SizedBox(height: 16),
+          ],
           SettingsSectionCard(
             title: translations.appearance,
             subtitle: translations.appearanceDescription,
@@ -92,16 +102,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         color: settings.themeColor,
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(
-                          color: Theme.of(context).colorScheme.outlineVariant,
+                          color: colorScheme.outlineVariant,
                           width: 1.5,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(
-                      Icons.chevron_right,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
+                    Icon(Icons.chevron_right, color: colorScheme.outline),
                   ],
                 ),
                 onTap: () => _showThemeColorDialog(context, settingsController),
@@ -210,19 +217,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 description: translations.versionDescription,
                 trailing: Text(
                   _appVersion,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
+                  style: TextStyle(color: colorScheme.outline),
                 ),
               ),
               const SizedBox(height: 8),
               SettingsItem(
                 title: translations.license,
                 description: translations.licenseDescription,
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+                trailing: Icon(Icons.chevron_right, color: colorScheme.outline),
                 onTap: () {
                   _showInfoDialog(
                     context,
@@ -246,16 +248,14 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsItem(
                 title: translations.contributors,
                 description: translations.contributorsDescription,
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+                trailing: Icon(Icons.chevron_right, color: colorScheme.outline),
                 onTap: () {
                   _showInfoDialog(
                     context,
                     title: translations.contributors,
                     content:
-                        'Contributors list placeholder\n\nMore contributors will be added here.',
+                        'Contributor credits are still being consolidated.\n\n'
+                        'For now, please refer to the repository history and merged pull requests.',
                   );
                 },
               ),
@@ -273,6 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
   ) async {
     final translations = AppLocalizations.of(context)!;
     final selected = settingsController.settings.themeColor;
+    final colorScheme = Theme.of(context).colorScheme;
 
     await showDialog<void>(
       context: context,
@@ -299,16 +300,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: isSelected
-                            ? Theme.of(context).colorScheme.onSurface
+                            ? colorScheme.onSurface
                             : Colors.transparent,
                         width: 3,
                       ),
                     ),
                     child: isSelected
-                        ? Icon(
-                            Icons.check,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          )
+                        ? Icon(Icons.check, color: colorScheme.onPrimary)
                         : null,
                   ),
                 );

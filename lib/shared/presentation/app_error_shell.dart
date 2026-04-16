@@ -1,66 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class AppErrorBoundary extends StatefulWidget {
+import 'package:lunadial/shared/application/app_error_controller.dart';
+
+class AppErrorShell extends StatelessWidget {
   final Widget child;
-  final VoidCallback? onReset;
 
-  const AppErrorBoundary({super.key, required this.child, this.onReset});
-
-  @override
-  State<AppErrorBoundary> createState() => _AppErrorBoundaryState();
-}
-
-class _AppErrorBoundaryState extends State<AppErrorBoundary> {
-  bool _hasError = false;
-  Object? _error;
-  StackTrace? _stackTrace;
-
-  void _handleError(Object error, StackTrace stackTrace) {
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _hasError = true;
-      _error = error;
-      _stackTrace = stackTrace;
-    });
-  }
-
-  void _resetError() {
-    setState(() {
-      _hasError = false;
-      _error = null;
-      _stackTrace = null;
-    });
-    widget.onReset?.call();
-  }
+  const AppErrorShell({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    if (_hasError) {
-      return _ErrorFallback(
-        error: _error,
-        stackTrace: _stackTrace,
-        onRetry: _resetError,
-      );
-    }
+    return Consumer<AppErrorController>(
+      builder: (context, errorController, _) {
+        final state = errorController.state;
+        if (state == null) {
+          return child;
+        }
 
-    try {
-      return widget.child;
-    } catch (error, stackTrace) {
-      _handleError(error, stackTrace);
-      return const SizedBox.shrink();
-    }
+        return AppErrorView(
+          error: state.error,
+          stackTrace: state.stackTrace,
+          onRetry: errorController.clear,
+        );
+      },
+    );
   }
 }
 
-class _ErrorFallback extends StatelessWidget {
+class AppErrorView extends StatelessWidget {
   final Object? error;
   final StackTrace? stackTrace;
   final VoidCallback onRetry;
 
-  const _ErrorFallback({
+  const AppErrorView({
+    super.key,
     required this.error,
     required this.stackTrace,
     required this.onRetry,

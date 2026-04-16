@@ -21,23 +21,49 @@ class DigitalClockView extends StatelessWidget {
 
     return Semantics(
       label: 'Digital clock showing current time',
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              dateFormat.format(currentTime),
-              style: TextStyle(fontSize: fontSize * 0.3),
-              textAlign: TextAlign.center,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final shortestSide = constraints.biggest.shortestSide;
+          final maxClockFontSize = (shortestSide * 0.58).clamp(
+            0.0,
+            double.infinity,
+          );
+          final clampedClockFontSize = fontSize.clamp(
+            56.0.clamp(0.0, maxClockFontSize),
+            maxClockFontSize.clamp(56.0, double.infinity),
+          );
+          final clampedDateFontSize = (clampedClockFontSize * 0.3).clamp(
+            16.0,
+            48.0,
+          );
+
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      dateFormat.format(currentTime),
+                      maxLines: 1,
+                      style: TextStyle(fontSize: clampedDateFontSize),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      DateFormat('HH:mm:ss').format(currentTime),
+                      maxLines: 1,
+                      style: TextStyle(fontSize: clampedClockFontSize),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              DateFormat('HH:mm:ss').format(currentTime),
-              style: TextStyle(fontSize: fontSize),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
