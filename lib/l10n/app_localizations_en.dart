@@ -30,7 +30,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeMode => 'Theme Mode';
 
   @override
-  String get themeModeDescription => 'Choose between light, dark, or system theme';
+  String get themeModeDescription =>
+      'Choose between light, dark, or system theme';
 
   @override
   String get screen => 'Screen';
