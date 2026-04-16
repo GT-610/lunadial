@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:lunadial/shared/application/app_error_controller.dart';
+import 'package:lunadial/l10n/app_localizations.dart';
 
 class AppErrorShell extends StatelessWidget {
   final Widget child;
@@ -41,6 +42,7 @@ class AppErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translations = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
     return Material(
       child: Center(
@@ -54,13 +56,13 @@ class AppErrorView extends StatelessWidget {
                 Icon(Icons.error_outline, size: 64, color: colorScheme.error),
                 const SizedBox(height: 16),
                 Text(
-                  'Something went wrong',
+                  translations.unexpectedErrorTitle,
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'An unexpected error occurred. Try again to rebuild the screen.',
+                  translations.unexpectedErrorMessage,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -92,7 +94,7 @@ class AppErrorView extends StatelessWidget {
                 FilledButton.icon(
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Try Again'),
+                  label: Text(translations.tryAgain),
                 ),
               ],
             ),

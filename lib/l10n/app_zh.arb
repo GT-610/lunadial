@@ -127,6 +127,43 @@
   "@close": {
     "description": "Close button text"
   },
+  "loading": "加载中...",
+  "@loading": {
+    "description": "Loading placeholder text"
+  },
+  "tryAgain": "重试",
+  "@tryAgain": {
+    "description": "Retry action label"
+  },
+  "unexpectedErrorTitle": "出了点问题",
+  "@unexpectedErrorTitle": {
+    "description": "Application error title"
+  },
+  "unexpectedErrorMessage": "发生了一个意外错误。请重试以重新构建当前界面。",
+  "@unexpectedErrorMessage": {
+    "description": "Application error description"
+  },
+  "settingsSaveFailedMessage": "设置保存失败。{details}",
+  "@settingsSaveFailedMessage": {
+    "description": "Settings save error message with appended details",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveRetryFallback": "请稍后再试。",
+  "@settingsSaveRetryFallback": {
+    "description": "Fallback details for settings save error"
+  },
+  "appDescription": "LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。",
+  "@appDescription": {
+    "description": "About dialog content for the app"
+  },
+  "contributorsDialogContent": "LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。",
+  "@contributorsDialogContent": {
+    "description": "Contributors dialog content"
+  },
   "language": "语言",
   "@language": {
     "description": "Language setting title"

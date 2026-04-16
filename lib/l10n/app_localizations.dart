@@ -287,6 +287,54 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
+  /// Loading placeholder text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Retry action label
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// Application error title
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get unexpectedErrorTitle;
+
+  /// Application error description
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Try again to rebuild the screen.'**
+  String get unexpectedErrorMessage;
+
+  /// Settings save error message with appended details
+  ///
+  /// In en, this message translates to:
+  /// **'Settings could not be saved. {details}'**
+  String settingsSaveFailedMessage(String details);
+
+  /// Fallback details for settings save error
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get settingsSaveRetryFallback;
+
+  /// About dialog content for the app
+  ///
+  /// In en, this message translates to:
+  /// **'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.'**
+  String get appDescription;
+
+  /// Contributors dialog content
+  ///
+  /// In en, this message translates to:
+  /// **'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.'**
+  String get contributorsDialogContent;
+
   /// Language setting title
   ///
   /// In en, this message translates to:

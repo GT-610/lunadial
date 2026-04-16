@@ -105,6 +105,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get loading => 'Loading...';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get unexpectedErrorTitle => 'Something went wrong';
+
+  @override
+  String get unexpectedErrorMessage => 'An unexpected error occurred. Try again to rebuild the screen.';
+
+  @override
+  String settingsSaveFailedMessage(String details) {
+    return 'Settings could not be saved. $details';
+  }
+
+  @override
+  String get settingsSaveRetryFallback => 'Please try again.';
+
+  @override
+  String get appDescription => 'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.';
+
+  @override
+  String get contributorsDialogContent => 'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.';
+
+  @override
   String get language => 'Language';
 
   @override
