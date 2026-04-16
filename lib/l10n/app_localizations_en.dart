@@ -30,8 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeMode => 'Theme Mode';
 
   @override
-  String get themeModeDescription =>
-      'Choose between light, dark, or system theme';
+  String get themeModeDescription => 'Choose between light, dark, or system theme';
 
   @override
   String get screen => 'Screen';
@@ -53,6 +52,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get digitalClock => 'Digital Clock';
+
+  @override
+  String get analogClock => 'Analog Clock';
+
+  @override
+  String get clockDisplayMode => 'Clock Display Mode';
+
+  @override
+  String get clockDisplayModeDescription => 'Choose between digital and analog clock styles';
 
   @override
   String get digitalClockDescription => 'Use digital format instead of analog';
