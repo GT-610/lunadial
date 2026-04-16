@@ -12,7 +12,7 @@ enum AppLocaleOption {
       case AppLocaleOption.en:
         return const Locale('en');
       case AppLocaleOption.zhCn:
-        return const Locale('zh', 'CN');
+        return const Locale('zh');
     }
   }
 
