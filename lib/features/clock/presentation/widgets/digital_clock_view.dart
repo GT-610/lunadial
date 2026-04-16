@@ -24,9 +24,13 @@ class DigitalClockView extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final shortestSide = constraints.biggest.shortestSide;
+          final maxClockFontSize = (shortestSide * 0.58).clamp(
+            0.0,
+            double.infinity,
+          );
           final clampedClockFontSize = fontSize.clamp(
-            56.0,
-            shortestSide * 0.58,
+            56.0.clamp(0.0, maxClockFontSize),
+            maxClockFontSize.clamp(56.0, double.infinity),
           );
           final clampedDateFontSize = (clampedClockFontSize * 0.3).clamp(
             16.0,
