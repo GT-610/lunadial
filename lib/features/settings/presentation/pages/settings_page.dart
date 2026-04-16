@@ -105,8 +105,8 @@ class _SettingsPageState extends State<SettingsPage> {
         title: translations.clockStyle,
         child: _buildSettingsGroup([
           _buildActionTile(
-            title: translations.digitalClock,
-            subtitle: translations.digitalClockDescription,
+            title: translations.clockDisplayMode,
+            subtitle: translations.clockDisplayModeDescription,
             trailing: _buildChevronValue(
               _clockModeLabel(settings.clockDisplayMode, translations),
             ),
@@ -457,9 +457,7 @@ class _SettingsPageState extends State<SettingsPage> {
       case ClockDisplayMode.digital:
         return translations.digitalClock;
       case ClockDisplayMode.analog:
-        return translations.localeName.startsWith('zh')
-            ? '模拟时钟'
-            : 'Analog Clock';
+        return translations.analogClock;
     }
   }
 }

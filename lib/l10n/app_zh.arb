@@ -59,6 +59,18 @@
   "@digitalClock": {
     "description": "Digital clock setting title"
   },
+  "analogClock": "模拟时钟",
+  "@analogClock": {
+    "description": "Analog clock mode label"
+  },
+  "clockDisplayMode": "时钟显示模式",
+  "@clockDisplayMode": {
+    "description": "Clock display mode setting title"
+  },
+  "clockDisplayModeDescription": "在数字时钟和模拟时钟之间切换",
+  "@clockDisplayModeDescription": {
+    "description": "Clock display mode setting description"
+  },
   "digitalClockDescription": "使用数字格式而非模拟时钟",
   "@digitalClockDescription": {
     "description": "Digital clock setting description"

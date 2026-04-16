@@ -59,6 +59,18 @@
   "@digitalClock": {
     "description": "Digital clock setting title"
   },
+  "analogClock": "Analog Clock",
+  "@analogClock": {
+    "description": "Analog clock mode label"
+  },
+  "clockDisplayMode": "Clock Display Mode",
+  "@clockDisplayMode": {
+    "description": "Clock display mode setting title"
+  },
+  "clockDisplayModeDescription": "Choose between digital and analog clock styles",
+  "@clockDisplayModeDescription": {
+    "description": "Clock display mode setting description"
+  },
   "digitalClockDescription": "Use digital format instead of analog",
   "@digitalClockDescription": {
     "description": "Digital clock setting description"

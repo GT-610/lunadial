@@ -54,6 +54,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get digitalClock => '数字时钟';
 
   @override
+  String get analogClock => '模拟时钟';
+
+  @override
+  String get clockDisplayMode => '时钟显示模式';
+
+  @override
+  String get clockDisplayModeDescription => '在数字时钟和模拟时钟之间切换';
+
+  @override
   String get digitalClockDescription => '使用数字格式而非模拟时钟';
 
   @override
