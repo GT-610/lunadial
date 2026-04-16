@@ -1,3 +1,5 @@
+import 'package:fl_lib/fl_lib.dart' as fl;
+import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +23,10 @@ class LunaDialApp extends StatelessWidget {
           child: MaterialApp(
             title: 'LunaDial',
             debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: const [
+              LibLocalizations.delegate,
+              ...AppLocalizations.localizationsDelegates,
+            ],
             supportedLocales: AppLocalizations.supportedLocales,
             locale: settings.localeOption.locale,
             themeMode: settings.themeMode,
@@ -34,7 +39,9 @@ class LunaDialApp extends StatelessWidget {
               seedColor: settings.themeColor,
             ),
             builder: (context, child) {
-              return AppErrorShell(child: child ?? const SizedBox.shrink());
+              return _LibL10nScope(
+                child: AppErrorShell(child: child ?? const SizedBox.shrink()),
+              );
             },
             home: const ClockHomePage(),
           ),
@@ -64,4 +71,24 @@ class LunaDialApp extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LibL10nScope extends StatefulWidget {
+  const _LibL10nScope({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_LibL10nScope> createState() => _LibL10nScopeState();
+}
+
+class _LibL10nScopeState extends State<_LibL10nScope> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.setLibL10n();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
