@@ -13,32 +13,33 @@ class LunaDialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppErrorShell(
-      child: Consumer<AppSettingsController>(
-        builder: (context, settingsController, _) {
-          final settings = settingsController.settings;
+    return Consumer<AppSettingsController>(
+      builder: (context, settingsController, _) {
+        final settings = settingsController.settings;
 
-          return WakelockSync(
-            child: MaterialApp(
-              title: 'LunaDial',
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: settings.localeOption.locale,
-              themeMode: settings.themeMode,
-              theme: _buildTheme(
-                brightness: Brightness.light,
-                seedColor: settings.themeColor,
-              ),
-              darkTheme: _buildTheme(
-                brightness: Brightness.dark,
-                seedColor: settings.themeColor,
-              ),
-              home: const ClockHomePage(),
+        return WakelockSync(
+          child: MaterialApp(
+            title: 'LunaDial',
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: settings.localeOption.locale,
+            themeMode: settings.themeMode,
+            theme: _buildTheme(
+              brightness: Brightness.light,
+              seedColor: settings.themeColor,
             ),
-          );
-        },
-      ),
+            darkTheme: _buildTheme(
+              brightness: Brightness.dark,
+              seedColor: settings.themeColor,
+            ),
+            builder: (context, child) {
+              return AppErrorShell(child: child ?? const SizedBox.shrink());
+            },
+            home: const ClockHomePage(),
+          ),
+        );
+      },
     );
   }
 

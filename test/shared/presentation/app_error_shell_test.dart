@@ -14,8 +14,11 @@ void main() {
     await tester.pumpWidget(
       ChangeNotifierProvider<AppErrorController>.value(
         value: controller,
-        child: const MaterialApp(
-          home: AppErrorShell(child: Scaffold(body: Text('Healthy app'))),
+        child: MaterialApp(
+          builder: (context, child) {
+            return AppErrorShell(child: child ?? const SizedBox.shrink());
+          },
+          home: const Scaffold(body: Text('Healthy app')),
         ),
       ),
     );
