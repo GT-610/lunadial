@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../l10n/app_localizations.dart';
 
-class CalendarPage extends StatefulWidget {
+import 'package:lunadial/features/clock/application/clock_controller.dart';
+import 'package:lunadial/l10n/app_localizations.dart';
+
+class CalendarPanel extends StatelessWidget {
   final DateTime focusedDay;
   final DateTime? selectedDay;
-  final Function(DateTime) onDaySelected;
-  final Function(DateTime) onPageChanged;
+  final ValueChanged<DateTime> onDaySelected;
+  final ValueChanged<DateTime> onPageChanged;
 
-  const CalendarPage({
+  const CalendarPanel({
     super.key,
     required this.focusedDay,
     required this.selectedDay,
@@ -16,11 +18,6 @@ class CalendarPage extends StatefulWidget {
     required this.onPageChanged,
   });
 
-  @override
-  CalendarPageState createState() => CalendarPageState();
-}
-
-class CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
@@ -33,9 +30,12 @@ class CalendarPageState extends State<CalendarPage> {
       translations.friday,
       translations.saturday,
     ];
-    final firstDayOfMonth = DateTime(widget.focusedDay.year, widget.focusedDay.month, 1);
+    final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
     final firstDayOfWeek = firstDayOfMonth.weekday - 1;
-    final daysInMonth = DateUtils.getDaysInMonth(widget.focusedDay.year, widget.focusedDay.month);
+    final daysInMonth = DateUtils.getDaysInMonth(
+      focusedDay.year,
+      focusedDay.month,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -45,11 +45,12 @@ class CalendarPageState extends State<CalendarPage> {
         final weekRowHeight = cellSize * 0.9;
         final fontSize = (cellSize * 0.35).clamp(10.0, 16.0);
         final iconSize = (headerHeight * 0.5).clamp(20.0, 30.0);
-
-        // Calculate the number of rows needed
         final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
         final locale = Localizations.localeOf(context);
-        final headerFormat = DateFormat(translations.calendarHeaderFormat, locale.languageCode);
+        final headerFormat = DateFormat(
+          translations.calendarHeaderFormat,
+          locale.languageCode,
+        );
 
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -63,16 +64,13 @@ class CalendarPageState extends State<CalendarPage> {
                     iconSize: iconSize,
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
-                      final newFocusedDay = DateTime(
-                        widget.focusedDay.year,
-                        widget.focusedDay.month - 1,
-                        1,
+                      onPageChanged(
+                        DateTime(focusedDay.year, focusedDay.month - 1, 1),
                       );
-                      widget.onPageChanged(newFocusedDay);
                     },
                   ),
                   Text(
-                    headerFormat.format(widget.focusedDay),
+                    headerFormat.format(focusedDay),
                     style: TextStyle(
                       fontSize: headerHeight * 0.4,
                       fontWeight: FontWeight.bold,
@@ -82,12 +80,9 @@ class CalendarPageState extends State<CalendarPage> {
                     iconSize: iconSize,
                     icon: const Icon(Icons.arrow_forward),
                     onPressed: () {
-                      final newFocusedDay = DateTime(
-                        widget.focusedDay.year,
-                        widget.focusedDay.month + 1,
-                        1,
+                      onPageChanged(
+                        DateTime(focusedDay.year, focusedDay.month + 1, 1),
                       );
-                      widget.onPageChanged(newFocusedDay);
                     },
                   ),
                 ],
@@ -98,9 +93,8 @@ class CalendarPageState extends State<CalendarPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: List.generate(dayLabels.length, (index) {
-                  final day = dayLabels[index];
                   return Text(
-                    day,
+                    dayLabels[index],
                     style: TextStyle(
                       fontSize: fontSize * 0.9,
                       fontWeight: FontWeight.bold,
@@ -120,7 +114,7 @@ class CalendarPageState extends State<CalendarPage> {
                   crossAxisCount: 7,
                   mainAxisSpacing: cellSize * 0.01,
                   crossAxisSpacing: availableWidth * 0.01,
-                  childAspectRatio: 1.0,
+                  childAspectRatio: 1,
                 ),
                 itemCount: rowsNeeded * 7,
                 itemBuilder: (context, index) {
@@ -128,27 +122,30 @@ class CalendarPageState extends State<CalendarPage> {
                   if (dayNumber < 1 || dayNumber > daysInMonth) {
                     return const SizedBox.shrink();
                   }
-                  final day = firstDayOfMonth.add(Duration(days: dayNumber - 1));
-                  final isSelected = isSameDay(day, widget.selectedDay);
-                  final isToday = isSameDay(day, DateTime.now());
 
+                  final day = firstDayOfMonth.add(
+                    Duration(days: dayNumber - 1),
+                  );
+                  final isSelected = ClockController.isSameDay(
+                    day,
+                    selectedDay,
+                  );
+                  final isToday = ClockController.isSameDay(
+                    day,
+                    DateTime.now(),
+                  );
                   final theme = Theme.of(context);
-                  final todayColor = theme.colorScheme.primary;
-                  final selectedColor = theme.colorScheme.secondary;
-                  final onSurfaceColor = theme.colorScheme.onSurface;
 
                   return GestureDetector(
-                    onTap: () {
-                      widget.onDaySelected(day);
-                    },
+                    onTap: () => onDaySelected(day),
                     child: Container(
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: isToday
-                            ? todayColor
+                            ? theme.colorScheme.primary
                             : isSelected
-                                ? selectedColor
-                                : Colors.transparent,
+                            ? theme.colorScheme.secondary
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(cellSize * 0.1),
                       ),
                       child: Text(
@@ -158,9 +155,11 @@ class CalendarPageState extends State<CalendarPage> {
                           color: isToday
                               ? theme.colorScheme.onPrimary
                               : isSelected
-                                  ? theme.colorScheme.onSecondary
-                                  : onSurfaceColor,
-                          fontWeight: isToday || isSelected ? FontWeight.bold : FontWeight.normal,
+                              ? theme.colorScheme.onSecondary
+                              : theme.colorScheme.onSurface,
+                          fontWeight: isToday || isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                     ),
@@ -172,10 +171,5 @@ class CalendarPageState extends State<CalendarPage> {
         );
       },
     );
-  }
-
-  bool isSameDay(DateTime a, DateTime? b) {
-    if (b == null) return false;
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

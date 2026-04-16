@@ -1,0 +1,1 @@
+enum ClockDisplayMode { digital, analog }
