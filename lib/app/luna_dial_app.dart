@@ -22,8 +22,8 @@ class LunaDialApp extends StatelessWidget {
         return WakelockSync(
           child: MaterialApp(
             key: ValueKey(settings.localeOption.storageValue),
-            title: 'LunaDial',
             debugShowCheckedModeBanner: false,
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
             localizationsDelegates: const [
               LibLocalizations.delegate,
               ...AppLocalizations.localizationsDelegates,

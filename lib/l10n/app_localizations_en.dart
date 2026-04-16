@@ -137,6 +137,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageDescription => 'Choose the app language';
 
   @override
+  String get enterFullscreenMode => 'Enter fullscreen mode';
+
+  @override
+  String get exitFullscreenMode => 'Exit fullscreen mode';
+
+  @override
+  String get openSettings => 'Open settings';
+
+  @override
+  String get digitalClockSemantics => 'Digital clock showing current time';
+
+  @override
+  String get analogClockSemantics => 'Analog clock with calendar';
+
+  @override
   String get english => 'English';
 
   @override

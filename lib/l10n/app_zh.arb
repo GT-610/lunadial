@@ -172,6 +172,26 @@
   "@languageDescription": {
     "description": "Language setting description"
   },
+  "enterFullscreenMode": "进入全屏模式",
+  "@enterFullscreenMode": {
+    "description": "Accessibility label for entering fullscreen mode"
+  },
+  "exitFullscreenMode": "退出全屏模式",
+  "@exitFullscreenMode": {
+    "description": "Accessibility label for exiting fullscreen mode"
+  },
+  "openSettings": "打开设置",
+  "@openSettings": {
+    "description": "Accessibility label for opening settings"
+  },
+  "digitalClockSemantics": "显示当前时间的数字时钟",
+  "@digitalClockSemantics": {
+    "description": "Accessibility label for the digital clock view"
+  },
+  "analogClockSemantics": "带日历的模拟时钟",
+  "@analogClockSemantics": {
+    "description": "Accessibility label for the analog clock view"
+  },
   "english": "英语",
   "@english": {
     "description": "English language option"

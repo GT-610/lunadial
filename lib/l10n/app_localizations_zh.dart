@@ -137,6 +137,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageDescription => '选择应用语言';
 
   @override
+  String get enterFullscreenMode => '进入全屏模式';
+
+  @override
+  String get exitFullscreenMode => '退出全屏模式';
+
+  @override
+  String get openSettings => '打开设置';
+
+  @override
+  String get digitalClockSemantics => '显示当前时间的数字时钟';
+
+  @override
+  String get analogClockSemantics => '带日历的模拟时钟';
+
+  @override
   String get english => '英语';
 
   @override

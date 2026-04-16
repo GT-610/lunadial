@@ -172,6 +172,26 @@
   "@languageDescription": {
     "description": "Language setting description"
   },
+  "enterFullscreenMode": "Enter fullscreen mode",
+  "@enterFullscreenMode": {
+    "description": "Accessibility label for entering fullscreen mode"
+  },
+  "exitFullscreenMode": "Exit fullscreen mode",
+  "@exitFullscreenMode": {
+    "description": "Accessibility label for exiting fullscreen mode"
+  },
+  "openSettings": "Open settings",
+  "@openSettings": {
+    "description": "Accessibility label for opening settings"
+  },
+  "digitalClockSemantics": "Digital clock showing current time",
+  "@digitalClockSemantics": {
+    "description": "Accessibility label for the digital clock view"
+  },
+  "analogClockSemantics": "Analog clock with calendar",
+  "@analogClockSemantics": {
+    "description": "Accessibility label for the analog clock view"
+  },
   "english": "English",
   "@english": {
     "description": "English language option"

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_face.dart';
 import 'package:lunadial/features/clock/presentation/widgets/calendar_panel.dart';
+import 'package:lunadial/l10n/app_localizations.dart';
 
 class AnalogClockPanel extends StatelessWidget {
   final DateTime currentTime;
@@ -22,6 +23,7 @@ class AnalogClockPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translations = AppLocalizations.of(context)!;
     final size = MediaQuery.sizeOf(context);
     final isTab = isTablet(size);
     final sizeFactor = isTab ? 0.7 : 0.8;
@@ -51,7 +53,7 @@ class AnalogClockPanel extends StatelessWidget {
     );
 
     return Semantics(
-      label: 'Analog clock with calendar',
+      label: translations.analogClockSemantics,
       child: Center(
         child: useHorizontalLayout
             ? Row(

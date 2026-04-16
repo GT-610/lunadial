@@ -347,6 +347,36 @@ abstract class AppLocalizations {
   /// **'Choose the app language'**
   String get languageDescription;
 
+  /// Accessibility label for entering fullscreen mode
+  ///
+  /// In en, this message translates to:
+  /// **'Enter fullscreen mode'**
+  String get enterFullscreenMode;
+
+  /// Accessibility label for exiting fullscreen mode
+  ///
+  /// In en, this message translates to:
+  /// **'Exit fullscreen mode'**
+  String get exitFullscreenMode;
+
+  /// Accessibility label for opening settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openSettings;
+
+  /// Accessibility label for the digital clock view
+  ///
+  /// In en, this message translates to:
+  /// **'Digital clock showing current time'**
+  String get digitalClockSemantics;
+
+  /// Accessibility label for the analog clock view
+  ///
+  /// In en, this message translates to:
+  /// **'Analog clock with calendar'**
+  String get analogClockSemantics;
+
   /// English language option
   ///
   /// In en, this message translates to:
