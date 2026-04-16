@@ -298,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.of(dialogContext).pop();
                   }
                 },
-                child: Text(translations.close),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
               ),
             ],
           ),
