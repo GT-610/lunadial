@@ -47,6 +47,14 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "preferLandscapeInDedicatedMode": "Prefer Landscape in Dedicated Mode",
+  "@preferLandscapeInDedicatedMode": {
+    "description": "Landscape preference setting title for dedicated mode"
+  },
+  "preferLandscapeInDedicatedModeDescription": "Keep Android devices in landscape while dedicated clock mode is active",
+  "@preferLandscapeInDedicatedModeDescription": {
+    "description": "Landscape preference setting description for dedicated mode"
+  },
   "nightAndBurnIn": "Night & Burn-In",
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"

@@ -30,7 +30,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeMode => 'Theme Mode';
 
   @override
-  String get themeModeDescription => 'Choose between light, dark, or system theme';
+  String get themeModeDescription =>
+      'Choose between light, dark, or system theme';
 
   @override
   String get screen => 'Screen';
@@ -45,25 +46,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepScreenOnDescription => 'Prevent the screen from turning off';
 
   @override
+  String get preferLandscapeInDedicatedMode =>
+      'Prefer Landscape in Dedicated Mode';
+
+  @override
+  String get preferLandscapeInDedicatedModeDescription =>
+      'Keep Android devices in landscape while dedicated clock mode is active';
+
+  @override
   String get nightAndBurnIn => 'Night & Burn-In';
 
   @override
   String get nightMode => 'Night Mode';
 
   @override
-  String get nightModeDescription => 'Use a calmer dark presentation designed for long landscape display sessions';
+  String get nightModeDescription =>
+      'Use a calmer dark presentation designed for long landscape display sessions';
 
   @override
   String get burnInProtection => 'Burn-In Protection';
 
   @override
-  String get burnInProtectionDescription => 'Apply a subtle periodic shift to reduce long-term static image retention in night mode';
+  String get burnInProtectionDescription =>
+      'Apply a subtle periodic shift to reduce long-term static image retention in night mode';
 
   @override
   String get dedicatedClockMode => 'Dedicated Clock Mode';
 
   @override
-  String get dedicatedClockModeDescription => 'Remember fullscreen clock state on launch and reduce distractions for spare devices.';
+  String get dedicatedClockModeDescription =>
+      'Remember fullscreen clock state on launch and reduce distractions for spare devices.';
 
   @override
   String get clockStyle => 'Clock Style';
@@ -81,7 +93,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clockDisplayMode => 'Clock Display Mode';
 
   @override
-  String get clockDisplayModeDescription => 'Choose between digital and analog clock styles';
+  String get clockDisplayModeDescription =>
+      'Choose between digital and analog clock styles';
 
   @override
   String get timeDisplay => 'Time Display';
@@ -105,13 +118,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showSeconds => 'Show Seconds';
 
   @override
-  String get showSecondsDescription => 'Show seconds in the digital clock and analog second hand';
+  String get showSecondsDescription =>
+      'Show seconds in the digital clock and analog second hand';
 
   @override
   String get digitalClockLeadingZero => 'Leading Zero for Hour';
 
   @override
-  String get digitalClockLeadingZeroDescription => 'Pad the digital clock hour with a leading zero when needed';
+  String get digitalClockLeadingZeroDescription =>
+      'Pad the digital clock hour with a leading zero when needed';
 
   @override
   String get digitalClockDescription => 'Use digital format instead of analog';
@@ -165,7 +180,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpectedErrorTitle => 'Something went wrong';
 
   @override
-  String get unexpectedErrorMessage => 'An unexpected error occurred. Try again to rebuild the screen.';
+  String get unexpectedErrorMessage =>
+      'An unexpected error occurred. Try again to rebuild the screen.';
 
   @override
   String settingsSaveFailedMessage(String details) {
@@ -176,10 +192,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSaveRetryFallback => 'Please try again.';
 
   @override
-  String get appDescription => 'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.';
+  String get appDescription =>
+      'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.';
 
   @override
-  String get contributorsDialogContent => 'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.';
+  String get contributorsDialogContent =>
+      'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.';
 
   @override
   String get language => 'Language';

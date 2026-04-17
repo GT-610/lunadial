@@ -84,6 +84,9 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setBurnInProtectionEnabled(bool value) =>
       _update(_settings.copyWith(burnInProtectionEnabled: value));
 
+  Future<void> setPreferLandscapeInDedicatedMode(bool value) =>
+      _update(_settings.copyWith(preferLandscapeInDedicatedMode: value));
+
   Future<void> retrySave() => _persist(_settings);
 
   Future<void> _update(AppSettings nextSettings) async {

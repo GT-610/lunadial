@@ -47,6 +47,14 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "preferLandscapeInDedicatedMode": "专用模式优先横屏",
+  "@preferLandscapeInDedicatedMode": {
+    "description": "Landscape preference setting title for dedicated mode"
+  },
+  "preferLandscapeInDedicatedModeDescription": "在专用时钟模式下优先保持 Android 设备横屏展示",
+  "@preferLandscapeInDedicatedModeDescription": {
+    "description": "Landscape preference setting description for dedicated mode"
+  },
   "nightAndBurnIn": "夜间与防烧屏",
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"
