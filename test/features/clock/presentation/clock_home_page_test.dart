@@ -199,6 +199,34 @@ void main() {
     expect(find.byKey(const Key('fullscreen-surface')), findsNothing);
     expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
   });
+
+  testWidgets('clock home page stays stable across responsive breakpoints', (
+    tester,
+  ) async {
+    final settingsController = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await settingsController.initialize();
+
+    for (final size in const [
+      Size(320, 568),
+      Size(390, 844),
+      Size(800, 1280),
+      Size(1280, 800),
+    ]) {
+      await tester.binding.setSurfaceSize(size);
+
+      await tester.pumpWidget(
+        _buildApp(settingsController: settingsController),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ClockHomePage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    }
+
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+  });
 }
 
 Widget _buildApp({

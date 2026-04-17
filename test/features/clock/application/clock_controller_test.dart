@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:lunadial/features/clock/application/clock_controller.dart';
@@ -43,16 +42,58 @@ void main() {
   });
 
   group('clock layout', () {
-    test('uses horizontal layout for landscape displays', () {
-      expect(useHorizontalClockLayout(const Size(1200, 700)), isTrue);
+    test('resolves viewport classes across common device sizes', () {
+      expect(
+        resolveClockViewportClass(const Size(320, 568)),
+        ClockViewportClass.compactPhone,
+      );
+      expect(
+        resolveClockViewportClass(const Size(390, 844)),
+        ClockViewportClass.phone,
+      );
+      expect(
+        resolveClockViewportClass(const Size(480, 900)),
+        ClockViewportClass.largePhone,
+      );
+      expect(
+        resolveClockViewportClass(const Size(800, 1280)),
+        ClockViewportClass.tablet,
+      );
+      expect(
+        resolveClockViewportClass(const Size(1440, 1024)),
+        ClockViewportClass.largeWindow,
+      );
     });
 
-    test('uses vertical layout for compact portrait displays', () {
-      expect(useHorizontalClockLayout(const Size(420, 800)), isFalse);
+    test('uses compact vertical analog layout on very small phones', () {
+      final spec = resolveAnalogClockLayout(const Size(320, 568));
+
+      expect(spec.direction, Axis.vertical);
+      expect(spec.calendarDensity, CalendarDensity.compact);
+      expect(spec.clockSize, lessThan(300));
     });
 
-    test('treats wide shortest side as tablet layout', () {
-      expect(useHorizontalClockLayout(const Size(700, 700)), isTrue);
+    test('uses horizontal analog layout for tablets and larger windows', () {
+      expect(
+        resolveAnalogClockLayout(const Size(1280, 800)).direction,
+        Axis.horizontal,
+      );
+      expect(
+        resolveAnalogClockLayout(const Size(1440, 900)).direction,
+        Axis.horizontal,
+      );
     });
+
+    test(
+      'resolves bounded digital layout specs for narrow and wide screens',
+      () {
+        final compact = resolveDigitalClockLayout(const Size(320, 568));
+        final tablet = resolveDigitalClockLayout(const Size(1024, 768));
+
+        expect(compact.timeFontSize, lessThan(tablet.timeFontSize));
+        expect(compact.dateFontSize, lessThan(compact.timeFontSize));
+        expect(tablet.maxContentWidth, greaterThan(compact.maxContentWidth));
+      },
+    );
   });
 }

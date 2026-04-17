@@ -6,12 +6,6 @@ import 'package:lunadial/features/clock/presentation/widgets/calendar_panel.dart
 import 'package:lunadial/l10n/app_localizations.dart';
 
 class AnalogClockPanel extends StatelessWidget {
-  final DateTime currentTime;
-  final DateTime focusedDay;
-  final DateTime? selectedDay;
-  final ValueChanged<DateTime> onDaySelected;
-  final ValueChanged<DateTime> onPageChanged;
-
   const AnalogClockPanel({
     super.key,
     required this.currentTime,
@@ -19,17 +13,19 @@ class AnalogClockPanel extends StatelessWidget {
     required this.selectedDay,
     required this.onDaySelected,
     required this.onPageChanged,
+    required this.layout,
   });
+
+  final DateTime currentTime;
+  final DateTime focusedDay;
+  final DateTime? selectedDay;
+  final ValueChanged<DateTime> onDaySelected;
+  final ValueChanged<DateTime> onPageChanged;
+  final AnalogClockLayoutSpec layout;
 
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
-    final size = MediaQuery.sizeOf(context);
-    final isTab = isTablet(size);
-    final sizeFactor = isTab ? 0.7 : 0.8;
-    final clockSize = size.shortestSide * sizeFactor;
-    final calendarWidth = size.shortestSide * sizeFactor;
-    final useHorizontalLayout = useHorizontalClockLayout(size);
 
     final clock = DecoratedBox(
       decoration: BoxDecoration(
@@ -39,31 +35,46 @@ class AnalogClockPanel extends StatelessWidget {
         ),
         shape: BoxShape.circle,
       ),
-      child: AnalogClockFace(time: currentTime, size: clockSize),
+      child: AnalogClockFace(time: currentTime, size: layout.clockSize),
     );
 
     final calendar = SizedBox(
-      width: calendarWidth,
+      width: layout.calendarWidth,
       child: CalendarPanel(
         focusedDay: focusedDay,
         selectedDay: selectedDay,
         onDaySelected: onDaySelected,
         onPageChanged: onPageChanged,
+        density: layout.calendarDensity,
       ),
     );
+
+    final children = [
+      clock,
+      SizedBox(
+        width: layout.direction == Axis.horizontal ? layout.spacing : 0,
+        height: layout.direction == Axis.vertical ? layout.spacing : 0,
+      ),
+      calendar,
+    ];
 
     return Semantics(
       label: translations.analogClockSemantics,
       child: Center(
-        child: useHorizontalLayout
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [clock, calendar],
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [clock, const SizedBox(height: 20), calendar],
-              ),
+        child: Padding(
+          padding: layout.padding,
+          child: layout.direction == Axis.horizontal
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: children,
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: children,
+                ),
+        ),
       ),
     );
   }

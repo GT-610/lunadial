@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
 class DigitalClockView extends StatelessWidget {
-  final DateTime currentTime;
-  final double fontSize;
-
   const DigitalClockView({
     super.key,
     required this.currentTime,
-    required this.fontSize,
+    required this.layout,
   });
+
+  final DateTime currentTime;
+  final DigitalClockLayoutSpec layout;
 
   @override
   Widget build(BuildContext context) {
@@ -21,49 +22,34 @@ class DigitalClockView extends StatelessWidget {
 
     return Semantics(
       label: translations.digitalClockSemantics,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final shortestSide = constraints.biggest.shortestSide;
-          final maxClockFontSize = (shortestSide * 0.58).clamp(
-            0.0,
-            double.infinity,
-          );
-          final clampedClockFontSize = fontSize.clamp(
-            56.0.clamp(0.0, maxClockFontSize),
-            maxClockFontSize.clamp(56.0, double.infinity),
-          );
-          final clampedDateFontSize = (clampedClockFontSize * 0.3).clamp(
-            16.0,
-            48.0,
-          );
-
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      dateFormat.format(currentTime),
-                      maxLines: 1,
-                      style: TextStyle(fontSize: clampedDateFontSize),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      DateFormat('HH:mm:ss').format(currentTime),
-                      maxLines: 1,
-                      style: TextStyle(fontSize: clampedClockFontSize),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+      child: Center(
+        child: Padding(
+          padding: layout.padding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    dateFormat.format(currentTime),
+                    maxLines: 1,
+                    style: TextStyle(fontSize: layout.dateFontSize),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: layout.verticalSpacing),
+                  Text(
+                    DateFormat('HH:mm:ss').format(currentTime),
+                    maxLines: 1,
+                    style: TextStyle(fontSize: layout.timeFontSize),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
