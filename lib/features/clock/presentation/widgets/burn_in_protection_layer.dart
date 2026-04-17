@@ -76,7 +76,6 @@ class _BurnInProtectionLayerState extends State<BurnInProtectionLayer> {
   Widget build(BuildContext context) {
     final offset = widget.enabled ? _offsets[_index] : Offset.zero;
     return TweenAnimationBuilder<Offset>(
-      key: Key('burn-in-layer-${widget.enabled}-${offset.dx}-${offset.dy}'),
       tween: Tween(begin: Offset.zero, end: offset),
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeInOut,
