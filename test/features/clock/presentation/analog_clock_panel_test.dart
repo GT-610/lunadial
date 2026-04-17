@@ -76,4 +76,16 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets(
+    'analog clock panel keeps regular calendar density when vertical fallback still fits',
+    (tester) async {
+      await pumpAnalogClock(tester, surfaceSize: const Size(648, 626));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('calendar-regular')), findsOneWidget);
+      expect(find.byKey(const Key('calendar-compact')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

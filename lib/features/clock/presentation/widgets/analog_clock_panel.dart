@@ -117,25 +117,6 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     return baseLayout;
   }
 
-  final compactVertical = _buildVerticalLayout(
-    availableWidth: availableWidth,
-    availableHeight: availableHeight,
-    spacing: baseLayout.spacing,
-    density: CalendarDensity.compact,
-    preferredClockSize: baseLayout.clockSize,
-    preferredCalendarWidth: baseLayout.calendarWidth,
-    focusedDay: focusedDay,
-    padding: baseLayout.padding,
-  );
-  if (_fitsLayout(
-    compactVertical,
-    availableWidth,
-    availableHeight,
-    focusedDay,
-  )) {
-    return compactVertical;
-  }
-
   final regularVertical = _buildVerticalLayout(
     availableWidth: availableWidth,
     availableHeight: availableHeight,
@@ -153,6 +134,25 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     focusedDay,
   )) {
     return regularVertical;
+  }
+
+  final compactVertical = _buildVerticalLayout(
+    availableWidth: availableWidth,
+    availableHeight: availableHeight,
+    spacing: baseLayout.spacing,
+    density: CalendarDensity.compact,
+    preferredClockSize: baseLayout.clockSize,
+    preferredCalendarWidth: baseLayout.calendarWidth,
+    focusedDay: focusedDay,
+    padding: baseLayout.padding,
+  );
+  if (_fitsLayout(
+    compactVertical,
+    availableWidth,
+    availableHeight,
+    focusedDay,
+  )) {
+    return compactVertical;
   }
 
   return compactVertical;
