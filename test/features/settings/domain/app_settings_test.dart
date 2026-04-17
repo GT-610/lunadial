@@ -112,7 +112,7 @@ void main() {
 
     test('new display settings default for legacy configs', () {
       final settings = AppSettings.fromMap({
-        'configVersion': 3,
+        'configVersion': 1,
         'themeColor': '#ff00ff00',
         'themeMode': 'system',
         'keepScreenOn': false,
@@ -122,6 +122,24 @@ void main() {
         'selectedLocale': 'system',
       });
 
+      expect(settings.timeFormatPreference, TimeFormatPreference.system);
+      expect(settings.showSeconds, isTrue);
+      expect(settings.digitalClockLeadingZero, isTrue);
+    });
+
+    test('preserves clock display mode for pre-release v3 configs', () {
+      final settings = AppSettings.fromMap({
+        'configVersion': 3,
+        'themeColor': '#ff00ff00',
+        'themeMode': 'system',
+        'keepScreenOn': false,
+        'dedicatedClockModeEnabled': false,
+        'restoreFullscreenOnLaunch': false,
+        'clockDisplayMode': 'analog',
+        'selectedLocale': 'system',
+      });
+
+      expect(settings.clockDisplayMode, ClockDisplayMode.analog);
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);

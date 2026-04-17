@@ -6,7 +6,7 @@ import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 @immutable
 class AppSettings {
-  static const int configVersion = 4;
+  static const int configVersion = 1;
 
   final Color themeColor;
   final ThemeMode themeMode;
@@ -49,8 +49,7 @@ class AppSettings {
 
   factory AppSettings.fromMap(Map<String, dynamic> map) {
     final defaults = AppSettings.defaults();
-    final version = map['configVersion'];
-    final normalizedMap = version is int && version < configVersion
+    final normalizedMap = _needsLegacyMigration(map)
         ? _migrateLegacyMap(map)
         : map;
 
@@ -181,6 +180,15 @@ class AppSettings {
           ? ClockDisplayMode.analog.name
           : ClockDisplayMode.digital.name,
     };
+  }
+
+  static bool _needsLegacyMigration(Map<String, dynamic> map) {
+    final hasLegacyColor = map.containsKey('selectedColor');
+    final hasLegacyClockMode =
+        map.containsKey('isDigitalClock') &&
+        !map.containsKey('clockDisplayMode');
+
+    return hasLegacyColor || hasLegacyClockMode;
   }
 
   static Color? _parseColor(Object? value) {
