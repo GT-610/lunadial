@@ -6,6 +6,7 @@ import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 enum AppSettingsSaveState { idle, saving, error }
 
@@ -67,6 +68,15 @@ class AppSettingsController extends ChangeNotifier {
 
   Future<void> setLocaleOption(AppLocaleOption option) =>
       _update(_settings.copyWith(localeOption: option));
+
+  Future<void> setTimeFormatPreference(TimeFormatPreference preference) =>
+      _update(_settings.copyWith(timeFormatPreference: preference));
+
+  Future<void> setShowSeconds(bool value) =>
+      _update(_settings.copyWith(showSeconds: value));
+
+  Future<void> setDigitalClockLeadingZero(bool value) =>
+      _update(_settings.copyWith(digitalClockLeadingZero: value));
 
   Future<void> retrySave() => _persist(_settings);
 

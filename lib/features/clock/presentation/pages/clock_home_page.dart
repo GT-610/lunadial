@@ -9,6 +9,7 @@ import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.
 import 'package:lunadial/features/clock/presentation/widgets/digital_clock_view.dart';
 import 'package:lunadial/features/clock/presentation/widgets/fullscreen_exit_button.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
+import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
@@ -81,6 +82,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                       _buildResponsiveClockContent(
                         constraints.biggest,
                         settings.clockDisplayMode,
+                        settings,
                       ),
                       Positioned(
                         top: 20,
@@ -134,6 +136,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
               return _buildResponsiveClockContent(
                 constraints.biggest,
                 settings.clockDisplayMode,
+                settings,
               );
             },
           ),
@@ -145,11 +148,15 @@ class _ClockHomePageState extends State<ClockHomePage> {
   Widget _buildResponsiveClockContent(
     Size availableSize,
     ClockDisplayMode displayMode,
+    AppSettings settings,
   ) {
     final clockContent = displayMode == ClockDisplayMode.digital
         ? DigitalClockView(
             currentTime: _clockController.currentTime,
             layout: resolveDigitalClockLayout(availableSize),
+            timeFormatPreference: settings.timeFormatPreference,
+            showSeconds: settings.showSeconds,
+            digitalClockLeadingZero: settings.digitalClockLeadingZero,
           )
         : AnalogClockPanel(
             currentTime: _clockController.currentTime,
@@ -158,6 +165,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
             onDaySelected: _clockController.selectDay,
             onPageChanged: _clockController.focusDay,
             layout: resolveAnalogClockLayout(availableSize),
+            showSecondHand: settings.showSeconds,
           );
 
     return FadeIn(child: clockContent);

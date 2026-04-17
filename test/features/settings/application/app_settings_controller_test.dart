@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 void main() {
   test('save failures become observable and retry clears the error', () async {
@@ -40,6 +41,23 @@ void main() {
       expect(controller.settings.restoreFullscreenOnLaunch, isFalse);
     },
   );
+
+  test('display settings update through controller', () async {
+    final repository = _FailingSettingsRepository()..shouldFail = false;
+    final controller = AppSettingsController(repository: repository);
+    await controller.initialize();
+
+    await controller.setTimeFormatPreference(TimeFormatPreference.twelveHour);
+    await controller.setShowSeconds(false);
+    await controller.setDigitalClockLeadingZero(false);
+
+    expect(
+      controller.settings.timeFormatPreference,
+      TimeFormatPreference.twelveHour,
+    );
+    expect(controller.settings.showSeconds, isFalse);
+    expect(controller.settings.digitalClockLeadingZero, isFalse);
+  });
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {

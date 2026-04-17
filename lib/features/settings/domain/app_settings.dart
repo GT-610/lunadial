@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 @immutable
 class AppSettings {
-  static const int configVersion = 3;
+  static const int configVersion = 1;
 
   final Color themeColor;
   final ThemeMode themeMode;
@@ -14,6 +15,9 @@ class AppSettings {
   final bool restoreFullscreenOnLaunch;
   final ClockDisplayMode clockDisplayMode;
   final AppLocaleOption localeOption;
+  final TimeFormatPreference timeFormatPreference;
+  final bool showSeconds;
+  final bool digitalClockLeadingZero;
 
   const AppSettings({
     required this.themeColor,
@@ -23,6 +27,9 @@ class AppSettings {
     required this.restoreFullscreenOnLaunch,
     required this.clockDisplayMode,
     required this.localeOption,
+    required this.timeFormatPreference,
+    required this.showSeconds,
+    required this.digitalClockLeadingZero,
   });
 
   factory AppSettings.defaults() {
@@ -34,13 +41,15 @@ class AppSettings {
       restoreFullscreenOnLaunch: false,
       clockDisplayMode: ClockDisplayMode.digital,
       localeOption: AppLocaleOption.system,
+      timeFormatPreference: TimeFormatPreference.system,
+      showSeconds: true,
+      digitalClockLeadingZero: true,
     );
   }
 
   factory AppSettings.fromMap(Map<String, dynamic> map) {
     final defaults = AppSettings.defaults();
-    final version = map['configVersion'];
-    final normalizedMap = version is int && version < configVersion
+    final normalizedMap = _needsLegacyMigration(map)
         ? _migrateLegacyMap(map)
         : map;
 
@@ -69,6 +78,15 @@ class AppSettings {
       localeOption: AppLocaleOption.fromStorageValue(
         normalizedMap['selectedLocale'],
       ),
+      timeFormatPreference: TimeFormatPreferenceStorage.fromStorageValue(
+        normalizedMap['timeFormatPreference'],
+      ),
+      showSeconds: normalizedMap['showSeconds'] is bool
+          ? normalizedMap['showSeconds'] as bool
+          : defaults.showSeconds,
+      digitalClockLeadingZero: normalizedMap['digitalClockLeadingZero'] is bool
+          ? normalizedMap['digitalClockLeadingZero'] as bool
+          : defaults.digitalClockLeadingZero,
     );
   }
 
@@ -80,6 +98,9 @@ class AppSettings {
     bool? restoreFullscreenOnLaunch,
     ClockDisplayMode? clockDisplayMode,
     AppLocaleOption? localeOption,
+    TimeFormatPreference? timeFormatPreference,
+    bool? showSeconds,
+    bool? digitalClockLeadingZero,
   }) {
     return AppSettings(
       themeColor: themeColor ?? this.themeColor,
@@ -91,6 +112,10 @@ class AppSettings {
           restoreFullscreenOnLaunch ?? this.restoreFullscreenOnLaunch,
       clockDisplayMode: clockDisplayMode ?? this.clockDisplayMode,
       localeOption: localeOption ?? this.localeOption,
+      timeFormatPreference: timeFormatPreference ?? this.timeFormatPreference,
+      showSeconds: showSeconds ?? this.showSeconds,
+      digitalClockLeadingZero:
+          digitalClockLeadingZero ?? this.digitalClockLeadingZero,
     );
   }
 
@@ -108,6 +133,9 @@ class AppSettings {
       'restoreFullscreenOnLaunch': restoreFullscreenOnLaunch,
       'clockDisplayMode': clockDisplayMode.name,
       'selectedLocale': localeOption.storageValue,
+      'timeFormatPreference': timeFormatPreference.storageValue,
+      'showSeconds': showSeconds,
+      'digitalClockLeadingZero': digitalClockLeadingZero,
     };
   }
 
@@ -120,7 +148,10 @@ class AppSettings {
         other.dedicatedClockModeEnabled == dedicatedClockModeEnabled &&
         other.restoreFullscreenOnLaunch == restoreFullscreenOnLaunch &&
         other.clockDisplayMode == clockDisplayMode &&
-        other.localeOption == localeOption;
+        other.localeOption == localeOption &&
+        other.timeFormatPreference == timeFormatPreference &&
+        other.showSeconds == showSeconds &&
+        other.digitalClockLeadingZero == digitalClockLeadingZero;
   }
 
   @override
@@ -132,6 +163,9 @@ class AppSettings {
     restoreFullscreenOnLaunch,
     clockDisplayMode,
     localeOption,
+    timeFormatPreference,
+    showSeconds,
+    digitalClockLeadingZero,
   );
 
   static Map<String, dynamic> _migrateLegacyMap(
@@ -146,6 +180,15 @@ class AppSettings {
           ? ClockDisplayMode.analog.name
           : ClockDisplayMode.digital.name,
     };
+  }
+
+  static bool _needsLegacyMigration(Map<String, dynamic> map) {
+    final hasLegacyColor = map.containsKey('selectedColor');
+    final hasLegacyClockMode =
+        map.containsKey('isDigitalClock') &&
+        !map.containsKey('clockDisplayMode');
+
+    return hasLegacyColor || hasLegacyClockMode;
   }
 
   static Color? _parseColor(Object? value) {

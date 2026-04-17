@@ -23,7 +23,8 @@ class LunaDialApp extends StatelessWidget {
           child: MaterialApp(
             key: ValueKey(settings.localeOption.storageValue),
             debugShowCheckedModeBanner: false,
-            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
             localizationsDelegates: const [
               LibLocalizations.delegate,
               ...AppLocalizations.localizationsDelegates,

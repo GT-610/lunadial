@@ -79,6 +79,46 @@
   "@clockDisplayModeDescription": {
     "description": "Clock display mode setting description"
   },
+  "timeDisplay": "时间显示",
+  "@timeDisplay": {
+    "description": "Time display settings section title"
+  },
+  "timeFormat": "时间格式",
+  "@timeFormat": {
+    "description": "Time format setting title"
+  },
+  "timeFormatDescription": "选择小时的显示方式",
+  "@timeFormatDescription": {
+    "description": "Time format setting description"
+  },
+  "systemTimeFormat": "跟随系统",
+  "@systemTimeFormat": {
+    "description": "Time format option that follows the system preference"
+  },
+  "twelveHourFormat": "12 小时制",
+  "@twelveHourFormat": {
+    "description": "12-hour time format option"
+  },
+  "twentyFourHourFormat": "24 小时制",
+  "@twentyFourHourFormat": {
+    "description": "24-hour time format option"
+  },
+  "showSeconds": "显示秒",
+  "@showSeconds": {
+    "description": "Show seconds setting title"
+  },
+  "showSecondsDescription": "控制数字时钟秒显示和模拟时钟秒针显示",
+  "@showSecondsDescription": {
+    "description": "Show seconds setting description"
+  },
+  "digitalClockLeadingZero": "小时补零",
+  "@digitalClockLeadingZero": {
+    "description": "Leading zero setting title for the digital clock hour"
+  },
+  "digitalClockLeadingZeroDescription": "在需要时为数字时钟小时补前导零",
+  "@digitalClockLeadingZeroDescription": {
+    "description": "Leading zero setting description"
+  },
   "digitalClockDescription": "使用数字格式而非模拟时钟",
   "@digitalClockDescription": {
     "description": "Digital clock setting description"

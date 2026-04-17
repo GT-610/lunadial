@@ -62,7 +62,8 @@ import 'app_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('zh')
+    Locale('zh'),
   ];
 
   /// Application title
@@ -214,6 +217,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose between digital and analog clock styles'**
   String get clockDisplayModeDescription;
+
+  /// Time display settings section title
+  ///
+  /// In en, this message translates to:
+  /// **'Time Display'**
+  String get timeDisplay;
+
+  /// Time format setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Time Format'**
+  String get timeFormat;
+
+  /// Time format setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how the clock formats hours'**
+  String get timeFormatDescription;
+
+  /// Time format option that follows the system preference
+  ///
+  /// In en, this message translates to:
+  /// **'Follow System'**
+  String get systemTimeFormat;
+
+  /// 12-hour time format option
+  ///
+  /// In en, this message translates to:
+  /// **'12-hour'**
+  String get twelveHourFormat;
+
+  /// 24-hour time format option
+  ///
+  /// In en, this message translates to:
+  /// **'24-hour'**
+  String get twentyFourHourFormat;
+
+  /// Show seconds setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Show Seconds'**
+  String get showSeconds;
+
+  /// Show seconds setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Show seconds in the digital clock and analog second hand'**
+  String get showSecondsDescription;
+
+  /// Leading zero setting title for the digital clock hour
+  ///
+  /// In en, this message translates to:
+  /// **'Leading Zero for Hour'**
+  String get digitalClockLeadingZero;
+
+  /// Leading zero setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Pad the digital clock hour with a leading zero when needed'**
+  String get digitalClockLeadingZeroDescription;
 
   /// Digital clock setting description
   ///
@@ -456,7 +519,8 @@ abstract class AppLocalizations {
   String get calendarHeaderFormat;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -465,25 +529,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'zh': return AppLocalizationsZh();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

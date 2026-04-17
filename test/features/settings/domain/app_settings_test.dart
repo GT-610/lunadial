@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 void main() {
   group('AppSettings', () {
@@ -16,6 +17,9 @@ void main() {
         restoreFullscreenOnLaunch: true,
         clockDisplayMode: ClockDisplayMode.analog,
         localeOption: AppLocaleOption.zhCn,
+        timeFormatPreference: TimeFormatPreference.twelveHour,
+        showSeconds: false,
+        digitalClockLeadingZero: false,
       );
 
       final decoded = AppSettings.fromMap(settings.toMap());
@@ -33,6 +37,9 @@ void main() {
       );
       expect(decoded.clockDisplayMode, settings.clockDisplayMode);
       expect(decoded.localeOption, settings.localeOption);
+      expect(decoded.timeFormatPreference, settings.timeFormatPreference);
+      expect(decoded.showSeconds, settings.showSeconds);
+      expect(decoded.digitalClockLeadingZero, settings.digitalClockLeadingZero);
     });
 
     test('falls back to defaults for invalid values', () {
@@ -58,6 +65,12 @@ void main() {
       );
       expect(settings.clockDisplayMode, defaults.clockDisplayMode);
       expect(settings.localeOption, defaults.localeOption);
+      expect(settings.timeFormatPreference, defaults.timeFormatPreference);
+      expect(settings.showSeconds, defaults.showSeconds);
+      expect(
+        settings.digitalClockLeadingZero,
+        defaults.digitalClockLeadingZero,
+      );
     });
 
     test('migrates legacy digital clock flag', () {
@@ -88,10 +101,48 @@ void main() {
           restoreFullscreenOnLaunch: true,
           clockDisplayMode: ClockDisplayMode.digital,
           localeOption: AppLocaleOption.system,
+          timeFormatPreference: TimeFormatPreference.system,
+          showSeconds: true,
+          digitalClockLeadingZero: true,
         );
 
         expect(settings.shouldLaunchToFullscreen, isTrue);
       },
     );
+
+    test('new display settings default for legacy configs', () {
+      final settings = AppSettings.fromMap({
+        'configVersion': 1,
+        'themeColor': '#ff00ff00',
+        'themeMode': 'system',
+        'keepScreenOn': false,
+        'dedicatedClockModeEnabled': false,
+        'restoreFullscreenOnLaunch': false,
+        'clockDisplayMode': 'digital',
+        'selectedLocale': 'system',
+      });
+
+      expect(settings.timeFormatPreference, TimeFormatPreference.system);
+      expect(settings.showSeconds, isTrue);
+      expect(settings.digitalClockLeadingZero, isTrue);
+    });
+
+    test('preserves clock display mode for pre-release v3 configs', () {
+      final settings = AppSettings.fromMap({
+        'configVersion': 3,
+        'themeColor': '#ff00ff00',
+        'themeMode': 'system',
+        'keepScreenOn': false,
+        'dedicatedClockModeEnabled': false,
+        'restoreFullscreenOnLaunch': false,
+        'clockDisplayMode': 'analog',
+        'selectedLocale': 'system',
+      });
+
+      expect(settings.clockDisplayMode, ClockDisplayMode.analog);
+      expect(settings.timeFormatPreference, TimeFormatPreference.system);
+      expect(settings.showSeconds, isTrue);
+      expect(settings.digitalClockLeadingZero, isTrue);
+    });
   });
 }
