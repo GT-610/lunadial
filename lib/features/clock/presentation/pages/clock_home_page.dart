@@ -104,7 +104,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
             backgroundColor: pureBlackAppBarBackground(settings.themeColor),
             actions: [
               Semantics(
-                label: 'Enter fullscreen mode',
+                label: translations.enterFullscreenMode,
                 button: true,
                 child: IconButton(
                   key: const Key('enter-fullscreen-button'),
@@ -113,7 +113,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
                 ),
               ),
               Semantics(
-                label: 'Open settings',
+                label: translations.openSettings,
                 button: true,
                 child: IconButton(
                   icon: const Icon(Icons.settings),

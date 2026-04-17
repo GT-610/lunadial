@@ -127,6 +127,43 @@
   "@close": {
     "description": "Close button text"
   },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading placeholder text"
+  },
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Retry action label"
+  },
+  "unexpectedErrorTitle": "Something went wrong",
+  "@unexpectedErrorTitle": {
+    "description": "Application error title"
+  },
+  "unexpectedErrorMessage": "An unexpected error occurred. Try again to rebuild the screen.",
+  "@unexpectedErrorMessage": {
+    "description": "Application error description"
+  },
+  "settingsSaveFailedMessage": "Settings could not be saved. {details}",
+  "@settingsSaveFailedMessage": {
+    "description": "Settings save error message with appended details",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSaveRetryFallback": "Please try again.",
+  "@settingsSaveRetryFallback": {
+    "description": "Fallback details for settings save error"
+  },
+  "appDescription": "LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.",
+  "@appDescription": {
+    "description": "About dialog content for the app"
+  },
+  "contributorsDialogContent": "LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.",
+  "@contributorsDialogContent": {
+    "description": "Contributors dialog content"
+  },
   "language": "Language",
   "@language": {
     "description": "Language setting title"
@@ -134,6 +171,26 @@
   "languageDescription": "Choose the app language",
   "@languageDescription": {
     "description": "Language setting description"
+  },
+  "enterFullscreenMode": "Enter fullscreen mode",
+  "@enterFullscreenMode": {
+    "description": "Accessibility label for entering fullscreen mode"
+  },
+  "exitFullscreenMode": "Exit fullscreen mode",
+  "@exitFullscreenMode": {
+    "description": "Accessibility label for exiting fullscreen mode"
+  },
+  "openSettings": "Open settings",
+  "@openSettings": {
+    "description": "Accessibility label for opening settings"
+  },
+  "digitalClockSemantics": "Digital clock showing current time",
+  "@digitalClockSemantics": {
+    "description": "Accessibility label for the digital clock view"
+  },
+  "analogClockSemantics": "Analog clock with calendar",
+  "@analogClockSemantics": {
+    "description": "Accessibility label for the analog clock view"
   },
   "english": "English",
   "@english": {

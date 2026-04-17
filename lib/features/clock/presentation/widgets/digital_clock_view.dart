@@ -20,7 +20,7 @@ class DigitalClockView extends StatelessWidget {
     final dateFormat = DateFormat(translations.dateFormat, locale.languageCode);
 
     return Semantics(
-      label: 'Digital clock showing current time',
+      label: translations.digitalClockSemantics,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final shortestSide = constraints.biggest.shortestSide;

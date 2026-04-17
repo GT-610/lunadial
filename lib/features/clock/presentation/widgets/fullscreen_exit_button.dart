@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lunadial/l10n/app_localizations.dart';
 
 class FullscreenExitButtonController extends ChangeNotifier {
   final Duration visibilityDuration;
@@ -51,6 +52,7 @@ class FullscreenExitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translations = AppLocalizations.of(context)!;
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
@@ -60,10 +62,14 @@ class FullscreenExitButton extends StatelessWidget {
           child: AnimatedOpacity(
             opacity: controller.isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
-            child: IconButton(
-              key: const Key('fullscreen-exit-button'),
-              icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
-              onPressed: onExit,
+            child: Semantics(
+              label: translations.exitFullscreenMode,
+              button: true,
+              child: IconButton(
+                key: const Key('fullscreen-exit-button'),
+                icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
+                onPressed: onExit,
+              ),
             ),
           ),
         );

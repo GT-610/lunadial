@@ -105,10 +105,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get close => '关闭';
 
   @override
+  String get loading => '加载中...';
+
+  @override
+  String get tryAgain => '重试';
+
+  @override
+  String get unexpectedErrorTitle => '出了点问题';
+
+  @override
+  String get unexpectedErrorMessage => '发生了一个意外错误。请重试以重新构建当前界面。';
+
+  @override
+  String settingsSaveFailedMessage(String details) {
+    return '设置保存失败。$details';
+  }
+
+  @override
+  String get settingsSaveRetryFallback => '请稍后再试。';
+
+  @override
+  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
+
+  @override
+  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
+
+  @override
   String get language => '语言';
 
   @override
   String get languageDescription => '选择应用语言';
+
+  @override
+  String get enterFullscreenMode => '进入全屏模式';
+
+  @override
+  String get exitFullscreenMode => '退出全屏模式';
+
+  @override
+  String get openSettings => '打开设置';
+
+  @override
+  String get digitalClockSemantics => '显示当前时间的数字时钟';
+
+  @override
+  String get analogClockSemantics => '带日历的模拟时钟';
 
   @override
   String get english => '英语';

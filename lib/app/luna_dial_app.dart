@@ -21,23 +21,25 @@ class LunaDialApp extends StatelessWidget {
 
         return WakelockSync(
           child: MaterialApp(
-            title: 'LunaDial',
+            key: ValueKey(settings.localeOption.storageValue),
             debugShowCheckedModeBanner: false,
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
             localizationsDelegates: const [
               LibLocalizations.delegate,
               ...AppLocalizations.localizationsDelegates,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             locale: settings.localeOption.locale,
+            localeListResolutionCallback: _resolveLocale,
             themeMode: settings.themeMode,
             theme: _buildTheme(
               brightness: Brightness.light,
               seedColor: settings.themeColor,
-            ),
+            ).fixWindowsFont,
             darkTheme: _buildTheme(
               brightness: Brightness.dark,
               seedColor: settings.themeColor,
-            ),
+            ).fixWindowsFont,
             builder: (context, child) {
               return _LibL10nScope(
                 child: AppErrorShell(child: child ?? const SizedBox.shrink()),
@@ -70,6 +72,26 @@ class LunaDialApp extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
+  }
+
+  Locale _resolveLocale(
+    List<Locale>? locales,
+    Iterable<Locale> supportedLocales,
+  ) {
+    if (locales == null || locales.isEmpty) {
+      return supportedLocales.first;
+    }
+
+    for (final locale in locales) {
+      for (final supportedLocale in supportedLocales) {
+        if (supportedLocale == locale ||
+            supportedLocale.languageCode == locale.languageCode) {
+          return supportedLocale;
+        }
+      }
+    }
+
+    return supportedLocales.first;
   }
 }
 

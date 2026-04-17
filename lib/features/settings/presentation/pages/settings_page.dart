@@ -17,7 +17,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _appVersion = 'Loading...';
+  String? _appVersion;
 
   @override
   void initState() {
@@ -120,7 +120,10 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildActionTile(
             title: translations.version,
             subtitle: translations.versionDescription,
-            trailing: Text(_appVersion, style: fl.UIs.textGrey),
+            trailing: Text(
+              _appVersion ?? translations.loading,
+              style: fl.UIs.textGrey,
+            ),
           ),
           _buildActionTile(
             title: translations.license,
@@ -135,10 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () => _showInfoDialog(
               context,
               title: translations.contributors,
-              content:
-                  'LunaDial is being organized for long-term development.\n\n'
-                  'Contributor credits will continue to be expanded as the project evolves. '
-                  'Please refer to the repository history and merged pull requests for the latest record.',
+              content: translations.contributorsDialogContent,
             ),
           ),
           _buildActionTile(
@@ -148,9 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () => _showInfoDialog(
               context,
               title: translations.appTitle,
-              content:
-                  'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\n'
-                  'This stage emphasizes structure, reuse, and a clean base for future features.',
+              content: translations.appDescription,
             ),
           ),
         ]),

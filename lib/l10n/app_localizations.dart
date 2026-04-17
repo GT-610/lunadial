@@ -287,6 +287,54 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
+  /// Loading placeholder text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Retry action label
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// Application error title
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get unexpectedErrorTitle;
+
+  /// Application error description
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Try again to rebuild the screen.'**
+  String get unexpectedErrorMessage;
+
+  /// Settings save error message with appended details
+  ///
+  /// In en, this message translates to:
+  /// **'Settings could not be saved. {details}'**
+  String settingsSaveFailedMessage(String details);
+
+  /// Fallback details for settings save error
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get settingsSaveRetryFallback;
+
+  /// About dialog content for the app
+  ///
+  /// In en, this message translates to:
+  /// **'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.'**
+  String get appDescription;
+
+  /// Contributors dialog content
+  ///
+  /// In en, this message translates to:
+  /// **'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.'**
+  String get contributorsDialogContent;
+
   /// Language setting title
   ///
   /// In en, this message translates to:
@@ -298,6 +346,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the app language'**
   String get languageDescription;
+
+  /// Accessibility label for entering fullscreen mode
+  ///
+  /// In en, this message translates to:
+  /// **'Enter fullscreen mode'**
+  String get enterFullscreenMode;
+
+  /// Accessibility label for exiting fullscreen mode
+  ///
+  /// In en, this message translates to:
+  /// **'Exit fullscreen mode'**
+  String get exitFullscreenMode;
+
+  /// Accessibility label for opening settings
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openSettings;
+
+  /// Accessibility label for the digital clock view
+  ///
+  /// In en, this message translates to:
+  /// **'Digital clock showing current time'**
+  String get digitalClockSemantics;
+
+  /// Accessibility label for the analog clock view
+  ///
+  /// In en, this message translates to:
+  /// **'Analog clock with calendar'**
+  String get analogClockSemantics;
 
   /// English language option
   ///
