@@ -84,6 +84,14 @@ void main() {
       );
     });
 
+    test('analog layout stays valid for very narrow draggable windows', () {
+      final spec = resolveAnalogClockLayout(const Size(1142, 320));
+
+      expect(spec.clockSize, greaterThan(0));
+      expect(spec.calendarWidth, greaterThan(0));
+      expect(spec.calendarDensity, CalendarDensity.compact);
+    });
+
     test(
       'resolves bounded digital layout specs for narrow and wide screens',
       () {
