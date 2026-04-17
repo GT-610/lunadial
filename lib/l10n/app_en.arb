@@ -47,6 +47,26 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "nightAndBurnIn": "Night & Burn-In",
+  "@nightAndBurnIn": {
+    "description": "Night mode and burn-in settings section title"
+  },
+  "nightMode": "Night Mode",
+  "@nightMode": {
+    "description": "Night mode setting title"
+  },
+  "nightModeDescription": "Use a calmer dark presentation designed for long landscape display sessions",
+  "@nightModeDescription": {
+    "description": "Night mode setting description"
+  },
+  "burnInProtection": "Burn-In Protection",
+  "@burnInProtection": {
+    "description": "Burn-in protection setting title"
+  },
+  "burnInProtectionDescription": "Apply a subtle periodic shift to reduce long-term static image retention in night mode",
+  "@burnInProtectionDescription": {
+    "description": "Burn-in protection setting description"
+  },
   "dedicatedClockMode": "Dedicated Clock Mode",
   "@dedicatedClockMode": {
     "description": "Dedicated clock mode setting title"

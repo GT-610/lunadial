@@ -13,6 +13,8 @@ class DigitalClockView extends StatelessWidget {
     required this.timeFormatPreference,
     required this.showSeconds,
     required this.digitalClockLeadingZero,
+    required this.nightModeEnabled,
+    required this.isLandscape,
   });
 
   final DateTime currentTime;
@@ -20,6 +22,8 @@ class DigitalClockView extends StatelessWidget {
   final TimeFormatPreference timeFormatPreference;
   final bool showSeconds;
   final bool digitalClockLeadingZero;
+  final bool nightModeEnabled;
+  final bool isLandscape;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +37,18 @@ class DigitalClockView extends StatelessWidget {
       localeName: localeName,
       use24HourFormat: use24HourFormat,
     );
-    final timeFontSize = showSeconds
-        ? layout.timeFontSize
-        : layout.timeFontSize * 1.08;
-    final verticalSpacing = showSeconds
-        ? layout.verticalSpacing
-        : layout.verticalSpacing * 1.15;
+    final timeFontSize = _resolveTimeFontSize();
+    final verticalSpacing = _resolveVerticalSpacing();
+    final theme = Theme.of(context);
+    final dateColor = nightModeEnabled
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.42)
+        : theme.colorScheme.onSurface;
+    final timeColor = nightModeEnabled
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.92)
+        : theme.colorScheme.onSurface;
+    final dateFontSize = nightModeEnabled && isLandscape
+        ? layout.dateFontSize * 0.9
+        : layout.dateFontSize;
 
     return Semantics(
       label: translations.digitalClockSemantics,
@@ -55,7 +65,11 @@ class DigitalClockView extends StatelessWidget {
                   Text(
                     dateFormat.format(currentTime),
                     maxLines: 1,
-                    style: TextStyle(fontSize: layout.dateFontSize),
+                    style: TextStyle(
+                      fontSize: dateFontSize,
+                      color: dateColor,
+                      fontWeight: nightModeEnabled ? FontWeight.w400 : null,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: verticalSpacing),
@@ -63,7 +77,12 @@ class DigitalClockView extends StatelessWidget {
                     timeText,
                     key: const Key('digital-clock-time-text'),
                     maxLines: 1,
-                    style: TextStyle(fontSize: timeFontSize),
+                    style: TextStyle(
+                      fontSize: timeFontSize,
+                      color: timeColor,
+                      fontWeight: nightModeEnabled ? FontWeight.w300 : null,
+                      letterSpacing: nightModeEnabled && isLandscape ? 2.4 : 0,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -73,6 +92,24 @@ class DigitalClockView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double _resolveTimeFontSize() {
+    final base = showSeconds ? layout.timeFontSize : layout.timeFontSize * 1.08;
+    if (!nightModeEnabled) {
+      return base;
+    }
+    return isLandscape ? base * 1.12 : base * 1.04;
+  }
+
+  double _resolveVerticalSpacing() {
+    final base = showSeconds
+        ? layout.verticalSpacing
+        : layout.verticalSpacing * 1.15;
+    if (!nightModeEnabled) {
+      return base;
+    }
+    return isLandscape ? base * 0.78 : base * 0.92;
   }
 
   bool _resolveUse24HourFormat(BuildContext context, String localeName) {

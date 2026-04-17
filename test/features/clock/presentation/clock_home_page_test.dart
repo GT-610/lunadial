@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:lunadial/features/clock/application/app_session_controller.dart';
 import 'package:lunadial/features/clock/presentation/pages/clock_home_page.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
+import 'package:lunadial/features/clock/presentation/widgets/burn_in_protection_layer.dart';
 import 'package:lunadial/features/clock/presentation/widgets/digital_clock_view.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
@@ -174,6 +175,8 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
+          nightModeEnabled: false,
+          burnInProtectionEnabled: true,
         ),
       ),
     );
@@ -213,6 +216,8 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
+          nightModeEnabled: false,
+          burnInProtectionEnabled: true,
         ),
       ),
     );
@@ -260,6 +265,44 @@ void main() {
 
     addTearDown(() => tester.binding.setSurfaceSize(null));
   });
+
+  testWidgets(
+    'clock home page renders night mode in landscape without errors',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1280, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final settingsController = AppSettingsController(
+        repository: _MemorySettingsRepository(
+          initialSettings: const AppSettings(
+            themeColor: Colors.green,
+            themeMode: ThemeMode.system,
+            keepScreenOn: false,
+            dedicatedClockModeEnabled: false,
+            restoreFullscreenOnLaunch: false,
+            clockDisplayMode: ClockDisplayMode.digital,
+            localeOption: AppLocaleOption.system,
+            timeFormatPreference: TimeFormatPreference.system,
+            showSeconds: true,
+            digitalClockLeadingZero: true,
+            nightModeEnabled: true,
+            burnInProtectionEnabled: true,
+          ),
+        ),
+      );
+      await settingsController.initialize();
+
+      await tester.pumpWidget(
+        _buildApp(settingsController: settingsController),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BurnInProtectionLayer), findsOneWidget);
+      expect(find.byKey(const Key('burn-in-transform')), findsOneWidget);
+      expect(find.byType(DigitalClockView), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 Widget _buildApp({

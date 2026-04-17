@@ -6,12 +6,14 @@ class AnalogClockFace extends StatelessWidget {
   final DateTime time;
   final double size;
   final bool showSecondHand;
+  final bool nightModeEnabled;
 
   const AnalogClockFace({
     super.key,
     required this.time,
     required this.size,
     required this.showSecondHand,
+    required this.nightModeEnabled,
   });
 
   @override
@@ -25,6 +27,7 @@ class AnalogClockFace extends StatelessWidget {
             time: time,
             colorScheme: Theme.of(context).colorScheme,
             showSecondHand: showSecondHand,
+            nightModeEnabled: nightModeEnabled,
           ),
         ),
       ),
@@ -36,11 +39,13 @@ class AnalogClockPainter extends CustomPainter {
   final DateTime time;
   final ColorScheme colorScheme;
   final bool showSecondHand;
+  final bool nightModeEnabled;
 
   const AnalogClockPainter({
     required this.time,
     required this.colorScheme,
     required this.showSecondHand,
+    required this.nightModeEnabled,
   });
 
   @override
@@ -49,8 +54,12 @@ class AnalogClockPainter extends CustomPainter {
     final centerY = size.height / 2;
     final center = Offset(centerX, centerY);
     final radius = math.min(centerX, centerY);
-    final onSurface = colorScheme.onSurface;
-    final primary = colorScheme.primary;
+    final onSurface = nightModeEnabled
+        ? colorScheme.onSurface.withValues(alpha: 0.82)
+        : colorScheme.onSurface;
+    final primary = nightModeEnabled
+        ? colorScheme.primary.withValues(alpha: 0.7)
+        : colorScheme.primary;
 
     final minuteMarkerPaint = Paint()
       ..color = onSurface.withValues(alpha: 0.3)
@@ -72,7 +81,7 @@ class AnalogClockPainter extends CustomPainter {
 
     final hourMarkerPaint = Paint()
       ..color = onSurface
-      ..strokeWidth = 3
+      ..strokeWidth = nightModeEnabled ? 2.5 : 3
       ..style = PaintingStyle.stroke;
 
     for (var i = 0; i < 12; i++) {
@@ -114,7 +123,7 @@ class AnalogClockPainter extends CustomPainter {
     );
     final hourHandPaint = Paint()
       ..color = onSurface
-      ..strokeWidth = 8
+      ..strokeWidth = nightModeEnabled ? 7 : 8
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, hourHandEnd, hourHandPaint);
 
@@ -126,7 +135,7 @@ class AnalogClockPainter extends CustomPainter {
     );
     final minuteHandPaint = Paint()
       ..color = onSurface
-      ..strokeWidth = 5
+      ..strokeWidth = nightModeEnabled ? 4 : 5
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, minuteHandEnd, minuteHandPaint);
 
@@ -138,7 +147,7 @@ class AnalogClockPainter extends CustomPainter {
       );
       final secondHandPaint = Paint()
         ..color = primary
-        ..strokeWidth = 2
+        ..strokeWidth = nightModeEnabled ? 1.5 : 2
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(center, secondHandEnd, secondHandPaint);
     }
@@ -151,6 +160,7 @@ class AnalogClockPainter extends CustomPainter {
   bool shouldRepaint(covariant AnalogClockPainter oldDelegate) {
     return oldDelegate.time != time ||
         oldDelegate.colorScheme != colorScheme ||
-        oldDelegate.showSecondHand != showSecondHand;
+        oldDelegate.showSecondHand != showSecondHand ||
+        oldDelegate.nightModeEnabled != nightModeEnabled;
   }
 }

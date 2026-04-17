@@ -49,6 +49,7 @@ void main() {
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Dedicated Clock Mode'), findsOneWidget);
       expect(find.text('Time Display'), findsOneWidget);
+      expect(find.text('Night & Burn-In'), findsOneWidget);
       expect(find.byType(fl.CardX), findsWidgets);
 
       await tester.tap(
@@ -91,6 +92,26 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(controller.settings.digitalClockLeadingZero, isFalse);
+
+      await tester.scrollUntilVisible(find.text('Night Mode'), 200);
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(ListTile, 'Night Mode'),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.settings.nightModeEnabled, isTrue);
+
+      await tester.scrollUntilVisible(find.text('Burn-In Protection'), 200);
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(ListTile, 'Burn-In Protection'),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.settings.burnInProtectionEnabled, isFalse);
 
       await tester.ensureVisible(find.text('Language'));
       await tester.tap(find.text('Language'));

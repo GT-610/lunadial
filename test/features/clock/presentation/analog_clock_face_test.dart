@@ -14,6 +14,7 @@ void main() {
             time: DateTime(2026, 1, 1, 12, 34, 56),
             size: 240,
             showSecondHand: true,
+            nightModeEnabled: false,
           ),
         ),
       ),
@@ -40,6 +41,7 @@ void main() {
             time: DateTime(2026, 1, 1, 12, 34, 56),
             size: 240,
             showSecondHand: false,
+            nightModeEnabled: true,
           ),
         ),
       ),
@@ -54,5 +56,6 @@ void main() {
     final painter = customPaint.painter! as AnalogClockPainter;
 
     expect(painter.showSecondHand, isFalse);
+    expect(painter.nightModeEnabled, isTrue);
   });
 }

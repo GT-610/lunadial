@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:lunadial/features/clock/application/app_session_controller.dart';
 import 'package:lunadial/features/clock/application/clock_controller.dart';
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
+import 'package:lunadial/features/clock/domain/night_clock_display_config.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
+import 'package:lunadial/features/clock/presentation/widgets/burn_in_protection_layer.dart';
 import 'package:lunadial/features/clock/presentation/widgets/digital_clock_view.dart';
 import 'package:lunadial/features/clock/presentation/widgets/fullscreen_exit_button.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
@@ -150,6 +152,12 @@ class _ClockHomePageState extends State<ClockHomePage> {
     ClockDisplayMode displayMode,
     AppSettings settings,
   ) {
+    final displayConfig = NightClockDisplayConfig(
+      nightModeEnabled: settings.nightModeEnabled,
+      burnInProtectionEnabled: settings.burnInProtectionEnabled,
+      isLandscape: availableSize.width >= availableSize.height,
+    );
+
     final clockContent = displayMode == ClockDisplayMode.digital
         ? DigitalClockView(
             currentTime: _clockController.currentTime,
@@ -157,6 +165,8 @@ class _ClockHomePageState extends State<ClockHomePage> {
             timeFormatPreference: settings.timeFormatPreference,
             showSeconds: settings.showSeconds,
             digitalClockLeadingZero: settings.digitalClockLeadingZero,
+            nightModeEnabled: displayConfig.nightModeEnabled,
+            isLandscape: displayConfig.isLandscape,
           )
         : AnalogClockPanel(
             currentTime: _clockController.currentTime,
@@ -166,8 +176,15 @@ class _ClockHomePageState extends State<ClockHomePage> {
             onPageChanged: _clockController.focusDay,
             layout: resolveAnalogClockLayout(availableSize),
             showSecondHand: settings.showSeconds,
+            nightModeEnabled: displayConfig.nightModeEnabled,
           );
 
-    return FadeIn(child: clockContent);
+    return ColoredBox(
+      color: displayConfig.nightModeEnabled ? Colors.black : Colors.transparent,
+      child: BurnInProtectionLayer(
+        enabled: displayConfig.shouldUseBurnInProtection,
+        child: FadeIn(child: clockContent),
+      ),
+    );
   }
 }
