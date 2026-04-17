@@ -58,6 +58,18 @@ void main() {
     expect(controller.settings.showSeconds, isFalse);
     expect(controller.settings.digitalClockLeadingZero, isFalse);
   });
+
+  test('night mode settings update through controller', () async {
+    final repository = _FailingSettingsRepository()..shouldFail = false;
+    final controller = AppSettingsController(repository: repository);
+    await controller.initialize();
+
+    await controller.setNightModeEnabled(true);
+    await controller.setBurnInProtectionEnabled(false);
+
+    expect(controller.settings.nightModeEnabled, isTrue);
+    expect(controller.settings.burnInProtectionEnabled, isFalse);
+  });
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {

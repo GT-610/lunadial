@@ -45,11 +45,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get keepScreenOnDescription => '防止屏幕关闭';
 
   @override
+  String get nightAndBurnIn => '夜间与防烧屏';
+
+  @override
+  String get nightMode => '夜间模式';
+
+  @override
+  String get nightModeDescription => '启用更克制的暗色常驻展示风格，更适合横屏长期摆放';
+
+  @override
+  String get burnInProtection => '防烧屏位移';
+
+  @override
+  String get burnInProtectionDescription => '在夜间模式下进行轻微周期位移，降低静态画面长期停留的风险';
+
+  @override
   String get dedicatedClockMode => '专用时钟模式';
 
   @override
-  String get dedicatedClockModeDescription =>
-      '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
+  String get dedicatedClockModeDescription => '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
 
   @override
   String get clockStyle => '时钟样式';
@@ -162,12 +176,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSaveRetryFallback => '请稍后再试。';
 
   @override
-  String get appDescription =>
-      'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
+  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
 
   @override
-  String get contributorsDialogContent =>
-      'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
+  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
 
   @override
   String get language => '语言';

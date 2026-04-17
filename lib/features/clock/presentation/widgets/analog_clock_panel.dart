@@ -15,6 +15,7 @@ class AnalogClockPanel extends StatelessWidget {
     required this.onPageChanged,
     required this.layout,
     required this.showSecondHand,
+    required this.nightModeEnabled,
   });
 
   final DateTime currentTime;
@@ -24,6 +25,7 @@ class AnalogClockPanel extends StatelessWidget {
   final ValueChanged<DateTime> onPageChanged;
   final AnalogClockLayoutSpec layout;
   final bool showSecondHand;
+  final bool nightModeEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +45,12 @@ class AnalogClockPanel extends StatelessWidget {
             final clock = DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
-                  width: 2,
-                  color: Theme.of(context).colorScheme.outline,
+                  width: nightModeEnabled ? 1.5 : 2,
+                  color: nightModeEnabled
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.outline.withValues(alpha: 0.45)
+                      : Theme.of(context).colorScheme.outline,
                 ),
                 shape: BoxShape.circle,
               ),
@@ -52,17 +58,21 @@ class AnalogClockPanel extends StatelessWidget {
                 time: currentTime,
                 size: effectiveLayout.clockSize,
                 showSecondHand: showSecondHand,
+                nightModeEnabled: nightModeEnabled,
               ),
             );
 
-            final calendar = SizedBox(
-              width: effectiveLayout.calendarWidth,
-              child: CalendarPanel(
-                focusedDay: focusedDay,
-                selectedDay: selectedDay,
-                onDaySelected: onDaySelected,
-                onPageChanged: onPageChanged,
-                density: effectiveLayout.calendarDensity,
+            final calendar = Opacity(
+              opacity: nightModeEnabled ? 0.58 : 1,
+              child: SizedBox(
+                width: effectiveLayout.calendarWidth,
+                child: CalendarPanel(
+                  focusedDay: focusedDay,
+                  selectedDay: selectedDay,
+                  onDaySelected: onDaySelected,
+                  onPageChanged: onPageChanged,
+                  density: effectiveLayout.calendarDensity,
+                ),
               ),
             );
 

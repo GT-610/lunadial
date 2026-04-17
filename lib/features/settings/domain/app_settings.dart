@@ -18,6 +18,8 @@ class AppSettings {
   final TimeFormatPreference timeFormatPreference;
   final bool showSeconds;
   final bool digitalClockLeadingZero;
+  final bool nightModeEnabled;
+  final bool burnInProtectionEnabled;
 
   const AppSettings({
     required this.themeColor,
@@ -30,6 +32,8 @@ class AppSettings {
     required this.timeFormatPreference,
     required this.showSeconds,
     required this.digitalClockLeadingZero,
+    required this.nightModeEnabled,
+    required this.burnInProtectionEnabled,
   });
 
   factory AppSettings.defaults() {
@@ -44,6 +48,8 @@ class AppSettings {
       timeFormatPreference: TimeFormatPreference.system,
       showSeconds: true,
       digitalClockLeadingZero: true,
+      nightModeEnabled: false,
+      burnInProtectionEnabled: true,
     );
   }
 
@@ -87,6 +93,12 @@ class AppSettings {
       digitalClockLeadingZero: normalizedMap['digitalClockLeadingZero'] is bool
           ? normalizedMap['digitalClockLeadingZero'] as bool
           : defaults.digitalClockLeadingZero,
+      nightModeEnabled: normalizedMap['nightModeEnabled'] is bool
+          ? normalizedMap['nightModeEnabled'] as bool
+          : defaults.nightModeEnabled,
+      burnInProtectionEnabled: normalizedMap['burnInProtectionEnabled'] is bool
+          ? normalizedMap['burnInProtectionEnabled'] as bool
+          : defaults.burnInProtectionEnabled,
     );
   }
 
@@ -101,6 +113,8 @@ class AppSettings {
     TimeFormatPreference? timeFormatPreference,
     bool? showSeconds,
     bool? digitalClockLeadingZero,
+    bool? nightModeEnabled,
+    bool? burnInProtectionEnabled,
   }) {
     return AppSettings(
       themeColor: themeColor ?? this.themeColor,
@@ -116,6 +130,9 @@ class AppSettings {
       showSeconds: showSeconds ?? this.showSeconds,
       digitalClockLeadingZero:
           digitalClockLeadingZero ?? this.digitalClockLeadingZero,
+      nightModeEnabled: nightModeEnabled ?? this.nightModeEnabled,
+      burnInProtectionEnabled:
+          burnInProtectionEnabled ?? this.burnInProtectionEnabled,
     );
   }
 
@@ -136,6 +153,8 @@ class AppSettings {
       'timeFormatPreference': timeFormatPreference.storageValue,
       'showSeconds': showSeconds,
       'digitalClockLeadingZero': digitalClockLeadingZero,
+      'nightModeEnabled': nightModeEnabled,
+      'burnInProtectionEnabled': burnInProtectionEnabled,
     };
   }
 
@@ -151,7 +170,9 @@ class AppSettings {
         other.localeOption == localeOption &&
         other.timeFormatPreference == timeFormatPreference &&
         other.showSeconds == showSeconds &&
-        other.digitalClockLeadingZero == digitalClockLeadingZero;
+        other.digitalClockLeadingZero == digitalClockLeadingZero &&
+        other.nightModeEnabled == nightModeEnabled &&
+        other.burnInProtectionEnabled == burnInProtectionEnabled;
   }
 
   @override
@@ -166,6 +187,8 @@ class AppSettings {
     timeFormatPreference,
     showSeconds,
     digitalClockLeadingZero,
+    nightModeEnabled,
+    burnInProtectionEnabled,
   );
 
   static Map<String, dynamic> _migrateLegacyMap(

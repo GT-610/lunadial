@@ -20,6 +20,8 @@ void main() {
         timeFormatPreference: TimeFormatPreference.twelveHour,
         showSeconds: false,
         digitalClockLeadingZero: false,
+        nightModeEnabled: true,
+        burnInProtectionEnabled: false,
       );
 
       final decoded = AppSettings.fromMap(settings.toMap());
@@ -40,6 +42,8 @@ void main() {
       expect(decoded.timeFormatPreference, settings.timeFormatPreference);
       expect(decoded.showSeconds, settings.showSeconds);
       expect(decoded.digitalClockLeadingZero, settings.digitalClockLeadingZero);
+      expect(decoded.nightModeEnabled, settings.nightModeEnabled);
+      expect(decoded.burnInProtectionEnabled, settings.burnInProtectionEnabled);
     });
 
     test('falls back to defaults for invalid values', () {
@@ -70,6 +74,11 @@ void main() {
       expect(
         settings.digitalClockLeadingZero,
         defaults.digitalClockLeadingZero,
+      );
+      expect(settings.nightModeEnabled, defaults.nightModeEnabled);
+      expect(
+        settings.burnInProtectionEnabled,
+        defaults.burnInProtectionEnabled,
       );
     });
 
@@ -104,6 +113,8 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
+          nightModeEnabled: false,
+          burnInProtectionEnabled: true,
         );
 
         expect(settings.shouldLaunchToFullscreen, isTrue);
@@ -125,6 +136,8 @@ void main() {
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);
+      expect(settings.nightModeEnabled, isFalse);
+      expect(settings.burnInProtectionEnabled, isTrue);
     });
 
     test('preserves clock display mode for pre-release v3 configs', () {
@@ -143,6 +156,8 @@ void main() {
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);
+      expect(settings.nightModeEnabled, isFalse);
+      expect(settings.burnInProtectionEnabled, isTrue);
     });
   });
 }

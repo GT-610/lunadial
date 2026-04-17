@@ -78,6 +78,12 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setDigitalClockLeadingZero(bool value) =>
       _update(_settings.copyWith(digitalClockLeadingZero: value));
 
+  Future<void> setNightModeEnabled(bool value) =>
+      _update(_settings.copyWith(nightModeEnabled: value));
+
+  Future<void> setBurnInProtectionEnabled(bool value) =>
+      _update(_settings.copyWith(burnInProtectionEnabled: value));
+
   Future<void> retrySave() => _persist(_settings);
 
   Future<void> _update(AppSettings nextSettings) async {

@@ -14,6 +14,8 @@ void main() {
     TimeFormatPreference timeFormatPreference = TimeFormatPreference.system,
     bool showSeconds = true,
     bool digitalClockLeadingZero = true,
+    bool nightModeEnabled = false,
+    bool isLandscape = false,
     Locale? locale,
     bool? alwaysUse24HourFormat,
     DateTime? currentTime,
@@ -45,6 +47,8 @@ void main() {
                   timeFormatPreference: timeFormatPreference,
                   showSeconds: showSeconds,
                   digitalClockLeadingZero: digitalClockLeadingZero,
+                  nightModeEnabled: nightModeEnabled,
+                  isLandscape: isLandscape,
                 );
               },
             ),
@@ -138,5 +142,21 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('8:34'), findsOneWidget);
+  });
+
+  testWidgets('digital clock view remains stable in night landscape mode', (
+    tester,
+  ) async {
+    await pumpDigitalClock(
+      tester,
+      surfaceSize: const Size(1280, 800),
+      nightModeEnabled: true,
+      isLandscape: true,
+      showSeconds: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DigitalClockView), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

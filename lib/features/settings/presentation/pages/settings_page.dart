@@ -109,6 +109,23 @@ class _SettingsPageState extends State<SettingsPage> {
         ]),
       ),
       _SettingsSection(
+        title: translations.nightAndBurnIn,
+        child: _buildSettingsGroup([
+          _buildSwitchTile(
+            title: translations.nightMode,
+            subtitle: translations.nightModeDescription,
+            value: settings.nightModeEnabled,
+            onChanged: settingsController.setNightModeEnabled,
+          ),
+          _buildSwitchTile(
+            title: translations.burnInProtection,
+            subtitle: translations.burnInProtectionDescription,
+            value: settings.burnInProtectionEnabled,
+            onChanged: settingsController.setBurnInProtectionEnabled,
+          ),
+        ]),
+      ),
+      _SettingsSection(
         title: translations.clockStyle,
         child: _buildSettingsGroup([
           _buildActionTile(

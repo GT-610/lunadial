@@ -11,6 +11,7 @@ void main() {
     WidgetTester tester, {
     required Size surfaceSize,
     bool showSecondHand = true,
+    bool nightModeEnabled = false,
   }) async {
     await tester.binding.setSurfaceSize(surfaceSize);
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -33,6 +34,7 @@ void main() {
                 onPageChanged: (_) {},
                 layout: resolveAnalogClockLayout(constraints.biggest),
                 showSecondHand: showSecondHand,
+                nightModeEnabled: nightModeEnabled,
               );
             },
           ),
@@ -98,6 +100,18 @@ void main() {
       tester,
       surfaceSize: const Size(390, 844),
       showSecondHand: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AnalogClockPanel), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('analog clock panel stays stable in night mode', (tester) async {
+    await pumpAnalogClock(
+      tester,
+      surfaceSize: const Size(1280, 800),
+      nightModeEnabled: true,
     );
     await tester.pumpAndSettle();
 

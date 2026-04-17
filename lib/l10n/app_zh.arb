@@ -47,6 +47,26 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "nightAndBurnIn": "夜间与防烧屏",
+  "@nightAndBurnIn": {
+    "description": "Night mode and burn-in settings section title"
+  },
+  "nightMode": "夜间模式",
+  "@nightMode": {
+    "description": "Night mode setting title"
+  },
+  "nightModeDescription": "启用更克制的暗色常驻展示风格，更适合横屏长期摆放",
+  "@nightModeDescription": {
+    "description": "Night mode setting description"
+  },
+  "burnInProtection": "防烧屏位移",
+  "@burnInProtection": {
+    "description": "Burn-in protection setting title"
+  },
+  "burnInProtectionDescription": "在夜间模式下进行轻微周期位移，降低静态画面长期停留的风险",
+  "@burnInProtectionDescription": {
+    "description": "Burn-in protection setting description"
+  },
   "dedicatedClockMode": "专用时钟模式",
   "@dedicatedClockMode": {
     "description": "Dedicated clock mode setting title"
