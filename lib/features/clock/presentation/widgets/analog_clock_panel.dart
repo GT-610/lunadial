@@ -14,6 +14,7 @@ class AnalogClockPanel extends StatelessWidget {
     required this.onDaySelected,
     required this.onPageChanged,
     required this.layout,
+    required this.showSecondHand,
   });
 
   final DateTime currentTime;
@@ -22,6 +23,7 @@ class AnalogClockPanel extends StatelessWidget {
   final ValueChanged<DateTime> onDaySelected;
   final ValueChanged<DateTime> onPageChanged;
   final AnalogClockLayoutSpec layout;
+  final bool showSecondHand;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class AnalogClockPanel extends StatelessWidget {
               child: AnalogClockFace(
                 time: currentTime,
                 size: effectiveLayout.clockSize,
+                showSecondHand: showSecondHand,
               ),
             );
 

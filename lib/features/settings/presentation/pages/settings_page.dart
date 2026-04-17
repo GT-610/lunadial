@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/widgets/settings_save_error_banner.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
@@ -117,6 +118,31 @@ class _SettingsPageState extends State<SettingsPage> {
               _clockModeLabel(settings.clockDisplayMode, translations),
             ),
             onTap: () => _showClockModeDialog(context, settingsController),
+          ),
+        ]),
+      ),
+      _SettingsSection(
+        title: translations.timeDisplay,
+        child: _buildSettingsGroup([
+          _buildActionTile(
+            title: translations.timeFormat,
+            subtitle: translations.timeFormatDescription,
+            trailing: _buildChevronValue(
+              _timeFormatLabel(settings.timeFormatPreference, translations),
+            ),
+            onTap: () => _showTimeFormatDialog(context, settingsController),
+          ),
+          _buildSwitchTile(
+            title: translations.showSeconds,
+            subtitle: translations.showSecondsDescription,
+            value: settings.showSeconds,
+            onChanged: settingsController.setShowSeconds,
+          ),
+          _buildSwitchTile(
+            title: translations.digitalClockLeadingZero,
+            subtitle: translations.digitalClockLeadingZeroDescription,
+            value: settings.digitalClockLeadingZero,
+            onChanged: settingsController.setDigitalClockLeadingZero,
           ),
         ]),
       ),
@@ -434,6 +460,42 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _showTimeFormatDialog(
+    BuildContext context,
+    AppSettingsController settingsController,
+  ) async {
+    final translations = AppLocalizations.of(context)!;
+    final currentValue = settingsController.settings.timeFormatPreference;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(translations.timeFormat),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: TimeFormatPreference.values
+              .map((preference) {
+                return ListTile(
+                  title: Text(_timeFormatLabel(preference, translations)),
+                  trailing: preference == currentValue
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () async {
+                    await settingsController.setTimeFormatPreference(
+                      preference,
+                    );
+                    if (dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                );
+              })
+              .toList(growable: false),
+        ),
+      ),
+    );
+  }
+
   String _themeModeLabel(ThemeMode mode, AppLocalizations translations) {
     switch (mode) {
       case ThemeMode.system:
@@ -462,6 +524,20 @@ class _SettingsPageState extends State<SettingsPage> {
         return translations.digitalClock;
       case ClockDisplayMode.analog:
         return translations.analogClock;
+    }
+  }
+
+  String _timeFormatLabel(
+    TimeFormatPreference preference,
+    AppLocalizations translations,
+  ) {
+    switch (preference) {
+      case TimeFormatPreference.system:
+        return translations.systemTimeFormat;
+      case TimeFormatPreference.twelveHour:
+        return translations.twelveHourFormat;
+      case TimeFormatPreference.twentyFourHour:
+        return translations.twentyFourHourFormat;
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
 class DigitalClockView extends StatelessWidget {
@@ -9,16 +10,35 @@ class DigitalClockView extends StatelessWidget {
     super.key,
     required this.currentTime,
     required this.layout,
+    required this.timeFormatPreference,
+    required this.showSeconds,
+    required this.digitalClockLeadingZero,
   });
 
   final DateTime currentTime;
   final DigitalClockLayoutSpec layout;
+  final TimeFormatPreference timeFormatPreference;
+  final bool showSeconds;
+  final bool digitalClockLeadingZero;
 
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
-    final dateFormat = DateFormat(translations.dateFormat, locale.languageCode);
+    final localeName = locale.toString();
+    final dateFormat = DateFormat(translations.dateFormat, localeName);
+    final use24HourFormat = _resolveUse24HourFormat(context, localeName);
+    final timeText = _formatTime(
+      locale: locale,
+      localeName: localeName,
+      use24HourFormat: use24HourFormat,
+    );
+    final timeFontSize = showSeconds
+        ? layout.timeFontSize
+        : layout.timeFontSize * 1.08;
+    final verticalSpacing = showSeconds
+        ? layout.verticalSpacing
+        : layout.verticalSpacing * 1.15;
 
     return Semantics(
       label: translations.digitalClockSemantics,
@@ -38,11 +58,12 @@ class DigitalClockView extends StatelessWidget {
                     style: TextStyle(fontSize: layout.dateFontSize),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: layout.verticalSpacing),
+                  SizedBox(height: verticalSpacing),
                   Text(
-                    DateFormat('HH:mm:ss').format(currentTime),
+                    timeText,
+                    key: const Key('digital-clock-time-text'),
                     maxLines: 1,
-                    style: TextStyle(fontSize: layout.timeFontSize),
+                    style: TextStyle(fontSize: timeFontSize),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -52,5 +73,56 @@ class DigitalClockView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _resolveUse24HourFormat(BuildContext context, String localeName) {
+    switch (timeFormatPreference) {
+      case TimeFormatPreference.system:
+        final mediaQuery = MediaQuery.maybeOf(context);
+        if (mediaQuery != null) {
+          return mediaQuery.alwaysUse24HourFormat;
+        }
+        return !(DateFormat.jm(localeName).pattern?.contains('a') ?? true);
+      case TimeFormatPreference.twelveHour:
+        return false;
+      case TimeFormatPreference.twentyFourHour:
+        return true;
+    }
+  }
+
+  String _formatTime({
+    required Locale locale,
+    required String localeName,
+    required bool use24HourFormat,
+  }) {
+    if (use24HourFormat) {
+      final hourPattern = digitalClockLeadingZero ? 'HH' : 'H';
+      final secondPattern = showSeconds ? ':ss' : '';
+      return DateFormat(
+        '$hourPattern:mm$secondPattern',
+        localeName,
+      ).format(currentTime);
+    }
+
+    final basePattern = _twelveHourPattern(
+      locale: locale,
+      showSeconds: showSeconds,
+      leadingZero: digitalClockLeadingZero,
+    );
+    return DateFormat(basePattern, localeName).format(currentTime);
+  }
+
+  String _twelveHourPattern({
+    required Locale locale,
+    required bool showSeconds,
+    required bool leadingZero,
+  }) {
+    final hourPattern = leadingZero ? 'hh' : 'h';
+    final minuteSecondPattern = showSeconds ? ':mm:ss' : ':mm';
+    if (locale.languageCode == 'zh') {
+      return 'a $hourPattern$minuteSecondPattern';
+    }
+
+    return '$hourPattern$minuteSecondPattern a';
   }
 }

@@ -10,6 +10,7 @@ void main() {
   Future<void> pumpAnalogClock(
     WidgetTester tester, {
     required Size surfaceSize,
+    bool showSecondHand = true,
   }) async {
     await tester.binding.setSurfaceSize(surfaceSize);
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -31,6 +32,7 @@ void main() {
                 onDaySelected: (_) {},
                 onPageChanged: (_) {},
                 layout: resolveAnalogClockLayout(constraints.biggest),
+                showSecondHand: showSecondHand,
               );
             },
           ),
@@ -88,4 +90,18 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('analog clock panel passes second-hand visibility to the face', (
+    tester,
+  ) async {
+    await pumpAnalogClock(
+      tester,
+      surfaceSize: const Size(390, 844),
+      showSecondHand: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AnalogClockPanel), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

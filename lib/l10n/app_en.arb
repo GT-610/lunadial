@@ -79,6 +79,46 @@
   "@clockDisplayModeDescription": {
     "description": "Clock display mode setting description"
   },
+  "timeDisplay": "Time Display",
+  "@timeDisplay": {
+    "description": "Time display settings section title"
+  },
+  "timeFormat": "Time Format",
+  "@timeFormat": {
+    "description": "Time format setting title"
+  },
+  "timeFormatDescription": "Choose how the clock formats hours",
+  "@timeFormatDescription": {
+    "description": "Time format setting description"
+  },
+  "systemTimeFormat": "Follow System",
+  "@systemTimeFormat": {
+    "description": "Time format option that follows the system preference"
+  },
+  "twelveHourFormat": "12-hour",
+  "@twelveHourFormat": {
+    "description": "12-hour time format option"
+  },
+  "twentyFourHourFormat": "24-hour",
+  "@twentyFourHourFormat": {
+    "description": "24-hour time format option"
+  },
+  "showSeconds": "Show Seconds",
+  "@showSeconds": {
+    "description": "Show seconds setting title"
+  },
+  "showSecondsDescription": "Show seconds in the digital clock and analog second hand",
+  "@showSecondsDescription": {
+    "description": "Show seconds setting description"
+  },
+  "digitalClockLeadingZero": "Leading Zero for Hour",
+  "@digitalClockLeadingZero": {
+    "description": "Leading zero setting title for the digital clock hour"
+  },
+  "digitalClockLeadingZeroDescription": "Pad the digital clock hour with a leading zero when needed",
+  "@digitalClockLeadingZeroDescription": {
+    "description": "Leading zero setting description"
+  },
   "digitalClockDescription": "Use digital format instead of analog",
   "@digitalClockDescription": {
     "description": "Digital clock setting description"

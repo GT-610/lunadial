@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 class AnalogClockFace extends StatelessWidget {
   final DateTime time;
   final double size;
+  final bool showSecondHand;
 
-  const AnalogClockFace({super.key, required this.time, required this.size});
+  const AnalogClockFace({
+    super.key,
+    required this.time,
+    required this.size,
+    required this.showSecondHand,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +21,10 @@ class AnalogClockFace extends StatelessWidget {
       height: size,
       child: RepaintBoundary(
         child: CustomPaint(
-          painter: _ClockPainter(
+          painter: AnalogClockPainter(
             time: time,
             colorScheme: Theme.of(context).colorScheme,
+            showSecondHand: showSecondHand,
           ),
         ),
       ),
@@ -25,11 +32,16 @@ class AnalogClockFace extends StatelessWidget {
   }
 }
 
-class _ClockPainter extends CustomPainter {
+class AnalogClockPainter extends CustomPainter {
   final DateTime time;
   final ColorScheme colorScheme;
+  final bool showSecondHand;
 
-  const _ClockPainter({required this.time, required this.colorScheme});
+  const AnalogClockPainter({
+    required this.time,
+    required this.colorScheme,
+    required this.showSecondHand,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -118,23 +130,27 @@ class _ClockPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, minuteHandEnd, minuteHandPaint);
 
-    final secondAngle = time.second * math.pi / 30 - math.pi / 2;
-    final secondHandEnd = Offset(
-      centerX + (radius * 0.9) * math.cos(secondAngle),
-      centerY + (radius * 0.9) * math.sin(secondAngle),
-    );
-    final secondHandPaint = Paint()
-      ..color = primary
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(center, secondHandEnd, secondHandPaint);
+    if (showSecondHand) {
+      final secondAngle = time.second * math.pi / 30 - math.pi / 2;
+      final secondHandEnd = Offset(
+        centerX + (radius * 0.9) * math.cos(secondAngle),
+        centerY + (radius * 0.9) * math.sin(secondAngle),
+      );
+      final secondHandPaint = Paint()
+        ..color = primary
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round;
+      canvas.drawLine(center, secondHandEnd, secondHandPaint);
+    }
 
     final centerDotPaint = Paint()..color = primary;
     canvas.drawCircle(center, 5, centerDotPaint);
   }
 
   @override
-  bool shouldRepaint(covariant _ClockPainter oldDelegate) {
-    return oldDelegate.time != time || oldDelegate.colorScheme != colorScheme;
+  bool shouldRepaint(covariant AnalogClockPainter oldDelegate) {
+    return oldDelegate.time != time ||
+        oldDelegate.colorScheme != colorScheme ||
+        oldDelegate.showSecondHand != showSecondHand;
   }
 }

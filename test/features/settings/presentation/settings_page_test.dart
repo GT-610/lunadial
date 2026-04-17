@@ -7,14 +7,15 @@ import 'package:provider/provider.dart';
 
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
-import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
+import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
 void main() {
   testWidgets(
-    'settings page renders fl_lib style sections and updates language',
+    'settings page renders fl_lib style sections and updates display settings',
     (tester) async {
       PackageInfo.setMockInitialValues(
         appName: 'LunaDial',
@@ -47,6 +48,7 @@ void main() {
 
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Dedicated Clock Mode'), findsOneWidget);
+      expect(find.text('Time Display'), findsOneWidget);
       expect(find.byType(fl.CardX), findsWidgets);
 
       await tester.tap(
@@ -59,6 +61,38 @@ void main() {
 
       expect(controller.settings.dedicatedClockModeEnabled, isTrue);
 
+      await tester.scrollUntilVisible(find.text('Time Format'), 200);
+      await tester.tap(find.text('Time Format'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('12-hour'));
+      await tester.pumpAndSettle();
+
+      expect(
+        controller.settings.timeFormatPreference,
+        TimeFormatPreference.twelveHour,
+      );
+
+      await tester.scrollUntilVisible(find.text('Show Seconds'), 200);
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(ListTile, 'Show Seconds'),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.settings.showSeconds, isFalse);
+
+      await tester.scrollUntilVisible(find.text('Leading Zero for Hour'), 200);
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(ListTile, 'Leading Zero for Hour'),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.settings.digitalClockLeadingZero, isFalse);
+
+      await tester.ensureVisible(find.text('Language'));
       await tester.tap(find.text('Language'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('English'));

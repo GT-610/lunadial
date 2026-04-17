@@ -48,7 +48,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dedicatedClockMode => '专用时钟模式';
 
   @override
-  String get dedicatedClockModeDescription => '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
+  String get dedicatedClockModeDescription =>
+      '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
 
   @override
   String get clockStyle => '时钟样式';
@@ -67,6 +68,36 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get clockDisplayModeDescription => '在数字时钟和模拟时钟之间切换';
+
+  @override
+  String get timeDisplay => '时间显示';
+
+  @override
+  String get timeFormat => '时间格式';
+
+  @override
+  String get timeFormatDescription => '选择小时的显示方式';
+
+  @override
+  String get systemTimeFormat => '跟随系统';
+
+  @override
+  String get twelveHourFormat => '12 小时制';
+
+  @override
+  String get twentyFourHourFormat => '24 小时制';
+
+  @override
+  String get showSeconds => '显示秒';
+
+  @override
+  String get showSecondsDescription => '控制数字时钟秒显示和模拟时钟秒针显示';
+
+  @override
+  String get digitalClockLeadingZero => '小时补零';
+
+  @override
+  String get digitalClockLeadingZeroDescription => '在需要时为数字时钟小时补前导零';
 
   @override
   String get digitalClockDescription => '使用数字格式而非模拟时钟';
@@ -131,10 +162,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSaveRetryFallback => '请稍后再试。';
 
   @override
-  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
+  String get appDescription =>
+      'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
 
   @override
-  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
+  String get contributorsDialogContent =>
+      'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
 
   @override
   String get language => '语言';
