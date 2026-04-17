@@ -55,6 +55,7 @@ void main() {
     for (final size in const [
       Size(390, 844),
       Size(480, 900),
+      Size(648, 626),
       Size(1280, 800),
     ]) {
       await pumpAnalogClock(tester, surfaceSize: size);
@@ -64,4 +65,15 @@ void main() {
       expect(tester.takeException(), isNull);
     }
   });
+
+  testWidgets(
+    'analog clock panel stays stable in draggable intermediate sizes',
+    (tester) async {
+      await pumpAnalogClock(tester, surfaceSize: const Size(648, 626));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AnalogClockPanel), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
