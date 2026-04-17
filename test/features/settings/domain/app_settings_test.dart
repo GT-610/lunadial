@@ -12,6 +12,8 @@ void main() {
         themeColor: Colors.black,
         themeMode: ThemeMode.dark,
         keepScreenOn: true,
+        dedicatedClockModeEnabled: true,
+        restoreFullscreenOnLaunch: true,
         clockDisplayMode: ClockDisplayMode.analog,
         localeOption: AppLocaleOption.zhCn,
       );
@@ -21,6 +23,14 @@ void main() {
       expect(decoded.themeColor, settings.themeColor);
       expect(decoded.themeMode, settings.themeMode);
       expect(decoded.keepScreenOn, settings.keepScreenOn);
+      expect(
+        decoded.dedicatedClockModeEnabled,
+        settings.dedicatedClockModeEnabled,
+      );
+      expect(
+        decoded.restoreFullscreenOnLaunch,
+        settings.restoreFullscreenOnLaunch,
+      );
       expect(decoded.clockDisplayMode, settings.clockDisplayMode);
       expect(decoded.localeOption, settings.localeOption);
     });
@@ -38,6 +48,14 @@ void main() {
       expect(settings.themeColor, defaults.themeColor);
       expect(settings.themeMode, defaults.themeMode);
       expect(settings.keepScreenOn, defaults.keepScreenOn);
+      expect(
+        settings.dedicatedClockModeEnabled,
+        defaults.dedicatedClockModeEnabled,
+      );
+      expect(
+        settings.restoreFullscreenOnLaunch,
+        defaults.restoreFullscreenOnLaunch,
+      );
       expect(settings.clockDisplayMode, defaults.clockDisplayMode);
       expect(settings.localeOption, defaults.localeOption);
     });
@@ -56,5 +74,24 @@ void main() {
       expect(settings.themeMode, ThemeMode.dark);
       expect(settings.localeOption, AppLocaleOption.en);
     });
+
+    test(
+      'launches to fullscreen only when dedicated mode and restore are on',
+      () {
+        expect(AppSettings.defaults().shouldLaunchToFullscreen, isFalse);
+
+        const settings = AppSettings(
+          themeColor: Colors.green,
+          themeMode: ThemeMode.system,
+          keepScreenOn: false,
+          dedicatedClockModeEnabled: true,
+          restoreFullscreenOnLaunch: true,
+          clockDisplayMode: ClockDisplayMode.digital,
+          localeOption: AppLocaleOption.system,
+        );
+
+        expect(settings.shouldLaunchToFullscreen, isTrue);
+      },
+    );
   });
 }

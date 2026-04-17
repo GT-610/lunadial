@@ -167,6 +167,18 @@ abstract class AppLocalizations {
   /// **'Prevent the screen from turning off'**
   String get keepScreenOnDescription;
 
+  /// Dedicated clock mode setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated Clock Mode'**
+  String get dedicatedClockMode;
+
+  /// Dedicated clock mode setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Remember fullscreen clock state on launch and reduce distractions for spare devices.'**
+  String get dedicatedClockModeDescription;
+
   /// Clock style settings section title
   ///
   /// In en, this message translates to:

@@ -47,6 +47,14 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "dedicatedClockMode": "专用时钟模式",
+  "@dedicatedClockMode": {
+    "description": "Dedicated clock mode setting title"
+  },
+  "dedicatedClockModeDescription": "记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。",
+  "@dedicatedClockModeDescription": {
+    "description": "Dedicated clock mode setting description"
+  },
   "clockStyle": "时钟样式",
   "@clockStyle": {
     "description": "Clock style settings section title"

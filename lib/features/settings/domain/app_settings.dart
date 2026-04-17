@@ -5,11 +5,13 @@ import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 
 @immutable
 class AppSettings {
-  static const int configVersion = 2;
+  static const int configVersion = 3;
 
   final Color themeColor;
   final ThemeMode themeMode;
   final bool keepScreenOn;
+  final bool dedicatedClockModeEnabled;
+  final bool restoreFullscreenOnLaunch;
   final ClockDisplayMode clockDisplayMode;
   final AppLocaleOption localeOption;
 
@@ -17,6 +19,8 @@ class AppSettings {
     required this.themeColor,
     required this.themeMode,
     required this.keepScreenOn,
+    required this.dedicatedClockModeEnabled,
+    required this.restoreFullscreenOnLaunch,
     required this.clockDisplayMode,
     required this.localeOption,
   });
@@ -26,6 +30,8 @@ class AppSettings {
       themeColor: Colors.green,
       themeMode: ThemeMode.system,
       keepScreenOn: false,
+      dedicatedClockModeEnabled: false,
+      restoreFullscreenOnLaunch: false,
       clockDisplayMode: ClockDisplayMode.digital,
       localeOption: AppLocaleOption.system,
     );
@@ -46,6 +52,14 @@ class AppSettings {
       keepScreenOn: normalizedMap['keepScreenOn'] is bool
           ? normalizedMap['keepScreenOn'] as bool
           : defaults.keepScreenOn,
+      dedicatedClockModeEnabled:
+          normalizedMap['dedicatedClockModeEnabled'] is bool
+          ? normalizedMap['dedicatedClockModeEnabled'] as bool
+          : defaults.dedicatedClockModeEnabled,
+      restoreFullscreenOnLaunch:
+          normalizedMap['restoreFullscreenOnLaunch'] is bool
+          ? normalizedMap['restoreFullscreenOnLaunch'] as bool
+          : defaults.restoreFullscreenOnLaunch,
       clockDisplayMode:
           _parseClockDisplayMode(
             normalizedMap['clockDisplayMode'],
@@ -62,6 +76,8 @@ class AppSettings {
     Color? themeColor,
     ThemeMode? themeMode,
     bool? keepScreenOn,
+    bool? dedicatedClockModeEnabled,
+    bool? restoreFullscreenOnLaunch,
     ClockDisplayMode? clockDisplayMode,
     AppLocaleOption? localeOption,
   }) {
@@ -69,10 +85,17 @@ class AppSettings {
       themeColor: themeColor ?? this.themeColor,
       themeMode: themeMode ?? this.themeMode,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+      dedicatedClockModeEnabled:
+          dedicatedClockModeEnabled ?? this.dedicatedClockModeEnabled,
+      restoreFullscreenOnLaunch:
+          restoreFullscreenOnLaunch ?? this.restoreFullscreenOnLaunch,
       clockDisplayMode: clockDisplayMode ?? this.clockDisplayMode,
       localeOption: localeOption ?? this.localeOption,
     );
   }
+
+  bool get shouldLaunchToFullscreen =>
+      dedicatedClockModeEnabled && restoreFullscreenOnLaunch;
 
   Map<String, dynamic> toMap() {
     return {
@@ -81,6 +104,8 @@ class AppSettings {
           '#${themeColor.toARGB32().toRadixString(16).padLeft(8, '0')}',
       'themeMode': themeMode.name,
       'keepScreenOn': keepScreenOn,
+      'dedicatedClockModeEnabled': dedicatedClockModeEnabled,
+      'restoreFullscreenOnLaunch': restoreFullscreenOnLaunch,
       'clockDisplayMode': clockDisplayMode.name,
       'selectedLocale': localeOption.storageValue,
     };
@@ -92,6 +117,8 @@ class AppSettings {
         other.themeColor == themeColor &&
         other.themeMode == themeMode &&
         other.keepScreenOn == keepScreenOn &&
+        other.dedicatedClockModeEnabled == dedicatedClockModeEnabled &&
+        other.restoreFullscreenOnLaunch == restoreFullscreenOnLaunch &&
         other.clockDisplayMode == clockDisplayMode &&
         other.localeOption == localeOption;
   }
@@ -101,6 +128,8 @@ class AppSettings {
     themeColor,
     themeMode,
     keepScreenOn,
+    dedicatedClockModeEnabled,
+    restoreFullscreenOnLaunch,
     clockDisplayMode,
     localeOption,
   );

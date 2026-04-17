@@ -47,6 +47,14 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
+  "dedicatedClockMode": "Dedicated Clock Mode",
+  "@dedicatedClockMode": {
+    "description": "Dedicated clock mode setting title"
+  },
+  "dedicatedClockModeDescription": "Remember fullscreen clock state on launch and reduce distractions for spare devices.",
+  "@dedicatedClockModeDescription": {
+    "description": "Dedicated clock mode setting description"
+  },
   "clockStyle": "Clock Style",
   "@clockStyle": {
     "description": "Clock style settings section title"

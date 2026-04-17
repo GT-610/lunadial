@@ -9,6 +9,7 @@ import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.
 import 'package:lunadial/features/clock/presentation/widgets/digital_clock_view.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
+import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
@@ -126,16 +127,91 @@ void main() {
 
     expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
   });
+
+  testWidgets('dedicated clock mode restores fullscreen on startup', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final settingsController = AppSettingsController(
+      repository: _MemorySettingsRepository(
+        initialSettings: const AppSettings(
+          themeColor: Colors.green,
+          themeMode: ThemeMode.system,
+          keepScreenOn: false,
+          dedicatedClockModeEnabled: true,
+          restoreFullscreenOnLaunch: true,
+          clockDisplayMode: ClockDisplayMode.digital,
+          localeOption: AppLocaleOption.system,
+        ),
+      ),
+    );
+    await settingsController.initialize();
+
+    await tester.pumpWidget(
+      _buildApp(
+        settingsController: settingsController,
+        sessionController: AppSessionController(
+          initialFullscreen:
+              settingsController.settings.shouldLaunchToFullscreen,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('fullscreen-surface')), findsOneWidget);
+    expect(find.byKey(const Key('enter-fullscreen-button')), findsNothing);
+  });
+
+  testWidgets('fullscreen is not restored when dedicated mode is disabled', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final settingsController = AppSettingsController(
+      repository: _MemorySettingsRepository(
+        initialSettings: const AppSettings(
+          themeColor: Colors.green,
+          themeMode: ThemeMode.system,
+          keepScreenOn: false,
+          dedicatedClockModeEnabled: false,
+          restoreFullscreenOnLaunch: true,
+          clockDisplayMode: ClockDisplayMode.digital,
+          localeOption: AppLocaleOption.system,
+        ),
+      ),
+    );
+    await settingsController.initialize();
+
+    await tester.pumpWidget(
+      _buildApp(
+        settingsController: settingsController,
+        sessionController: AppSessionController(
+          initialFullscreen:
+              settingsController.settings.shouldLaunchToFullscreen,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('fullscreen-surface')), findsNothing);
+    expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
+  });
 }
 
-Widget _buildApp({required AppSettingsController settingsController}) {
+Widget _buildApp({
+  required AppSettingsController settingsController,
+  AppSessionController? sessionController,
+}) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AppSettingsController>.value(
         value: settingsController,
       ),
-      ChangeNotifierProvider<AppSessionController>(
-        create: (_) => AppSessionController(),
+      ChangeNotifierProvider<AppSessionController>.value(
+        value: sessionController ?? AppSessionController(),
       ),
     ],
     child: MaterialApp(
@@ -150,7 +226,10 @@ Widget _buildApp({required AppSettingsController settingsController}) {
 }
 
 class _MemorySettingsRepository implements AppSettingsRepository {
-  AppSettings _settings = AppSettings.defaults();
+  _MemorySettingsRepository({AppSettings? initialSettings})
+    : _settings = initialSettings ?? AppSettings.defaults();
+
+  AppSettings _settings;
 
   @override
   Future<AppSettings> load() async => _settings;

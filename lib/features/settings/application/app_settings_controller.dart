@@ -38,6 +38,30 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setKeepScreenOn(bool value) =>
       _update(_settings.copyWith(keepScreenOn: value));
 
+  Future<void> setDedicatedClockModeEnabled(bool value) {
+    return _update(
+      _settings.copyWith(
+        dedicatedClockModeEnabled: value,
+        restoreFullscreenOnLaunch: value
+            ? _settings.restoreFullscreenOnLaunch
+            : false,
+      ),
+    );
+  }
+
+  Future<void> setRestoreFullscreenOnLaunch(bool value) {
+    if (!_settings.dedicatedClockModeEnabled && value) {
+      return _update(
+        _settings.copyWith(
+          dedicatedClockModeEnabled: true,
+          restoreFullscreenOnLaunch: true,
+        ),
+      );
+    }
+
+    return _update(_settings.copyWith(restoreFullscreenOnLaunch: value));
+  }
+
   Future<void> setClockDisplayMode(ClockDisplayMode mode) =>
       _update(_settings.copyWith(clockDisplayMode: mode));
 

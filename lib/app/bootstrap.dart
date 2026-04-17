@@ -37,7 +37,10 @@ Future<void> bootstrapApp() async {
           value: settingsController,
         ),
         ChangeNotifierProvider<AppSessionController>(
-          create: (_) => AppSessionController(),
+          create: (_) => AppSessionController(
+            initialFullscreen:
+                settingsController.settings.shouldLaunchToFullscreen,
+          ),
         ),
       ],
       child: const LunaDialApp(),

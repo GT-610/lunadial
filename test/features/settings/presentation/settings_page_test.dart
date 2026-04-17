@@ -46,7 +46,18 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Appearance'), findsOneWidget);
+      expect(find.text('Dedicated Clock Mode'), findsOneWidget);
       expect(find.byType(fl.CardX), findsWidgets);
+
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(ListTile, 'Dedicated Clock Mode'),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(controller.settings.dedicatedClockModeEnabled, isTrue);
 
       await tester.tap(find.text('Language'));
       await tester.pumpAndSettle();

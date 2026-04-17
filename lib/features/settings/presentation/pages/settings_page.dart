@@ -94,6 +94,12 @@ class _SettingsPageState extends State<SettingsPage> {
         title: translations.screen,
         child: _buildSettingsGroup([
           _buildSwitchTile(
+            title: translations.dedicatedClockMode,
+            subtitle: translations.dedicatedClockModeDescription,
+            value: settings.dedicatedClockModeEnabled,
+            onChanged: settingsController.setDedicatedClockModeEnabled,
+          ),
+          _buildSwitchTile(
             title: translations.keepScreenOn,
             subtitle: translations.keepScreenOnDescription,
             value: settings.keepScreenOn,
