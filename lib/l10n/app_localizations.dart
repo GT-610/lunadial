@@ -62,8 +62,7 @@ import 'app_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('zh'),
+    Locale('zh')
   ];
 
   /// Application title
@@ -188,6 +185,18 @@ abstract class AppLocalizations {
   /// **'Night & Burn-In'**
   String get nightAndBurnIn;
 
+  /// Night display behavior setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Night Display Mode'**
+  String get nightDisplayMode;
+
+  /// Night display behavior setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when LunaDial switches to its calmer low-distraction night presentation'**
+  String get nightDisplayModeDescription;
+
   /// Night mode setting title
   ///
   /// In en, this message translates to:
@@ -200,6 +209,78 @@ abstract class AppLocalizations {
   /// **'Use a calmer dark presentation designed for long landscape display sessions'**
   String get nightModeDescription;
 
+  /// Night display behavior option that disables night mode
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get nightModeOff;
+
+  /// Night display behavior option that always enables night mode
+  ///
+  /// In en, this message translates to:
+  /// **'Always On'**
+  String get nightModeOn;
+
+  /// Night display behavior option that follows a manual schedule
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get nightModeScheduled;
+
+  /// Night display behavior option that follows system dark mode
+  ///
+  /// In en, this message translates to:
+  /// **'Follow System Dark Mode'**
+  String get nightModeFollowSystem;
+
+  /// Description for night display off option
+  ///
+  /// In en, this message translates to:
+  /// **'Keep LunaDial in its regular display style'**
+  String get nightModeOffDescription;
+
+  /// Description for night display always on option
+  ///
+  /// In en, this message translates to:
+  /// **'Always use the calmer dark presentation for long-running clock display'**
+  String get nightModeOnDescription;
+
+  /// Description for scheduled night display option
+  ///
+  /// In en, this message translates to:
+  /// **'Switch automatically between day and night display using your chosen hours'**
+  String get nightModeScheduledDescription;
+
+  /// Description for system-following night display option
+  ///
+  /// In en, this message translates to:
+  /// **'Match the system light and dark appearance when the platform provides it'**
+  String get nightModeFollowSystemDescription;
+
+  /// Night mode schedule start time setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Night Mode Start Time'**
+  String get nightModeStartTime;
+
+  /// Night mode schedule start time description
+  ///
+  /// In en, this message translates to:
+  /// **'Start using the night presentation at this time each day'**
+  String get nightModeStartTimeDescription;
+
+  /// Night mode schedule end time setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Night Mode End Time'**
+  String get nightModeEndTime;
+
+  /// Night mode schedule end time description
+  ///
+  /// In en, this message translates to:
+  /// **'Return to the regular display style at this time each day'**
+  String get nightModeEndTimeDescription;
+
   /// Burn-in protection setting title
   ///
   /// In en, this message translates to:
@@ -209,7 +290,7 @@ abstract class AppLocalizations {
   /// Burn-in protection setting description
   ///
   /// In en, this message translates to:
-  /// **'Apply a subtle periodic shift to reduce long-term static image retention in night mode'**
+  /// **'Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention'**
   String get burnInProtectionDescription;
 
   /// Dedicated clock mode setting title
@@ -561,8 +642,7 @@ abstract class AppLocalizations {
   String get calendarHeaderFormat;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -571,26 +651,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'zh':
-      return AppLocalizationsZh();
+    case 'en': return AppLocalizationsEn();
+    case 'zh': return AppLocalizationsZh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

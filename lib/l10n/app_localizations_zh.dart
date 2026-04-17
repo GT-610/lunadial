@@ -48,11 +48,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get preferLandscapeInDedicatedMode => '专用模式优先横屏';
 
   @override
-  String get preferLandscapeInDedicatedModeDescription =>
-      '在专用时钟模式下优先保持 Android 设备横屏展示';
+  String get preferLandscapeInDedicatedModeDescription => '在专用时钟模式下优先保持 Android 设备横屏展示';
 
   @override
   String get nightAndBurnIn => '夜间与防烧屏';
+
+  @override
+  String get nightDisplayMode => '夜间显示策略';
+
+  @override
+  String get nightDisplayModeDescription => '选择 LunaDial 何时切换到更克制、更低干扰的夜间展示风格';
 
   @override
   String get nightMode => '夜间模式';
@@ -61,17 +66,52 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nightModeDescription => '启用更克制的暗色常驻展示风格，更适合横屏长期摆放';
 
   @override
+  String get nightModeOff => '关闭';
+
+  @override
+  String get nightModeOn => '始终开启';
+
+  @override
+  String get nightModeScheduled => '定时切换';
+
+  @override
+  String get nightModeFollowSystem => '跟随系统深色模式';
+
+  @override
+  String get nightModeOffDescription => '保持常规显示风格，不自动进入夜间展示';
+
+  @override
+  String get nightModeOnDescription => '始终使用更克制的暗色常驻展示风格';
+
+  @override
+  String get nightModeScheduledDescription => '按设定时段自动在日间与夜间展示之间切换';
+
+  @override
+  String get nightModeFollowSystemDescription => '在系统支持亮暗主题切换时，跟随系统深色模式自动切换';
+
+  @override
+  String get nightModeStartTime => '夜间开始时间';
+
+  @override
+  String get nightModeStartTimeDescription => '每天从这个时间开始使用夜间展示风格';
+
+  @override
+  String get nightModeEndTime => '夜间结束时间';
+
+  @override
+  String get nightModeEndTimeDescription => '每天在这个时间恢复常规显示风格';
+
+  @override
   String get burnInProtection => '防烧屏位移';
 
   @override
-  String get burnInProtectionDescription => '在夜间模式下进行轻微周期位移，降低静态画面长期停留的风险';
+  String get burnInProtectionDescription => '在夜间展示实际生效时进行轻微周期位移，降低静态画面长期停留的风险';
 
   @override
   String get dedicatedClockMode => '专用时钟模式';
 
   @override
-  String get dedicatedClockModeDescription =>
-      '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
+  String get dedicatedClockModeDescription => '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
 
   @override
   String get clockStyle => '时钟样式';
@@ -184,12 +224,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSaveRetryFallback => '请稍后再试。';
 
   @override
-  String get appDescription =>
-      'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
+  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
 
   @override
-  String get contributorsDialogContent =>
-      'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
+  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
 
   @override
   String get language => '语言';

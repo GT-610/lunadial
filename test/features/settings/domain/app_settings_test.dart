@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 void main() {
@@ -20,7 +21,9 @@ void main() {
         timeFormatPreference: TimeFormatPreference.twelveHour,
         showSeconds: false,
         digitalClockLeadingZero: false,
-        nightModeEnabled: true,
+        nightModeBehavior: NightModeBehavior.scheduled,
+        nightModeStartTime: TimeOfDay(hour: 21, minute: 30),
+        nightModeEndTime: TimeOfDay(hour: 6, minute: 45),
         burnInProtectionEnabled: false,
         preferLandscapeInDedicatedMode: false,
       );
@@ -43,7 +46,9 @@ void main() {
       expect(decoded.timeFormatPreference, settings.timeFormatPreference);
       expect(decoded.showSeconds, settings.showSeconds);
       expect(decoded.digitalClockLeadingZero, settings.digitalClockLeadingZero);
-      expect(decoded.nightModeEnabled, settings.nightModeEnabled);
+      expect(decoded.nightModeBehavior, settings.nightModeBehavior);
+      expect(decoded.nightModeStartTime, settings.nightModeStartTime);
+      expect(decoded.nightModeEndTime, settings.nightModeEndTime);
       expect(decoded.burnInProtectionEnabled, settings.burnInProtectionEnabled);
       expect(
         decoded.preferLandscapeInDedicatedMode,
@@ -80,7 +85,9 @@ void main() {
         settings.digitalClockLeadingZero,
         defaults.digitalClockLeadingZero,
       );
-      expect(settings.nightModeEnabled, defaults.nightModeEnabled);
+      expect(settings.nightModeBehavior, defaults.nightModeBehavior);
+      expect(settings.nightModeStartTime, defaults.nightModeStartTime);
+      expect(settings.nightModeEndTime, defaults.nightModeEndTime);
       expect(
         settings.burnInProtectionEnabled,
         defaults.burnInProtectionEnabled,
@@ -122,7 +129,9 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
-          nightModeEnabled: false,
+          nightModeBehavior: NightModeBehavior.off,
+          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
           burnInProtectionEnabled: true,
           preferLandscapeInDedicatedMode: true,
         );
@@ -146,7 +155,9 @@ void main() {
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);
-      expect(settings.nightModeEnabled, isFalse);
+      expect(settings.nightModeBehavior, NightModeBehavior.off);
+      expect(settings.nightModeStartTime, const TimeOfDay(hour: 22, minute: 0));
+      expect(settings.nightModeEndTime, const TimeOfDay(hour: 7, minute: 0));
       expect(settings.burnInProtectionEnabled, isTrue);
       expect(settings.preferLandscapeInDedicatedMode, isTrue);
     });
@@ -167,9 +178,17 @@ void main() {
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);
-      expect(settings.nightModeEnabled, isFalse);
+      expect(settings.nightModeBehavior, NightModeBehavior.off);
       expect(settings.burnInProtectionEnabled, isTrue);
       expect(settings.preferLandscapeInDedicatedMode, isTrue);
+    });
+
+    test('migrates legacy night mode bool into behavior enum', () {
+      final enabledSettings = AppSettings.fromMap({'nightModeEnabled': true});
+      final disabledSettings = AppSettings.fromMap({'nightModeEnabled': false});
+
+      expect(enabledSettings.nightModeBehavior, NightModeBehavior.on);
+      expect(disabledSettings.nightModeBehavior, NightModeBehavior.off);
     });
   });
 }

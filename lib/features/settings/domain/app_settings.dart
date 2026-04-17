@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 @immutable
@@ -18,7 +19,9 @@ class AppSettings {
   final TimeFormatPreference timeFormatPreference;
   final bool showSeconds;
   final bool digitalClockLeadingZero;
-  final bool nightModeEnabled;
+  final NightModeBehavior nightModeBehavior;
+  final TimeOfDay nightModeStartTime;
+  final TimeOfDay nightModeEndTime;
   final bool burnInProtectionEnabled;
   final bool preferLandscapeInDedicatedMode;
 
@@ -33,7 +36,9 @@ class AppSettings {
     required this.timeFormatPreference,
     required this.showSeconds,
     required this.digitalClockLeadingZero,
-    required this.nightModeEnabled,
+    required this.nightModeBehavior,
+    required this.nightModeStartTime,
+    required this.nightModeEndTime,
     required this.burnInProtectionEnabled,
     required this.preferLandscapeInDedicatedMode,
   });
@@ -50,7 +55,9 @@ class AppSettings {
       timeFormatPreference: TimeFormatPreference.system,
       showSeconds: true,
       digitalClockLeadingZero: true,
-      nightModeEnabled: false,
+      nightModeBehavior: NightModeBehavior.off,
+      nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+      nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
       burnInProtectionEnabled: true,
       preferLandscapeInDedicatedMode: true,
     );
@@ -96,9 +103,13 @@ class AppSettings {
       digitalClockLeadingZero: normalizedMap['digitalClockLeadingZero'] is bool
           ? normalizedMap['digitalClockLeadingZero'] as bool
           : defaults.digitalClockLeadingZero,
-      nightModeEnabled: normalizedMap['nightModeEnabled'] is bool
-          ? normalizedMap['nightModeEnabled'] as bool
-          : defaults.nightModeEnabled,
+      nightModeBehavior: _parseNightModeBehavior(normalizedMap),
+      nightModeStartTime:
+          _parseTimeOfDay(normalizedMap['nightModeStartTime']) ??
+          defaults.nightModeStartTime,
+      nightModeEndTime:
+          _parseTimeOfDay(normalizedMap['nightModeEndTime']) ??
+          defaults.nightModeEndTime,
       burnInProtectionEnabled: normalizedMap['burnInProtectionEnabled'] is bool
           ? normalizedMap['burnInProtectionEnabled'] as bool
           : defaults.burnInProtectionEnabled,
@@ -120,7 +131,9 @@ class AppSettings {
     TimeFormatPreference? timeFormatPreference,
     bool? showSeconds,
     bool? digitalClockLeadingZero,
-    bool? nightModeEnabled,
+    NightModeBehavior? nightModeBehavior,
+    TimeOfDay? nightModeStartTime,
+    TimeOfDay? nightModeEndTime,
     bool? burnInProtectionEnabled,
     bool? preferLandscapeInDedicatedMode,
   }) {
@@ -138,7 +151,9 @@ class AppSettings {
       showSeconds: showSeconds ?? this.showSeconds,
       digitalClockLeadingZero:
           digitalClockLeadingZero ?? this.digitalClockLeadingZero,
-      nightModeEnabled: nightModeEnabled ?? this.nightModeEnabled,
+      nightModeBehavior: nightModeBehavior ?? this.nightModeBehavior,
+      nightModeStartTime: nightModeStartTime ?? this.nightModeStartTime,
+      nightModeEndTime: nightModeEndTime ?? this.nightModeEndTime,
       burnInProtectionEnabled:
           burnInProtectionEnabled ?? this.burnInProtectionEnabled,
       preferLandscapeInDedicatedMode:
@@ -163,7 +178,9 @@ class AppSettings {
       'timeFormatPreference': timeFormatPreference.storageValue,
       'showSeconds': showSeconds,
       'digitalClockLeadingZero': digitalClockLeadingZero,
-      'nightModeEnabled': nightModeEnabled,
+      'nightModeBehavior': nightModeBehavior.storageValue,
+      'nightModeStartTime': _serializeTimeOfDay(nightModeStartTime),
+      'nightModeEndTime': _serializeTimeOfDay(nightModeEndTime),
       'burnInProtectionEnabled': burnInProtectionEnabled,
       'preferLandscapeInDedicatedMode': preferLandscapeInDedicatedMode,
     };
@@ -182,7 +199,9 @@ class AppSettings {
         other.timeFormatPreference == timeFormatPreference &&
         other.showSeconds == showSeconds &&
         other.digitalClockLeadingZero == digitalClockLeadingZero &&
-        other.nightModeEnabled == nightModeEnabled &&
+        other.nightModeBehavior == nightModeBehavior &&
+        other.nightModeStartTime == nightModeStartTime &&
+        other.nightModeEndTime == nightModeEndTime &&
         other.burnInProtectionEnabled == burnInProtectionEnabled &&
         other.preferLandscapeInDedicatedMode == preferLandscapeInDedicatedMode;
   }
@@ -199,7 +218,9 @@ class AppSettings {
     timeFormatPreference,
     showSeconds,
     digitalClockLeadingZero,
-    nightModeEnabled,
+    nightModeBehavior,
+    nightModeStartTime,
+    nightModeEndTime,
     burnInProtectionEnabled,
     preferLandscapeInDedicatedMode,
   );
@@ -276,5 +297,49 @@ class AppSettings {
     }
 
     return null;
+  }
+
+  static NightModeBehavior _parseNightModeBehavior(Map<String, dynamic> map) {
+    if (map['nightModeBehavior'] != null) {
+      return NightModeBehaviorStorage.fromStorageValue(
+        map['nightModeBehavior'],
+      );
+    }
+
+    if (map['nightModeEnabled'] is bool) {
+      return (map['nightModeEnabled'] as bool)
+          ? NightModeBehavior.on
+          : NightModeBehavior.off;
+    }
+
+    return AppSettings.defaults().nightModeBehavior;
+  }
+
+  static TimeOfDay? _parseTimeOfDay(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+
+    final segments = value.split(':');
+    if (segments.length != 2) {
+      return null;
+    }
+
+    final hour = int.tryParse(segments[0]);
+    final minute = int.tryParse(segments[1]);
+    if (hour == null || minute == null) {
+      return null;
+    }
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return null;
+    }
+
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
+  static String _serializeTimeOfDay(TimeOfDay value) {
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }

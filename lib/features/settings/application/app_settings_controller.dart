@@ -6,6 +6,7 @@ import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 enum AppSettingsSaveState { idle, saving, error }
@@ -78,8 +79,14 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setDigitalClockLeadingZero(bool value) =>
       _update(_settings.copyWith(digitalClockLeadingZero: value));
 
-  Future<void> setNightModeEnabled(bool value) =>
-      _update(_settings.copyWith(nightModeEnabled: value));
+  Future<void> setNightModeBehavior(NightModeBehavior behavior) =>
+      _update(_settings.copyWith(nightModeBehavior: behavior));
+
+  Future<void> setNightModeStartTime(TimeOfDay time) =>
+      _update(_settings.copyWith(nightModeStartTime: time));
+
+  Future<void> setNightModeEndTime(TimeOfDay time) =>
+      _update(_settings.copyWith(nightModeEndTime: time));
 
   Future<void> setBurnInProtectionEnabled(bool value) =>
       _update(_settings.copyWith(burnInProtectionEnabled: value));
