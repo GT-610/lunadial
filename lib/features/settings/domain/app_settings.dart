@@ -20,6 +20,7 @@ class AppSettings {
   final bool digitalClockLeadingZero;
   final bool nightModeEnabled;
   final bool burnInProtectionEnabled;
+  final bool preferLandscapeInDedicatedMode;
 
   const AppSettings({
     required this.themeColor,
@@ -34,6 +35,7 @@ class AppSettings {
     required this.digitalClockLeadingZero,
     required this.nightModeEnabled,
     required this.burnInProtectionEnabled,
+    required this.preferLandscapeInDedicatedMode,
   });
 
   factory AppSettings.defaults() {
@@ -50,6 +52,7 @@ class AppSettings {
       digitalClockLeadingZero: true,
       nightModeEnabled: false,
       burnInProtectionEnabled: true,
+      preferLandscapeInDedicatedMode: true,
     );
   }
 
@@ -99,6 +102,10 @@ class AppSettings {
       burnInProtectionEnabled: normalizedMap['burnInProtectionEnabled'] is bool
           ? normalizedMap['burnInProtectionEnabled'] as bool
           : defaults.burnInProtectionEnabled,
+      preferLandscapeInDedicatedMode:
+          normalizedMap['preferLandscapeInDedicatedMode'] is bool
+          ? normalizedMap['preferLandscapeInDedicatedMode'] as bool
+          : defaults.preferLandscapeInDedicatedMode,
     );
   }
 
@@ -115,6 +122,7 @@ class AppSettings {
     bool? digitalClockLeadingZero,
     bool? nightModeEnabled,
     bool? burnInProtectionEnabled,
+    bool? preferLandscapeInDedicatedMode,
   }) {
     return AppSettings(
       themeColor: themeColor ?? this.themeColor,
@@ -133,6 +141,8 @@ class AppSettings {
       nightModeEnabled: nightModeEnabled ?? this.nightModeEnabled,
       burnInProtectionEnabled:
           burnInProtectionEnabled ?? this.burnInProtectionEnabled,
+      preferLandscapeInDedicatedMode:
+          preferLandscapeInDedicatedMode ?? this.preferLandscapeInDedicatedMode,
     );
   }
 
@@ -155,6 +165,7 @@ class AppSettings {
       'digitalClockLeadingZero': digitalClockLeadingZero,
       'nightModeEnabled': nightModeEnabled,
       'burnInProtectionEnabled': burnInProtectionEnabled,
+      'preferLandscapeInDedicatedMode': preferLandscapeInDedicatedMode,
     };
   }
 
@@ -172,7 +183,8 @@ class AppSettings {
         other.showSeconds == showSeconds &&
         other.digitalClockLeadingZero == digitalClockLeadingZero &&
         other.nightModeEnabled == nightModeEnabled &&
-        other.burnInProtectionEnabled == burnInProtectionEnabled;
+        other.burnInProtectionEnabled == burnInProtectionEnabled &&
+        other.preferLandscapeInDedicatedMode == preferLandscapeInDedicatedMode;
   }
 
   @override
@@ -189,6 +201,7 @@ class AppSettings {
     digitalClockLeadingZero,
     nightModeEnabled,
     burnInProtectionEnabled,
+    preferLandscapeInDedicatedMode,
   );
 
   static Map<String, dynamic> _migrateLegacyMap(

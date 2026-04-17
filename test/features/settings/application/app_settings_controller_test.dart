@@ -70,6 +70,16 @@ void main() {
     expect(controller.settings.nightModeEnabled, isTrue);
     expect(controller.settings.burnInProtectionEnabled, isFalse);
   });
+
+  test('dedicated landscape preference updates through controller', () async {
+    final repository = _FailingSettingsRepository()..shouldFail = false;
+    final controller = AppSettingsController(repository: repository);
+    await controller.initialize();
+
+    await controller.setPreferLandscapeInDedicatedMode(false);
+
+    expect(controller.settings.preferLandscapeInDedicatedMode, isFalse);
+  });
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {

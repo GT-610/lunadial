@@ -48,6 +48,7 @@ void main() {
 
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Dedicated Clock Mode'), findsOneWidget);
+      expect(find.text('Prefer Landscape in Dedicated Mode'), findsOneWidget);
       expect(find.text('Time Display'), findsOneWidget);
       expect(find.text('Night & Burn-In'), findsOneWidget);
       expect(find.byType(fl.CardX), findsWidgets);
@@ -61,6 +62,22 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(controller.settings.dedicatedClockModeEnabled, isTrue);
+
+      await tester.scrollUntilVisible(
+        find.text('Prefer Landscape in Dedicated Mode'),
+        200,
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(
+            ListTile,
+            'Prefer Landscape in Dedicated Mode',
+          ),
+          matching: find.byType(Switch),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.settings.preferLandscapeInDedicatedMode, isFalse);
 
       await tester.scrollUntilVisible(find.text('Time Format'), 200);
       await tester.tap(find.text('Time Format'));

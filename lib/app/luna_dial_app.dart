@@ -3,6 +3,7 @@ import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:lunadial/app/view/device_display_sync.dart';
 import 'package:lunadial/app/view/wakelock_sync.dart';
 import 'package:lunadial/features/clock/presentation/pages/clock_home_page.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
@@ -20,33 +21,35 @@ class LunaDialApp extends StatelessWidget {
         final settings = settingsController.settings;
 
         return WakelockSync(
-          child: MaterialApp(
-            key: ValueKey(settings.localeOption.storageValue),
-            debugShowCheckedModeBanner: false,
-            onGenerateTitle: (context) =>
-                AppLocalizations.of(context)!.appTitle,
-            localizationsDelegates: const [
-              LibLocalizations.delegate,
-              ...AppLocalizations.localizationsDelegates,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: settings.localeOption.locale,
-            localeListResolutionCallback: _resolveLocale,
-            themeMode: settings.themeMode,
-            theme: _buildTheme(
-              brightness: Brightness.light,
-              seedColor: settings.themeColor,
-            ).fixWindowsFont,
-            darkTheme: _buildTheme(
-              brightness: Brightness.dark,
-              seedColor: settings.themeColor,
-            ).fixWindowsFont,
-            builder: (context, child) {
-              return _LibL10nScope(
-                child: AppErrorShell(child: child ?? const SizedBox.shrink()),
-              );
-            },
-            home: const ClockHomePage(),
+          child: DeviceDisplaySync(
+            child: MaterialApp(
+              key: ValueKey(settings.localeOption.storageValue),
+              debugShowCheckedModeBanner: false,
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context)!.appTitle,
+              localizationsDelegates: const [
+                LibLocalizations.delegate,
+                ...AppLocalizations.localizationsDelegates,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: settings.localeOption.locale,
+              localeListResolutionCallback: _resolveLocale,
+              themeMode: settings.themeMode,
+              theme: _buildTheme(
+                brightness: Brightness.light,
+                seedColor: settings.themeColor,
+              ).fixWindowsFont,
+              darkTheme: _buildTheme(
+                brightness: Brightness.dark,
+                seedColor: settings.themeColor,
+              ).fixWindowsFont,
+              builder: (context, child) {
+                return _LibL10nScope(
+                  child: AppErrorShell(child: child ?? const SizedBox.shrink()),
+                );
+              },
+              home: const ClockHomePage(),
+            ),
           ),
         );
       },

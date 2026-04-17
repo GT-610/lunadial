@@ -22,6 +22,7 @@ void main() {
         digitalClockLeadingZero: false,
         nightModeEnabled: true,
         burnInProtectionEnabled: false,
+        preferLandscapeInDedicatedMode: false,
       );
 
       final decoded = AppSettings.fromMap(settings.toMap());
@@ -44,6 +45,10 @@ void main() {
       expect(decoded.digitalClockLeadingZero, settings.digitalClockLeadingZero);
       expect(decoded.nightModeEnabled, settings.nightModeEnabled);
       expect(decoded.burnInProtectionEnabled, settings.burnInProtectionEnabled);
+      expect(
+        decoded.preferLandscapeInDedicatedMode,
+        settings.preferLandscapeInDedicatedMode,
+      );
     });
 
     test('falls back to defaults for invalid values', () {
@@ -80,6 +85,10 @@ void main() {
         settings.burnInProtectionEnabled,
         defaults.burnInProtectionEnabled,
       );
+      expect(
+        settings.preferLandscapeInDedicatedMode,
+        defaults.preferLandscapeInDedicatedMode,
+      );
     });
 
     test('migrates legacy digital clock flag', () {
@@ -115,6 +124,7 @@ void main() {
           digitalClockLeadingZero: true,
           nightModeEnabled: false,
           burnInProtectionEnabled: true,
+          preferLandscapeInDedicatedMode: true,
         );
 
         expect(settings.shouldLaunchToFullscreen, isTrue);
@@ -138,6 +148,7 @@ void main() {
       expect(settings.digitalClockLeadingZero, isTrue);
       expect(settings.nightModeEnabled, isFalse);
       expect(settings.burnInProtectionEnabled, isTrue);
+      expect(settings.preferLandscapeInDedicatedMode, isTrue);
     });
 
     test('preserves clock display mode for pre-release v3 configs', () {
@@ -158,6 +169,7 @@ void main() {
       expect(settings.digitalClockLeadingZero, isTrue);
       expect(settings.nightModeEnabled, isFalse);
       expect(settings.burnInProtectionEnabled, isTrue);
+      expect(settings.preferLandscapeInDedicatedMode, isTrue);
     });
   });
 }

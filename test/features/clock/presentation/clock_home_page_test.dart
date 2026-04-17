@@ -177,6 +177,7 @@ void main() {
           digitalClockLeadingZero: true,
           nightModeEnabled: false,
           burnInProtectionEnabled: true,
+          preferLandscapeInDedicatedMode: true,
         ),
       ),
     );
@@ -218,6 +219,7 @@ void main() {
           digitalClockLeadingZero: true,
           nightModeEnabled: false,
           burnInProtectionEnabled: true,
+          preferLandscapeInDedicatedMode: true,
         ),
       ),
     );
@@ -287,6 +289,7 @@ void main() {
             digitalClockLeadingZero: true,
             nightModeEnabled: true,
             burnInProtectionEnabled: true,
+            preferLandscapeInDedicatedMode: true,
           ),
         ),
       );

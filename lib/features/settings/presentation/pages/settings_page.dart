@@ -106,6 +106,12 @@ class _SettingsPageState extends State<SettingsPage> {
             value: settings.keepScreenOn,
             onChanged: settingsController.setKeepScreenOn,
           ),
+          _buildSwitchTile(
+            title: translations.preferLandscapeInDedicatedMode,
+            subtitle: translations.preferLandscapeInDedicatedModeDescription,
+            value: settings.preferLandscapeInDedicatedMode,
+            onChanged: settingsController.setPreferLandscapeInDedicatedMode,
+          ),
         ]),
       ),
       _SettingsSection(
