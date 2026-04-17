@@ -78,7 +78,10 @@ class _ClockPainter extends CustomPainter {
       final textPainter = TextPainter(
         text: TextSpan(
           text: i == 0 ? '12' : '$i',
-          style: TextStyle(color: onSurface, fontSize: 24),
+          style: TextStyle(
+            color: onSurface,
+            fontSize: (radius * 0.18).clamp(12.0, 24.0),
+          ),
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,

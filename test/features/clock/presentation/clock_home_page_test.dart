@@ -56,6 +56,32 @@ void main() {
     expect(find.byType(AnalogClockPanel), findsOneWidget);
   });
 
+  testWidgets(
+    'clock home page stays stable when switching to analog at boundary window sizes',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(648, 626));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final settingsController = AppSettingsController(
+        repository: _MemorySettingsRepository(),
+      );
+      await settingsController.initialize();
+
+      await tester.pumpWidget(
+        _buildApp(settingsController: settingsController),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DigitalClockView), findsOneWidget);
+
+      await settingsController.setClockDisplayMode(ClockDisplayMode.analog);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AnalogClockPanel), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('digital clock remains stable on a small screen', (tester) async {
     await tester.binding.setSurfaceSize(const Size(320, 480));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -198,6 +224,34 @@ void main() {
 
     expect(find.byKey(const Key('fullscreen-surface')), findsNothing);
     expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
+  });
+
+  testWidgets('clock home page stays stable across responsive breakpoints', (
+    tester,
+  ) async {
+    final settingsController = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await settingsController.initialize();
+
+    for (final size in const [
+      Size(320, 568),
+      Size(390, 844),
+      Size(800, 1280),
+      Size(1280, 800),
+    ]) {
+      await tester.binding.setSurfaceSize(size);
+
+      await tester.pumpWidget(
+        _buildApp(settingsController: settingsController),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ClockHomePage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    }
+
+    addTearDown(() => tester.binding.setSurfaceSize(null));
   });
 }
 

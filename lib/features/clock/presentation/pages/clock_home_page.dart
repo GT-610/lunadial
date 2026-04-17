@@ -63,28 +63,10 @@ class _ClockHomePageState extends State<ClockHomePage> {
     final settings = context.watch<AppSettingsController>().settings;
     final session = context.watch<AppSessionController>();
     final translations = AppLocalizations.of(context)!;
-    final size = MediaQuery.sizeOf(context);
-    final fontSize = calculateDigitalFontSize(size);
 
     return AnimatedBuilder(
       animation: _clockController,
       builder: (context, _) {
-        final clockContent =
-            settings.clockDisplayMode == ClockDisplayMode.digital
-            ? DigitalClockView(
-                currentTime: _clockController.currentTime,
-                fontSize: fontSize,
-              )
-            : AnalogClockPanel(
-                currentTime: _clockController.currentTime,
-                focusedDay: _clockController.focusedDay,
-                selectedDay: _clockController.selectedDay,
-                onDaySelected: _clockController.selectDay,
-                onPageChanged: _clockController.focusDay,
-              );
-
-        final content = FadeIn(child: clockContent);
-
         if (session.isFullscreen) {
           return Scaffold(
             backgroundColor: Colors.black,
@@ -92,18 +74,25 @@ class _ClockHomePageState extends State<ClockHomePage> {
               key: const Key('fullscreen-surface'),
               onTap: _revealFullscreenButton,
               behavior: HitTestBehavior.opaque,
-              child: Stack(
-                children: [
-                  Center(child: content),
-                  Positioned(
-                    top: 20,
-                    right: 20,
-                    child: FullscreenExitButton(
-                      controller: _fullscreenExitController,
-                      onExit: () => _exitFullscreen(session),
-                    ),
-                  ),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    children: [
+                      _buildResponsiveClockContent(
+                        constraints.biggest,
+                        settings.clockDisplayMode,
+                      ),
+                      Positioned(
+                        top: 20,
+                        right: 20,
+                        child: FullscreenExitButton(
+                          controller: _fullscreenExitController,
+                          onExit: () => _exitFullscreen(session),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           );
@@ -140,9 +129,37 @@ class _ClockHomePageState extends State<ClockHomePage> {
             ],
           ),
           backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
-          body: Center(child: content),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return _buildResponsiveClockContent(
+                constraints.biggest,
+                settings.clockDisplayMode,
+              );
+            },
+          ),
         );
       },
     );
+  }
+
+  Widget _buildResponsiveClockContent(
+    Size availableSize,
+    ClockDisplayMode displayMode,
+  ) {
+    final clockContent = displayMode == ClockDisplayMode.digital
+        ? DigitalClockView(
+            currentTime: _clockController.currentTime,
+            layout: resolveDigitalClockLayout(availableSize),
+          )
+        : AnalogClockPanel(
+            currentTime: _clockController.currentTime,
+            focusedDay: _clockController.focusedDay,
+            selectedDay: _clockController.selectedDay,
+            onDaySelected: _clockController.selectDay,
+            onPageChanged: _clockController.focusDay,
+            layout: resolveAnalogClockLayout(availableSize),
+          );
+
+    return FadeIn(child: clockContent);
   }
 }
