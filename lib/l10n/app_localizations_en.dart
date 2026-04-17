@@ -45,6 +45,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepScreenOnDescription => 'Prevent the screen from turning off';
 
   @override
+  String get dedicatedClockMode => 'Dedicated Clock Mode';
+
+  @override
+  String get dedicatedClockModeDescription => 'Remember fullscreen clock state on launch and reduce distractions for spare devices.';
+
+  @override
   String get clockStyle => 'Clock Style';
 
   @override

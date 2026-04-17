@@ -36,15 +36,26 @@ class _ClockHomePageState extends State<ClockHomePage> {
   void _enterFullscreen(AppSessionController session) {
     _fullscreenExitController.showTemporarily();
     session.setFullscreen(true);
+    _persistDedicatedClockState(true);
   }
 
   void _exitFullscreen(AppSessionController session) {
     _fullscreenExitController.hide();
     session.setFullscreen(false);
+    _persistDedicatedClockState(false);
   }
 
   void _revealFullscreenButton() {
     _fullscreenExitController.showTemporarily();
+  }
+
+  void _persistDedicatedClockState(bool isFullscreen) {
+    final settingsController = context.read<AppSettingsController>();
+    if (!settingsController.settings.dedicatedClockModeEnabled) {
+      return;
+    }
+
+    settingsController.setRestoreFullscreenOnLaunch(isFullscreen);
   }
 
   @override

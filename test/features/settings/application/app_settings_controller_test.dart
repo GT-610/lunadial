@@ -24,6 +24,22 @@ void main() {
     expect(controller.saveState, AppSettingsSaveState.idle);
     expect(controller.saveError, isNull);
   });
+
+  test(
+    'disabling dedicated clock mode clears fullscreen restore state',
+    () async {
+      final repository = _FailingSettingsRepository()..shouldFail = false;
+      final controller = AppSettingsController(repository: repository);
+      await controller.initialize();
+
+      await controller.setDedicatedClockModeEnabled(true);
+      await controller.setRestoreFullscreenOnLaunch(true);
+      await controller.setDedicatedClockModeEnabled(false);
+
+      expect(controller.settings.dedicatedClockModeEnabled, isFalse);
+      expect(controller.settings.restoreFullscreenOnLaunch, isFalse);
+    },
+  );
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {

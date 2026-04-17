@@ -45,6 +45,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get keepScreenOnDescription => '防止屏幕关闭';
 
   @override
+  String get dedicatedClockMode => '专用时钟模式';
+
+  @override
+  String get dedicatedClockModeDescription => '记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。';
+
+  @override
   String get clockStyle => '时钟样式';
 
   @override
