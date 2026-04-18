@@ -13,6 +13,7 @@ import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
@@ -175,7 +176,9 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
-          nightModeEnabled: false,
+          nightModeBehavior: NightModeBehavior.off,
+          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
           burnInProtectionEnabled: true,
           preferLandscapeInDedicatedMode: true,
         ),
@@ -217,7 +220,9 @@ void main() {
           timeFormatPreference: TimeFormatPreference.system,
           showSeconds: true,
           digitalClockLeadingZero: true,
-          nightModeEnabled: false,
+          nightModeBehavior: NightModeBehavior.off,
+          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
           burnInProtectionEnabled: true,
           preferLandscapeInDedicatedMode: true,
         ),
@@ -287,7 +292,9 @@ void main() {
             timeFormatPreference: TimeFormatPreference.system,
             showSeconds: true,
             digitalClockLeadingZero: true,
-            nightModeEnabled: true,
+            nightModeBehavior: NightModeBehavior.on,
+            nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+            nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
             burnInProtectionEnabled: true,
             preferLandscapeInDedicatedMode: true,
           ),

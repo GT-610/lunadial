@@ -9,6 +9,7 @@ import 'package:lunadial/features/settings/application/app_settings_controller.d
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
@@ -110,15 +111,17 @@ void main() {
       await tester.pumpAndSettle();
       expect(controller.settings.digitalClockLeadingZero, isFalse);
 
-      await tester.scrollUntilVisible(find.text('Night Mode'), 200);
-      await tester.tap(
-        find.descendant(
-          of: find.widgetWithText(ListTile, 'Night Mode'),
-          matching: find.byType(Switch),
-        ),
-      );
+      await tester.scrollUntilVisible(find.text('Night Display Mode'), 200);
+      await tester.tap(find.text('Night Display Mode'));
       await tester.pumpAndSettle();
-      expect(controller.settings.nightModeEnabled, isTrue);
+      await tester.tap(find.text('Scheduled'));
+      await tester.pumpAndSettle();
+      expect(
+        controller.settings.nightModeBehavior,
+        NightModeBehavior.scheduled,
+      );
+      expect(find.text('Night Mode Start Time'), findsOneWidget);
+      expect(find.text('Night Mode End Time'), findsOneWidget);
 
       await tester.scrollUntilVisible(find.text('Burn-In Protection'), 200);
       await tester.tap(

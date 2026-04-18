@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 void main() {
@@ -64,10 +65,22 @@ void main() {
     final controller = AppSettingsController(repository: repository);
     await controller.initialize();
 
-    await controller.setNightModeEnabled(true);
+    await controller.setNightModeBehavior(NightModeBehavior.scheduled);
+    await controller.setNightModeStartTime(
+      const TimeOfDay(hour: 21, minute: 0),
+    );
+    await controller.setNightModeEndTime(const TimeOfDay(hour: 6, minute: 30));
     await controller.setBurnInProtectionEnabled(false);
 
-    expect(controller.settings.nightModeEnabled, isTrue);
+    expect(controller.settings.nightModeBehavior, NightModeBehavior.scheduled);
+    expect(
+      controller.settings.nightModeStartTime,
+      const TimeOfDay(hour: 21, minute: 0),
+    );
+    expect(
+      controller.settings.nightModeEndTime,
+      const TimeOfDay(hour: 6, minute: 30),
+    );
     expect(controller.settings.burnInProtectionEnabled, isFalse);
   });
 

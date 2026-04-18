@@ -152,9 +152,10 @@ class _ClockHomePageState extends State<ClockHomePage> {
     ClockDisplayMode displayMode,
     AppSettings settings,
   ) {
-    final displayConfig = NightClockDisplayConfig(
-      nightModeEnabled: settings.nightModeEnabled,
-      burnInProtectionEnabled: settings.burnInProtectionEnabled,
+    final displayConfig = NightClockDisplayConfig.resolve(
+      settings: settings,
+      currentTime: _clockController.currentTime,
+      platformBrightness: MediaQuery.platformBrightnessOf(context),
       isLandscape: availableSize.width >= availableSize.height,
     );
 
@@ -165,7 +166,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
             timeFormatPreference: settings.timeFormatPreference,
             showSeconds: settings.showSeconds,
             digitalClockLeadingZero: settings.digitalClockLeadingZero,
-            nightModeEnabled: displayConfig.nightModeEnabled,
+            nightModeEnabled: displayConfig.isNightModeActive,
             isLandscape: displayConfig.isLandscape,
           )
         : AnalogClockPanel(
@@ -176,11 +177,13 @@ class _ClockHomePageState extends State<ClockHomePage> {
             onPageChanged: _clockController.focusDay,
             layout: resolveAnalogClockLayout(availableSize),
             showSecondHand: settings.showSeconds,
-            nightModeEnabled: displayConfig.nightModeEnabled,
+            nightModeEnabled: displayConfig.isNightModeActive,
           );
 
     return ColoredBox(
-      color: displayConfig.nightModeEnabled ? Colors.black : Colors.transparent,
+      color: displayConfig.isNightModeActive
+          ? Colors.black
+          : Colors.transparent,
       child: BurnInProtectionLayer(
         enabled: displayConfig.shouldUseBurnInProtection,
         child: FadeIn(child: clockContent),

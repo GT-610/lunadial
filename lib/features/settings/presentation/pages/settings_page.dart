@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/widgets/settings_save_error_banner.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
@@ -117,12 +118,43 @@ class _SettingsPageState extends State<SettingsPage> {
       _SettingsSection(
         title: translations.nightAndBurnIn,
         child: _buildSettingsGroup([
-          _buildSwitchTile(
-            title: translations.nightMode,
-            subtitle: translations.nightModeDescription,
-            value: settings.nightModeEnabled,
-            onChanged: settingsController.setNightModeEnabled,
+          _buildActionTile(
+            title: translations.nightDisplayMode,
+            subtitle: translations.nightDisplayModeDescription,
+            trailing: _buildChevronValue(
+              _nightModeBehaviorLabel(settings.nightModeBehavior, translations),
+            ),
+            onTap: () =>
+                _showNightModeBehaviorDialog(context, settingsController),
           ),
+          if (settings.nightModeBehavior == NightModeBehavior.scheduled)
+            _buildActionTile(
+              title: translations.nightModeStartTime,
+              subtitle: translations.nightModeStartTimeDescription,
+              trailing: _buildChevronValue(
+                _timeOfDayLabel(context, settings.nightModeStartTime),
+              ),
+              onTap: () => _pickNightModeTime(
+                context,
+                title: translations.nightModeStartTime,
+                initialTime: settings.nightModeStartTime,
+                onSelected: settingsController.setNightModeStartTime,
+              ),
+            ),
+          if (settings.nightModeBehavior == NightModeBehavior.scheduled)
+            _buildActionTile(
+              title: translations.nightModeEndTime,
+              subtitle: translations.nightModeEndTimeDescription,
+              trailing: _buildChevronValue(
+                _timeOfDayLabel(context, settings.nightModeEndTime),
+              ),
+              onTap: () => _pickNightModeTime(
+                context,
+                title: translations.nightModeEndTime,
+                initialTime: settings.nightModeEndTime,
+                onSelected: settingsController.setNightModeEndTime,
+              ),
+            ),
           _buildSwitchTile(
             title: translations.burnInProtection,
             subtitle: translations.burnInProtectionDescription,
@@ -519,6 +551,62 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future<void> _showNightModeBehaviorDialog(
+    BuildContext context,
+    AppSettingsController settingsController,
+  ) async {
+    final translations = AppLocalizations.of(context)!;
+    final currentValue = settingsController.settings.nightModeBehavior;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(translations.nightDisplayMode),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: NightModeBehavior.values
+              .map((behavior) {
+                return ListTile(
+                  title: Text(_nightModeBehaviorLabel(behavior, translations)),
+                  subtitle: Text(
+                    _nightModeBehaviorDescription(behavior, translations),
+                    style: fl.UIs.textGrey,
+                  ),
+                  trailing: behavior == currentValue
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () async {
+                    await settingsController.setNightModeBehavior(behavior);
+                    if (dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                );
+              })
+              .toList(growable: false),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickNightModeTime(
+    BuildContext context, {
+    required String title,
+    required TimeOfDay initialTime,
+    required Future<void> Function(TimeOfDay) onSelected,
+  }) async {
+    final selected = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+      helpText: title,
+    );
+    if (selected == null) {
+      return;
+    }
+
+    await onSelected(selected);
+  }
+
   String _themeModeLabel(ThemeMode mode, AppLocalizations translations) {
     switch (mode) {
       case ThemeMode.system:
@@ -562,6 +650,46 @@ class _SettingsPageState extends State<SettingsPage> {
       case TimeFormatPreference.twentyFourHour:
         return translations.twentyFourHourFormat;
     }
+  }
+
+  String _nightModeBehaviorLabel(
+    NightModeBehavior behavior,
+    AppLocalizations translations,
+  ) {
+    switch (behavior) {
+      case NightModeBehavior.off:
+        return translations.nightModeOff;
+      case NightModeBehavior.on:
+        return translations.nightModeOn;
+      case NightModeBehavior.scheduled:
+        return translations.nightModeScheduled;
+      case NightModeBehavior.followSystem:
+        return translations.nightModeFollowSystem;
+    }
+  }
+
+  String _nightModeBehaviorDescription(
+    NightModeBehavior behavior,
+    AppLocalizations translations,
+  ) {
+    switch (behavior) {
+      case NightModeBehavior.off:
+        return translations.nightModeOffDescription;
+      case NightModeBehavior.on:
+        return translations.nightModeOnDescription;
+      case NightModeBehavior.scheduled:
+        return translations.nightModeScheduledDescription;
+      case NightModeBehavior.followSystem:
+        return translations.nightModeFollowSystemDescription;
+    }
+  }
+
+  String _timeOfDayLabel(BuildContext context, TimeOfDay time) {
+    return MaterialLocalizations.of(context).formatTimeOfDay(
+      time,
+      alwaysUse24HourFormat:
+          MediaQuery.maybeOf(context)?.alwaysUse24HourFormat ?? false,
+    );
   }
 }
 

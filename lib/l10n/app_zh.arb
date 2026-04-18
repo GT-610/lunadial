@@ -59,6 +59,14 @@
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"
   },
+  "nightDisplayMode": "夜间显示策略",
+  "@nightDisplayMode": {
+    "description": "Night display behavior setting title"
+  },
+  "nightDisplayModeDescription": "选择 LunaDial 何时切换到更克制、更低干扰的夜间展示风格",
+  "@nightDisplayModeDescription": {
+    "description": "Night display behavior setting description"
+  },
   "nightMode": "夜间模式",
   "@nightMode": {
     "description": "Night mode setting title"
@@ -67,11 +75,59 @@
   "@nightModeDescription": {
     "description": "Night mode setting description"
   },
+  "nightModeOff": "关闭",
+  "@nightModeOff": {
+    "description": "Night display behavior option that disables night mode"
+  },
+  "nightModeOn": "始终开启",
+  "@nightModeOn": {
+    "description": "Night display behavior option that always enables night mode"
+  },
+  "nightModeScheduled": "定时切换",
+  "@nightModeScheduled": {
+    "description": "Night display behavior option that follows a manual schedule"
+  },
+  "nightModeFollowSystem": "跟随系统深色模式",
+  "@nightModeFollowSystem": {
+    "description": "Night display behavior option that follows system dark mode"
+  },
+  "nightModeOffDescription": "保持常规显示风格，不自动进入夜间展示",
+  "@nightModeOffDescription": {
+    "description": "Description for night display off option"
+  },
+  "nightModeOnDescription": "始终使用更克制的暗色常驻展示风格",
+  "@nightModeOnDescription": {
+    "description": "Description for night display always on option"
+  },
+  "nightModeScheduledDescription": "按设定时段自动在日间与夜间展示之间切换",
+  "@nightModeScheduledDescription": {
+    "description": "Description for scheduled night display option"
+  },
+  "nightModeFollowSystemDescription": "在系统支持亮暗主题切换时，跟随系统深色模式自动切换",
+  "@nightModeFollowSystemDescription": {
+    "description": "Description for system-following night display option"
+  },
+  "nightModeStartTime": "夜间开始时间",
+  "@nightModeStartTime": {
+    "description": "Night mode schedule start time setting title"
+  },
+  "nightModeStartTimeDescription": "每天从这个时间开始使用夜间展示风格",
+  "@nightModeStartTimeDescription": {
+    "description": "Night mode schedule start time description"
+  },
+  "nightModeEndTime": "夜间结束时间",
+  "@nightModeEndTime": {
+    "description": "Night mode schedule end time setting title"
+  },
+  "nightModeEndTimeDescription": "每天在这个时间恢复常规显示风格",
+  "@nightModeEndTimeDescription": {
+    "description": "Night mode schedule end time description"
+  },
   "burnInProtection": "防烧屏位移",
   "@burnInProtection": {
     "description": "Burn-in protection setting title"
   },
-  "burnInProtectionDescription": "在夜间模式下进行轻微周期位移，降低静态画面长期停留的风险",
+  "burnInProtectionDescription": "在夜间展示实际生效时进行轻微周期位移，降低静态画面长期停留的风险",
   "@burnInProtectionDescription": {
     "description": "Burn-in protection setting description"
   },

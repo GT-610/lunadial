@@ -59,6 +59,14 @@
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"
   },
+  "nightDisplayMode": "Night Display Mode",
+  "@nightDisplayMode": {
+    "description": "Night display behavior setting title"
+  },
+  "nightDisplayModeDescription": "Choose when LunaDial switches to its calmer low-distraction night presentation",
+  "@nightDisplayModeDescription": {
+    "description": "Night display behavior setting description"
+  },
   "nightMode": "Night Mode",
   "@nightMode": {
     "description": "Night mode setting title"
@@ -67,11 +75,59 @@
   "@nightModeDescription": {
     "description": "Night mode setting description"
   },
+  "nightModeOff": "Off",
+  "@nightModeOff": {
+    "description": "Night display behavior option that disables night mode"
+  },
+  "nightModeOn": "Always On",
+  "@nightModeOn": {
+    "description": "Night display behavior option that always enables night mode"
+  },
+  "nightModeScheduled": "Scheduled",
+  "@nightModeScheduled": {
+    "description": "Night display behavior option that follows a manual schedule"
+  },
+  "nightModeFollowSystem": "Follow System Dark Mode",
+  "@nightModeFollowSystem": {
+    "description": "Night display behavior option that follows system dark mode"
+  },
+  "nightModeOffDescription": "Keep LunaDial in its regular display style",
+  "@nightModeOffDescription": {
+    "description": "Description for night display off option"
+  },
+  "nightModeOnDescription": "Always use the calmer dark presentation for long-running clock display",
+  "@nightModeOnDescription": {
+    "description": "Description for night display always on option"
+  },
+  "nightModeScheduledDescription": "Switch automatically between day and night display using your chosen hours",
+  "@nightModeScheduledDescription": {
+    "description": "Description for scheduled night display option"
+  },
+  "nightModeFollowSystemDescription": "Match the system light and dark appearance when the platform provides it",
+  "@nightModeFollowSystemDescription": {
+    "description": "Description for system-following night display option"
+  },
+  "nightModeStartTime": "Night Mode Start Time",
+  "@nightModeStartTime": {
+    "description": "Night mode schedule start time setting title"
+  },
+  "nightModeStartTimeDescription": "Start using the night presentation at this time each day",
+  "@nightModeStartTimeDescription": {
+    "description": "Night mode schedule start time description"
+  },
+  "nightModeEndTime": "Night Mode End Time",
+  "@nightModeEndTime": {
+    "description": "Night mode schedule end time setting title"
+  },
+  "nightModeEndTimeDescription": "Return to the regular display style at this time each day",
+  "@nightModeEndTimeDescription": {
+    "description": "Night mode schedule end time description"
+  },
   "burnInProtection": "Burn-In Protection",
   "@burnInProtection": {
     "description": "Burn-in protection setting title"
   },
-  "burnInProtectionDescription": "Apply a subtle periodic shift to reduce long-term static image retention in night mode",
+  "burnInProtectionDescription": "Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention",
   "@burnInProtectionDescription": {
     "description": "Burn-in protection setting description"
   },
