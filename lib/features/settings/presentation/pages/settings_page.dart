@@ -48,10 +48,10 @@ class _SettingsPageState extends State<SettingsPage> {
     final settings = settingsController.settings;
     final translations = AppLocalizations.of(context)!;
 
-    final sections = <_SettingsSection>[
+    final settingsSections = <Widget>[
       _SettingsSection(
         title: translations.appearance,
-        child: _buildSettingsGroup([
+        children: [
           _buildActionTile(
             title: translations.themeColor,
             subtitle: translations.themeColorDescription,
@@ -90,22 +90,22 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onTap: () => _showLanguageDialog(context, settingsController),
           ),
-        ]),
+        ],
       ),
       _SettingsSection(
         title: translations.screen,
-        child: _buildSettingsGroup([
+        children: [
           _buildSwitchTile(
             title: translations.keepScreenOn,
             subtitle: translations.keepScreenOnDescription,
             value: settings.keepScreenOn,
             onChanged: settingsController.setKeepScreenOn,
           ),
-        ]),
+        ],
       ),
       _SettingsSection(
         title: translations.nightAndBurnIn,
-        child: _buildSettingsGroup([
+        children: [
           _buildActionTile(
             title: translations.nightDisplayMode,
             subtitle: translations.nightDisplayModeDescription,
@@ -149,11 +149,11 @@ class _SettingsPageState extends State<SettingsPage> {
             value: settings.burnInProtectionEnabled,
             onChanged: settingsController.setBurnInProtectionEnabled,
           ),
-        ]),
+        ],
       ),
       _SettingsSection(
         title: translations.clockStyle,
-        child: _buildSettingsGroup([
+        children: [
           _buildActionTile(
             title: translations.clockDisplayMode,
             subtitle: translations.clockDisplayModeDescription,
@@ -162,11 +162,11 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             onTap: () => _showClockModeDialog(context, settingsController),
           ),
-        ]),
+        ],
       ),
       _SettingsSection(
         title: translations.timeDisplay,
-        child: _buildSettingsGroup([
+        children: [
           _buildActionTile(
             title: translations.timeFormat,
             subtitle: translations.timeFormatDescription,
@@ -187,11 +187,11 @@ class _SettingsPageState extends State<SettingsPage> {
             value: settings.digitalClockLeadingZero,
             onChanged: settingsController.setDigitalClockLeadingZero,
           ),
-        ]),
+        ],
       ),
       _SettingsSection(
         title: translations.information,
-        child: _buildSettingsGroup([
+        children: [
           _buildActionTile(
             title: translations.version,
             subtitle: translations.versionDescription,
@@ -226,7 +226,7 @@ class _SettingsPageState extends State<SettingsPage> {
               content: translations.appDescription,
             ),
           ),
-        ]),
+        ],
       ),
     ];
 
@@ -253,34 +253,33 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                Wrap(
-                  spacing: gap,
-                  runSpacing: gap,
-                  children: sections
-                      .map((section) {
-                        return SizedBox(
-                          width: sectionWidth,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              fl.CenterGreyTitle(section.title),
-                              section.child,
-                            ],
+                if (columns == 1)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _intersperse(
+                      settingsSections,
+                      const SizedBox(height: gap),
+                    ),
+                  )
+                else
+                  Wrap(
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: settingsSections
+                        .map(
+                          (section) => SizedBox(
+                            width: sectionWidth,
+                            child: section,
                           ),
-                        );
-                      })
-                      .toList(growable: false),
-                ),
+                        )
+                        .toList(growable: false),
+                  ),
               ],
             ),
           );
         },
       ),
     );
-  }
-
-  Widget _buildSettingsGroup(List<Widget> children) {
-    return Column(children: children);
   }
 
   Widget _buildActionTile({
@@ -334,6 +333,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildValueRow({required List<Widget> children}) {
     return Row(mainAxisSize: MainAxisSize.min, children: children);
+  }
+
+  List<Widget> _intersperse(List<Widget> items, Widget separator) {
+    if (items.isEmpty) return const [];
+    final result = <Widget>[items.first];
+    for (var i = 1; i < items.length; i++) {
+      result.add(separator);
+      result.add(items[i]);
+    }
+    return result;
   }
 
   Future<void> _showThemeColorDialog(
@@ -681,9 +690,20 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-class _SettingsSection {
-  const _SettingsSection({required this.title, required this.child});
+class _SettingsSection extends StatelessWidget {
+  const _SettingsSection({required this.title, required this.children});
 
   final String title;
-  final Widget child;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        fl.CenterGreyTitle(title),
+        Column(children: children),
+      ],
+    );
+  }
 }

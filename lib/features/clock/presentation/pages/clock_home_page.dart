@@ -2,6 +2,7 @@ import 'package:fl_lib/fl_lib.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:lunadial/app/luna_dial_app.dart';
 import 'package:lunadial/features/clock/application/clock_controller.dart';
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/features/clock/domain/night_clock_display_config.dart';
@@ -22,16 +23,36 @@ class ClockHomePage extends StatefulWidget {
   State<ClockHomePage> createState() => _ClockHomePageState();
 }
 
-class _ClockHomePageState extends State<ClockHomePage> {
+class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
   late final ClockController _clockController = ClockController();
   late final SettingsButtonController _settingsButtonController =
       SettingsButtonController();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      appRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
+    appRouteObserver.unsubscribe(this);
     _settingsButtonController.dispose();
     _clockController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    _clockController.stopTicker();
+  }
+
+  @override
+  void didPopNext() {
+    _clockController.resumeTicker();
   }
 
   void _onScreenTap() {
@@ -135,13 +156,15 @@ class _TickingClockContent extends StatelessWidget {
                     nightModeEnabled: displayConfig.isNightModeActive,
                   );
 
-            return ColoredBox(
-              color: displayConfig.isNightModeActive
-                  ? Colors.black
-                  : Colors.transparent,
-              child: BurnInProtectionLayer(
-                enabled: displayConfig.shouldUseBurnInProtection,
-                child: FadeIn(child: clockContent),
+            return RepaintBoundary(
+              child: ColoredBox(
+                color: displayConfig.isNightModeActive
+                    ? Colors.black
+                    : Colors.transparent,
+                child: BurnInProtectionLayer(
+                  enabled: displayConfig.shouldUseBurnInProtection,
+                  child: FadeIn(child: clockContent),
+                ),
               ),
             );
           },
