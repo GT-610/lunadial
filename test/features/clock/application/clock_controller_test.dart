@@ -84,6 +84,41 @@ void main() {
       );
     });
 
+    test('compactPhone and phone use horizontal layout in landscape', () {
+      expect(
+        resolveAnalogClockLayout(const Size(568, 320)).direction,
+        Axis.horizontal,
+      );
+      expect(
+        resolveAnalogClockLayout(const Size(844, 390)).direction,
+        Axis.horizontal,
+      );
+    });
+
+    test('tablet and largeWindow use vertical layout in portrait', () {
+      expect(
+        resolveAnalogClockLayout(const Size(800, 1280)).direction,
+        Axis.vertical,
+      );
+      expect(
+        resolveAnalogClockLayout(const Size(1024, 1440)).direction,
+        Axis.vertical,
+      );
+    });
+
+    test('largePhone respects aspect ratio threshold for horizontal', () {
+      // Portrait: width is not enough above height*1.15
+      expect(
+        resolveAnalogClockLayout(const Size(626, 648)).direction,
+        Axis.vertical,
+      );
+      // Landscape: width > height*1.15
+      expect(
+        resolveAnalogClockLayout(const Size(900, 480)).direction,
+        Axis.horizontal,
+      );
+    });
+
     test('analog layout stays valid for very narrow draggable windows', () {
       final spec = resolveAnalogClockLayout(const Size(1142, 320));
 

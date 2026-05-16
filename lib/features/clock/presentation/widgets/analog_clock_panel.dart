@@ -267,12 +267,12 @@ AnalogClockLayoutSpec _buildHorizontalLayout({
   required DateTime focusedDay,
   required EdgeInsets padding,
 }) {
+  final baseSpacing = spacing.clamp(8.0, 24.0);
   final baseClockSize = _boundedSize(preferredClockSize, availableHeight);
   final baseCalendarWidth = _boundedSize(
     preferredCalendarWidth,
-    availableWidth - baseClockSize - spacing,
+    availableWidth - baseClockSize - baseSpacing,
   );
-  final baseSpacing = spacing.clamp(8.0, 24.0);
   final calendarHeight = _estimateCalendarHeight(
     width: baseCalendarWidth,
     density: density,
