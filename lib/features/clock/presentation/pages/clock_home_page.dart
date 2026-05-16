@@ -63,19 +63,12 @@ class _ClockHomePageState extends State<ClockHomePage> {
             ),
             Positioned(
               top: 20,
-              left: 0,
-              right: 0,
-              child: _ClockTitle(
+              left: 20,
+              right: 20,
+              child: _TopBar(
                 controller: _settingsButtonController,
                 title: translations.appTitle,
-              ),
-            ),
-            Positioned(
-              top: 20,
-              right: 20,
-              child: SettingsRevealButton(
-                controller: _settingsButtonController,
-                onTap: () {
+                onSettings: () {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => const SettingsPage(),
@@ -157,11 +150,16 @@ class _TickingClockContent extends StatelessWidget {
   }
 }
 
-class _ClockTitle extends StatelessWidget {
-  const _ClockTitle({required this.controller, required this.title});
+class _TopBar extends StatelessWidget {
+  const _TopBar({
+    required this.controller,
+    required this.title,
+    required this.onSettings,
+  });
 
   final SettingsButtonController controller;
   final String title;
+  final VoidCallback onSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -169,19 +167,24 @@ class _ClockTitle extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         return IgnorePointer(
-          ignoring: true,
+          ignoring: !controller.isVisible,
           child: AnimatedOpacity(
             opacity: controller.isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
+                SettingsRevealButton(controller: controller, onTap: onSettings),
+              ],
             ),
           ),
         );
