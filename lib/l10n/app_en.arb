@@ -47,14 +47,6 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
-  "preferLandscapeInDedicatedMode": "Prefer Landscape in Dedicated Mode",
-  "@preferLandscapeInDedicatedMode": {
-    "description": "Landscape preference setting title for dedicated mode"
-  },
-  "preferLandscapeInDedicatedModeDescription": "Keep Android devices in landscape while dedicated clock mode is active",
-  "@preferLandscapeInDedicatedModeDescription": {
-    "description": "Landscape preference setting description for dedicated mode"
-  },
   "nightAndBurnIn": "Night & Burn-In",
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"
@@ -130,14 +122,6 @@
   "burnInProtectionDescription": "Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention",
   "@burnInProtectionDescription": {
     "description": "Burn-in protection setting description"
-  },
-  "dedicatedClockMode": "Dedicated Clock Mode",
-  "@dedicatedClockMode": {
-    "description": "Dedicated clock mode setting title"
-  },
-  "dedicatedClockModeDescription": "Remember fullscreen clock state on launch and reduce distractions for spare devices.",
-  "@dedicatedClockModeDescription": {
-    "description": "Dedicated clock mode setting description"
   },
   "clockStyle": "Clock Style",
   "@clockStyle": {
@@ -303,14 +287,6 @@
   "languageDescription": "Choose the app language",
   "@languageDescription": {
     "description": "Language setting description"
-  },
-  "enterFullscreenMode": "Enter fullscreen mode",
-  "@enterFullscreenMode": {
-    "description": "Accessibility label for entering fullscreen mode"
-  },
-  "exitFullscreenMode": "Exit fullscreen mode",
-  "@exitFullscreenMode": {
-    "description": "Accessibility label for exiting fullscreen mode"
   },
   "openSettings": "Open settings",
   "@openSettings": {

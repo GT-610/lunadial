@@ -13,8 +13,6 @@ void main() {
     themeColor: Colors.green,
     themeMode: ThemeMode.system,
     keepScreenOn: false,
-    dedicatedClockModeEnabled: false,
-    restoreFullscreenOnLaunch: false,
     clockDisplayMode: ClockDisplayMode.digital,
     localeOption: AppLocaleOption.system,
     timeFormatPreference: TimeFormatPreference.system,
@@ -24,7 +22,6 @@ void main() {
     nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
     nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
     burnInProtectionEnabled: true,
-    preferLandscapeInDedicatedMode: true,
   );
 
   test('off mode keeps night display inactive', () {

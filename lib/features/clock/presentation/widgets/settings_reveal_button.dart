@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
-class FullscreenExitButtonController extends ChangeNotifier {
+class SettingsButtonController extends ChangeNotifier {
   final Duration visibilityDuration;
 
-  FullscreenExitButtonController({
+  SettingsButtonController({
     this.visibilityDuration = const Duration(seconds: 3),
   });
 
@@ -40,14 +40,14 @@ class FullscreenExitButtonController extends ChangeNotifier {
   }
 }
 
-class FullscreenExitButton extends StatelessWidget {
-  final FullscreenExitButtonController controller;
-  final VoidCallback onExit;
+class SettingsRevealButton extends StatelessWidget {
+  final SettingsButtonController controller;
+  final VoidCallback onTap;
 
-  const FullscreenExitButton({
+  const SettingsRevealButton({
     super.key,
     required this.controller,
-    required this.onExit,
+    required this.onTap,
   });
 
   @override
@@ -57,18 +57,18 @@ class FullscreenExitButton extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         return IgnorePointer(
-          key: const Key('fullscreen-exit-ignore-pointer'),
+          key: const Key('settings-ignore-pointer'),
           ignoring: !controller.isVisible,
           child: AnimatedOpacity(
             opacity: controller.isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
             child: Semantics(
-              label: translations.exitFullscreenMode,
+              label: translations.openSettings,
               button: true,
               child: IconButton(
-                key: const Key('fullscreen-exit-button'),
-                icon: const Icon(Icons.fullscreen_exit, color: Colors.white),
-                onPressed: onExit,
+                key: const Key('settings-reveal-button'),
+                icon: const Icon(Icons.settings),
+                onPressed: onTap,
               ),
             ),
           ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lunadial/features/clock/application/app_session_controller.dart';
 import 'package:lunadial/features/clock/presentation/pages/clock_home_page.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
 import 'package:lunadial/features/clock/presentation/widgets/burn_in_protection_layer.dart';
@@ -15,6 +14,7 @@ import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
+import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
 void main() {
@@ -29,26 +29,7 @@ void main() {
     );
     await settingsController.initialize();
 
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AppSettingsController>.value(
-            value: settingsController,
-          ),
-          ChangeNotifierProvider<AppSessionController>(
-            create: (_) => AppSessionController(),
-          ),
-        ],
-        child: MaterialApp(
-          localizationsDelegates: const [
-            LibLocalizations.delegate,
-            ...AppLocalizations.localizationsDelegates,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ClockHomePage(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(_buildApp(settingsController: settingsController));
 
     await tester.pumpAndSettle();
     expect(find.byType(DigitalClockView), findsOneWidget);
@@ -101,149 +82,73 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('fullscreen exit button auto hides and can be revealed again', (
-    tester,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(1200, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets(
+    'settings button auto hides and tapping screen reveals it then opens settings',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1200, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    final settingsController = AppSettingsController(
-      repository: _MemorySettingsRepository(),
-    );
-    await settingsController.initialize();
+      final settingsController = AppSettingsController(
+        repository: _MemorySettingsRepository(),
+      );
+      await settingsController.initialize();
 
-    await tester.pumpWidget(_buildApp(settingsController: settingsController));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        _buildApp(settingsController: settingsController),
+      );
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('enter-fullscreen-button')));
-    await tester.pump();
+      expect(
+        tester
+            .widget<IgnorePointer>(
+              find.byKey(const Key('settings-ignore-pointer')),
+            )
+            .ignoring,
+        isTrue,
+      );
 
-    expect(
-      tester
-          .widget<IgnorePointer>(
-            find.byKey(const Key('fullscreen-exit-ignore-pointer')),
-          )
-          .ignoring,
-      isFalse,
-    );
+      await tester.tap(find.byKey(const Key('clock-surface')));
+      await tester.pump();
 
-    await tester.pump(const Duration(seconds: 4));
-    await tester.pump(const Duration(milliseconds: 300));
+      expect(
+        tester
+            .widget<IgnorePointer>(
+              find.byKey(const Key('settings-ignore-pointer')),
+            )
+            .ignoring,
+        isFalse,
+      );
 
-    expect(
-      tester
-          .widget<IgnorePointer>(
-            find.byKey(const Key('fullscreen-exit-ignore-pointer')),
-          )
-          .ignoring,
-      isTrue,
-    );
+      await tester.pump(const Duration(seconds: 4));
+      await tester.pump(const Duration(milliseconds: 300));
 
-    await tester.tap(find.byKey(const Key('fullscreen-surface')));
-    await tester.pump();
+      expect(
+        tester
+            .widget<IgnorePointer>(
+              find.byKey(const Key('settings-ignore-pointer')),
+            )
+            .ignoring,
+        isTrue,
+      );
 
-    expect(
-      tester
-          .widget<IgnorePointer>(
-            find.byKey(const Key('fullscreen-exit-ignore-pointer')),
-          )
-          .ignoring,
-      isFalse,
-    );
+      await tester.tap(find.byKey(const Key('clock-surface')));
+      await tester.pump();
 
-    await tester.tap(find.byKey(const Key('fullscreen-exit-button')));
-    await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<IgnorePointer>(
+              find.byKey(const Key('settings-ignore-pointer')),
+            )
+            .ignoring,
+        isFalse,
+      );
 
-    expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
-  });
+      await tester.tap(find.byKey(const Key('settings-reveal-button')));
+      await tester.pumpAndSettle();
 
-  testWidgets('dedicated clock mode restores fullscreen on startup', (
-    tester,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(1200, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-
-    final settingsController = AppSettingsController(
-      repository: _MemorySettingsRepository(
-        initialSettings: const AppSettings(
-          themeColor: Colors.green,
-          themeMode: ThemeMode.system,
-          keepScreenOn: false,
-          dedicatedClockModeEnabled: true,
-          restoreFullscreenOnLaunch: true,
-          clockDisplayMode: ClockDisplayMode.digital,
-          localeOption: AppLocaleOption.system,
-          timeFormatPreference: TimeFormatPreference.system,
-          showSeconds: true,
-          digitalClockLeadingZero: true,
-          nightModeBehavior: NightModeBehavior.off,
-          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
-          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
-          burnInProtectionEnabled: true,
-          preferLandscapeInDedicatedMode: true,
-        ),
-      ),
-    );
-    await settingsController.initialize();
-
-    await tester.pumpWidget(
-      _buildApp(
-        settingsController: settingsController,
-        sessionController: AppSessionController(
-          initialFullscreen:
-              settingsController.settings.shouldLaunchToFullscreen,
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('fullscreen-surface')), findsOneWidget);
-    expect(find.byKey(const Key('enter-fullscreen-button')), findsNothing);
-  });
-
-  testWidgets('fullscreen is not restored when dedicated mode is disabled', (
-    tester,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(1200, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-
-    final settingsController = AppSettingsController(
-      repository: _MemorySettingsRepository(
-        initialSettings: const AppSettings(
-          themeColor: Colors.green,
-          themeMode: ThemeMode.system,
-          keepScreenOn: false,
-          dedicatedClockModeEnabled: false,
-          restoreFullscreenOnLaunch: true,
-          clockDisplayMode: ClockDisplayMode.digital,
-          localeOption: AppLocaleOption.system,
-          timeFormatPreference: TimeFormatPreference.system,
-          showSeconds: true,
-          digitalClockLeadingZero: true,
-          nightModeBehavior: NightModeBehavior.off,
-          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
-          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
-          burnInProtectionEnabled: true,
-          preferLandscapeInDedicatedMode: true,
-        ),
-      ),
-    );
-    await settingsController.initialize();
-
-    await tester.pumpWidget(
-      _buildApp(
-        settingsController: settingsController,
-        sessionController: AppSessionController(
-          initialFullscreen:
-              settingsController.settings.shouldLaunchToFullscreen,
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.byKey(const Key('fullscreen-surface')), findsNothing);
-    expect(find.byKey(const Key('enter-fullscreen-button')), findsOneWidget);
-  });
+      expect(find.byType(SettingsPage), findsOneWidget);
+    },
+  );
 
   testWidgets('clock home page stays stable across responsive breakpoints', (
     tester,
@@ -285,8 +190,6 @@ void main() {
             themeColor: Colors.green,
             themeMode: ThemeMode.system,
             keepScreenOn: false,
-            dedicatedClockModeEnabled: false,
-            restoreFullscreenOnLaunch: false,
             clockDisplayMode: ClockDisplayMode.digital,
             localeOption: AppLocaleOption.system,
             timeFormatPreference: TimeFormatPreference.system,
@@ -296,7 +199,6 @@ void main() {
             nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
             nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
             burnInProtectionEnabled: true,
-            preferLandscapeInDedicatedMode: true,
           ),
         ),
       );
@@ -314,19 +216,9 @@ void main() {
   );
 }
 
-Widget _buildApp({
-  required AppSettingsController settingsController,
-  AppSessionController? sessionController,
-}) {
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<AppSettingsController>.value(
-        value: settingsController,
-      ),
-      ChangeNotifierProvider<AppSessionController>.value(
-        value: sessionController ?? AppSessionController(),
-      ),
-    ],
+Widget _buildApp({required AppSettingsController settingsController}) {
+  return ChangeNotifierProvider<AppSettingsController>.value(
+    value: settingsController,
     child: MaterialApp(
       localizationsDelegates: const [
         LibLocalizations.delegate,

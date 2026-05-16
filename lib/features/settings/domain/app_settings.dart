@@ -12,8 +12,6 @@ class AppSettings {
   final Color themeColor;
   final ThemeMode themeMode;
   final bool keepScreenOn;
-  final bool dedicatedClockModeEnabled;
-  final bool restoreFullscreenOnLaunch;
   final ClockDisplayMode clockDisplayMode;
   final AppLocaleOption localeOption;
   final TimeFormatPreference timeFormatPreference;
@@ -23,14 +21,11 @@ class AppSettings {
   final TimeOfDay nightModeStartTime;
   final TimeOfDay nightModeEndTime;
   final bool burnInProtectionEnabled;
-  final bool preferLandscapeInDedicatedMode;
 
   const AppSettings({
     required this.themeColor,
     required this.themeMode,
     required this.keepScreenOn,
-    required this.dedicatedClockModeEnabled,
-    required this.restoreFullscreenOnLaunch,
     required this.clockDisplayMode,
     required this.localeOption,
     required this.timeFormatPreference,
@@ -40,7 +35,6 @@ class AppSettings {
     required this.nightModeStartTime,
     required this.nightModeEndTime,
     required this.burnInProtectionEnabled,
-    required this.preferLandscapeInDedicatedMode,
   });
 
   factory AppSettings.defaults() {
@@ -48,8 +42,6 @@ class AppSettings {
       themeColor: Colors.green,
       themeMode: ThemeMode.system,
       keepScreenOn: false,
-      dedicatedClockModeEnabled: false,
-      restoreFullscreenOnLaunch: false,
       clockDisplayMode: ClockDisplayMode.digital,
       localeOption: AppLocaleOption.system,
       timeFormatPreference: TimeFormatPreference.system,
@@ -59,7 +51,6 @@ class AppSettings {
       nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
       nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
       burnInProtectionEnabled: true,
-      preferLandscapeInDedicatedMode: true,
     );
   }
 
@@ -77,14 +68,6 @@ class AppSettings {
       keepScreenOn: normalizedMap['keepScreenOn'] is bool
           ? normalizedMap['keepScreenOn'] as bool
           : defaults.keepScreenOn,
-      dedicatedClockModeEnabled:
-          normalizedMap['dedicatedClockModeEnabled'] is bool
-          ? normalizedMap['dedicatedClockModeEnabled'] as bool
-          : defaults.dedicatedClockModeEnabled,
-      restoreFullscreenOnLaunch:
-          normalizedMap['restoreFullscreenOnLaunch'] is bool
-          ? normalizedMap['restoreFullscreenOnLaunch'] as bool
-          : defaults.restoreFullscreenOnLaunch,
       clockDisplayMode:
           _parseClockDisplayMode(
             normalizedMap['clockDisplayMode'],
@@ -113,10 +96,6 @@ class AppSettings {
       burnInProtectionEnabled: normalizedMap['burnInProtectionEnabled'] is bool
           ? normalizedMap['burnInProtectionEnabled'] as bool
           : defaults.burnInProtectionEnabled,
-      preferLandscapeInDedicatedMode:
-          normalizedMap['preferLandscapeInDedicatedMode'] is bool
-          ? normalizedMap['preferLandscapeInDedicatedMode'] as bool
-          : defaults.preferLandscapeInDedicatedMode,
     );
   }
 
@@ -124,8 +103,6 @@ class AppSettings {
     Color? themeColor,
     ThemeMode? themeMode,
     bool? keepScreenOn,
-    bool? dedicatedClockModeEnabled,
-    bool? restoreFullscreenOnLaunch,
     ClockDisplayMode? clockDisplayMode,
     AppLocaleOption? localeOption,
     TimeFormatPreference? timeFormatPreference,
@@ -135,16 +112,11 @@ class AppSettings {
     TimeOfDay? nightModeStartTime,
     TimeOfDay? nightModeEndTime,
     bool? burnInProtectionEnabled,
-    bool? preferLandscapeInDedicatedMode,
   }) {
     return AppSettings(
       themeColor: themeColor ?? this.themeColor,
       themeMode: themeMode ?? this.themeMode,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
-      dedicatedClockModeEnabled:
-          dedicatedClockModeEnabled ?? this.dedicatedClockModeEnabled,
-      restoreFullscreenOnLaunch:
-          restoreFullscreenOnLaunch ?? this.restoreFullscreenOnLaunch,
       clockDisplayMode: clockDisplayMode ?? this.clockDisplayMode,
       localeOption: localeOption ?? this.localeOption,
       timeFormatPreference: timeFormatPreference ?? this.timeFormatPreference,
@@ -156,13 +128,8 @@ class AppSettings {
       nightModeEndTime: nightModeEndTime ?? this.nightModeEndTime,
       burnInProtectionEnabled:
           burnInProtectionEnabled ?? this.burnInProtectionEnabled,
-      preferLandscapeInDedicatedMode:
-          preferLandscapeInDedicatedMode ?? this.preferLandscapeInDedicatedMode,
     );
   }
-
-  bool get shouldLaunchToFullscreen =>
-      dedicatedClockModeEnabled && restoreFullscreenOnLaunch;
 
   Map<String, dynamic> toMap() {
     return {
@@ -171,8 +138,6 @@ class AppSettings {
           '#${themeColor.toARGB32().toRadixString(16).padLeft(8, '0')}',
       'themeMode': themeMode.name,
       'keepScreenOn': keepScreenOn,
-      'dedicatedClockModeEnabled': dedicatedClockModeEnabled,
-      'restoreFullscreenOnLaunch': restoreFullscreenOnLaunch,
       'clockDisplayMode': clockDisplayMode.name,
       'selectedLocale': localeOption.storageValue,
       'timeFormatPreference': timeFormatPreference.storageValue,
@@ -182,7 +147,6 @@ class AppSettings {
       'nightModeStartTime': _serializeTimeOfDay(nightModeStartTime),
       'nightModeEndTime': _serializeTimeOfDay(nightModeEndTime),
       'burnInProtectionEnabled': burnInProtectionEnabled,
-      'preferLandscapeInDedicatedMode': preferLandscapeInDedicatedMode,
     };
   }
 
@@ -192,8 +156,6 @@ class AppSettings {
         other.themeColor == themeColor &&
         other.themeMode == themeMode &&
         other.keepScreenOn == keepScreenOn &&
-        other.dedicatedClockModeEnabled == dedicatedClockModeEnabled &&
-        other.restoreFullscreenOnLaunch == restoreFullscreenOnLaunch &&
         other.clockDisplayMode == clockDisplayMode &&
         other.localeOption == localeOption &&
         other.timeFormatPreference == timeFormatPreference &&
@@ -202,8 +164,7 @@ class AppSettings {
         other.nightModeBehavior == nightModeBehavior &&
         other.nightModeStartTime == nightModeStartTime &&
         other.nightModeEndTime == nightModeEndTime &&
-        other.burnInProtectionEnabled == burnInProtectionEnabled &&
-        other.preferLandscapeInDedicatedMode == preferLandscapeInDedicatedMode;
+        other.burnInProtectionEnabled == burnInProtectionEnabled;
   }
 
   @override
@@ -211,8 +172,6 @@ class AppSettings {
     themeColor,
     themeMode,
     keepScreenOn,
-    dedicatedClockModeEnabled,
-    restoreFullscreenOnLaunch,
     clockDisplayMode,
     localeOption,
     timeFormatPreference,
@@ -222,7 +181,6 @@ class AppSettings {
     nightModeStartTime,
     nightModeEndTime,
     burnInProtectionEnabled,
-    preferLandscapeInDedicatedMode,
   );
 
   static Map<String, dynamic> _migrateLegacyMap(

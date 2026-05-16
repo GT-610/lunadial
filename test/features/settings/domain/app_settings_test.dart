@@ -14,8 +14,6 @@ void main() {
         themeColor: Colors.black,
         themeMode: ThemeMode.dark,
         keepScreenOn: true,
-        dedicatedClockModeEnabled: true,
-        restoreFullscreenOnLaunch: true,
         clockDisplayMode: ClockDisplayMode.analog,
         localeOption: AppLocaleOption.zhCn,
         timeFormatPreference: TimeFormatPreference.twelveHour,
@@ -25,7 +23,6 @@ void main() {
         nightModeStartTime: TimeOfDay(hour: 21, minute: 30),
         nightModeEndTime: TimeOfDay(hour: 6, minute: 45),
         burnInProtectionEnabled: false,
-        preferLandscapeInDedicatedMode: false,
       );
 
       final decoded = AppSettings.fromMap(settings.toMap());
@@ -33,14 +30,6 @@ void main() {
       expect(decoded.themeColor, settings.themeColor);
       expect(decoded.themeMode, settings.themeMode);
       expect(decoded.keepScreenOn, settings.keepScreenOn);
-      expect(
-        decoded.dedicatedClockModeEnabled,
-        settings.dedicatedClockModeEnabled,
-      );
-      expect(
-        decoded.restoreFullscreenOnLaunch,
-        settings.restoreFullscreenOnLaunch,
-      );
       expect(decoded.clockDisplayMode, settings.clockDisplayMode);
       expect(decoded.localeOption, settings.localeOption);
       expect(decoded.timeFormatPreference, settings.timeFormatPreference);
@@ -50,10 +39,6 @@ void main() {
       expect(decoded.nightModeStartTime, settings.nightModeStartTime);
       expect(decoded.nightModeEndTime, settings.nightModeEndTime);
       expect(decoded.burnInProtectionEnabled, settings.burnInProtectionEnabled);
-      expect(
-        decoded.preferLandscapeInDedicatedMode,
-        settings.preferLandscapeInDedicatedMode,
-      );
     });
 
     test('falls back to defaults for invalid values', () {
@@ -69,14 +54,6 @@ void main() {
       expect(settings.themeColor, defaults.themeColor);
       expect(settings.themeMode, defaults.themeMode);
       expect(settings.keepScreenOn, defaults.keepScreenOn);
-      expect(
-        settings.dedicatedClockModeEnabled,
-        defaults.dedicatedClockModeEnabled,
-      );
-      expect(
-        settings.restoreFullscreenOnLaunch,
-        defaults.restoreFullscreenOnLaunch,
-      );
       expect(settings.clockDisplayMode, defaults.clockDisplayMode);
       expect(settings.localeOption, defaults.localeOption);
       expect(settings.timeFormatPreference, defaults.timeFormatPreference);
@@ -91,10 +68,6 @@ void main() {
       expect(
         settings.burnInProtectionEnabled,
         defaults.burnInProtectionEnabled,
-      );
-      expect(
-        settings.preferLandscapeInDedicatedMode,
-        defaults.preferLandscapeInDedicatedMode,
       );
     });
 
@@ -113,41 +86,12 @@ void main() {
       expect(settings.localeOption, AppLocaleOption.en);
     });
 
-    test(
-      'launches to fullscreen only when dedicated mode and restore are on',
-      () {
-        expect(AppSettings.defaults().shouldLaunchToFullscreen, isFalse);
-
-        const settings = AppSettings(
-          themeColor: Colors.green,
-          themeMode: ThemeMode.system,
-          keepScreenOn: false,
-          dedicatedClockModeEnabled: true,
-          restoreFullscreenOnLaunch: true,
-          clockDisplayMode: ClockDisplayMode.digital,
-          localeOption: AppLocaleOption.system,
-          timeFormatPreference: TimeFormatPreference.system,
-          showSeconds: true,
-          digitalClockLeadingZero: true,
-          nightModeBehavior: NightModeBehavior.off,
-          nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
-          nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
-          burnInProtectionEnabled: true,
-          preferLandscapeInDedicatedMode: true,
-        );
-
-        expect(settings.shouldLaunchToFullscreen, isTrue);
-      },
-    );
-
     test('new display settings default for legacy configs', () {
       final settings = AppSettings.fromMap({
         'configVersion': 1,
         'themeColor': '#ff00ff00',
         'themeMode': 'system',
         'keepScreenOn': false,
-        'dedicatedClockModeEnabled': false,
-        'restoreFullscreenOnLaunch': false,
         'clockDisplayMode': 'digital',
         'selectedLocale': 'system',
       });
@@ -159,7 +103,6 @@ void main() {
       expect(settings.nightModeStartTime, const TimeOfDay(hour: 22, minute: 0));
       expect(settings.nightModeEndTime, const TimeOfDay(hour: 7, minute: 0));
       expect(settings.burnInProtectionEnabled, isTrue);
-      expect(settings.preferLandscapeInDedicatedMode, isTrue);
     });
 
     test('preserves clock display mode for pre-release v3 configs', () {
@@ -168,8 +111,6 @@ void main() {
         'themeColor': '#ff00ff00',
         'themeMode': 'system',
         'keepScreenOn': false,
-        'dedicatedClockModeEnabled': false,
-        'restoreFullscreenOnLaunch': false,
         'clockDisplayMode': 'analog',
         'selectedLocale': 'system',
       });
@@ -180,7 +121,6 @@ void main() {
       expect(settings.digitalClockLeadingZero, isTrue);
       expect(settings.nightModeBehavior, NightModeBehavior.off);
       expect(settings.burnInProtectionEnabled, isTrue);
-      expect(settings.preferLandscapeInDedicatedMode, isTrue);
     });
 
     test('migrates legacy night mode bool into behavior enum', () {

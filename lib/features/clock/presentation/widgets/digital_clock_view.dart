@@ -104,7 +104,9 @@ class _DigitalClockViewState extends State<DigitalClockView> {
         child: Padding(
           padding: widget.layout.padding,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: widget.layout.maxContentWidth),
+            constraints: BoxConstraints(
+              maxWidth: widget.layout.maxContentWidth,
+            ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Column(
@@ -117,7 +119,9 @@ class _DigitalClockViewState extends State<DigitalClockView> {
                       style: TextStyle(
                         fontSize: dateFontSize,
                         color: dateColor,
-                        fontWeight: widget.nightModeEnabled ? FontWeight.w400 : null,
+                        fontWeight: widget.nightModeEnabled
+                            ? FontWeight.w400
+                            : null,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -130,8 +134,13 @@ class _DigitalClockViewState extends State<DigitalClockView> {
                     style: TextStyle(
                       fontSize: timeFontSize,
                       color: timeColor,
-                      fontWeight: widget.nightModeEnabled ? FontWeight.w300 : null,
-                      letterSpacing: widget.nightModeEnabled && widget.isLandscape ? 2.4 : null,
+                      fontWeight: widget.nightModeEnabled
+                          ? FontWeight.w300
+                          : null,
+                      letterSpacing:
+                          widget.nightModeEnabled && widget.isLandscape
+                          ? 2.4
+                          : null,
                     ),
                     textAlign: TextAlign.center,
                   ),
