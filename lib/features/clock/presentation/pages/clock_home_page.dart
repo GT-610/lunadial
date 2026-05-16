@@ -153,16 +153,15 @@ class _TickingClockContent extends StatelessWidget {
         final availableSize = constraints.biggest;
         final isLandscape = availableSize.width >= availableSize.height;
 
-        final displayConfig = NightClockDisplayConfig.resolve(
-          settings: settings,
-          currentTime: clockController.currentTime,
-          platformBrightness: MediaQuery.platformBrightnessOf(context),
-          isLandscape: isLandscape,
-        );
-
         return AnimatedBuilder(
           animation: clockController,
           builder: (context, _) {
+            final displayConfig = NightClockDisplayConfig.resolve(
+              settings: settings,
+              currentTime: clockController.currentTime,
+              platformBrightness: MediaQuery.platformBrightnessOf(context),
+              isLandscape: isLandscape,
+            );
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
                     currentTime: clockController.currentTime,
