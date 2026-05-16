@@ -16,17 +16,20 @@ class NightClockDisplayConfig {
     required DateTime currentTime,
     required Brightness platformBrightness,
     required bool isLandscape,
+    bool isFullscreen = false,
   }) {
-    final isNightModeActive = switch (settings.nightModeBehavior) {
-      NightModeBehavior.off => false,
-      NightModeBehavior.on => true,
-      NightModeBehavior.followSystem => platformBrightness == Brightness.dark,
-      NightModeBehavior.scheduled => _isWithinScheduledWindow(
-        currentTime: currentTime,
-        startTime: settings.nightModeStartTime,
-        endTime: settings.nightModeEndTime,
-      ),
-    };
+    final isNightModeActive = isFullscreen
+        ? false
+        : switch (settings.nightModeBehavior) {
+            NightModeBehavior.off => false,
+            NightModeBehavior.on => true,
+            NightModeBehavior.followSystem => platformBrightness == Brightness.dark,
+            NightModeBehavior.scheduled => _isWithinScheduledWindow(
+              currentTime: currentTime,
+              startTime: settings.nightModeStartTime,
+              endTime: settings.nightModeEndTime,
+            ),
+          };
 
     return NightClockDisplayConfig(
       isNightModeActive: isNightModeActive,

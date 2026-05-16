@@ -68,6 +68,9 @@ class _ClockHomePageState extends State<ClockHomePage> {
     final translations = AppLocalizations.of(context)!;
 
     if (session.isFullscreen) {
+      const fullscreenColorScheme = ColorScheme.dark(
+        onSurface: Colors.white,
+      );
       return Scaffold(
         backgroundColor: Colors.black,
         body: GestureDetector(
@@ -76,10 +79,16 @@ class _ClockHomePageState extends State<ClockHomePage> {
           behavior: HitTestBehavior.opaque,
           child: Stack(
             children: [
-              _TickingClockContent(
-                clockController: _clockController,
-                displayMode: settings.clockDisplayMode,
-                settings: settings,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: fullscreenColorScheme,
+                ),
+                child: _TickingClockContent(
+                  clockController: _clockController,
+                  displayMode: settings.clockDisplayMode,
+                  settings: settings,
+                  isFullscreen: true,
+                ),
               ),
               Positioned(
                 top: 20,
@@ -130,6 +139,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
         clockController: _clockController,
         displayMode: settings.clockDisplayMode,
         settings: settings,
+        isFullscreen: false,
       ),
     );
   }
@@ -140,11 +150,13 @@ class _TickingClockContent extends StatelessWidget {
     required this.clockController,
     required this.displayMode,
     required this.settings,
+    this.isFullscreen = false,
   });
 
   final ClockController clockController;
   final ClockDisplayMode displayMode;
   final AppSettings settings;
+  final bool isFullscreen;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +175,7 @@ class _TickingClockContent extends StatelessWidget {
               currentTime: clockController.currentTime,
               platformBrightness: MediaQuery.platformBrightnessOf(context),
               isLandscape: isLandscape,
+              isFullscreen: isFullscreen,
             );
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
