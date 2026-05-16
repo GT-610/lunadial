@@ -48,6 +48,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettingsController>().settings;
     final translations = AppLocalizations.of(context)!;
+    final padding = MediaQuery.paddingOf(context);
 
     return Scaffold(
       body: GestureDetector(
@@ -62,7 +63,7 @@ class _ClockHomePageState extends State<ClockHomePage> {
               settings: settings,
             ),
             Positioned(
-              top: 20,
+              top: padding.top + 20,
               left: 20,
               right: 20,
               child: _TopBar(
