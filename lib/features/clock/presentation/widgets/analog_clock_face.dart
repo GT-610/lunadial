@@ -18,33 +18,46 @@ class AnalogClockFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: size,
       height: size,
-      child: RepaintBoundary(
-        child: CustomPaint(
-          painter: AnalogClockPainter(
-            time: time,
-            colorScheme: Theme.of(context).colorScheme,
-            showSecondHand: showSecondHand,
-            nightModeEnabled: nightModeEnabled,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: AnalogClockDialPainter(
+                  colorScheme: colorScheme,
+                  nightModeEnabled: nightModeEnabled,
+                ),
+              ),
+            ),
           ),
-        ),
+          Positioned.fill(
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: AnalogClockHandsPainter(
+                  time: time,
+                  colorScheme: colorScheme,
+                  showSecondHand: showSecondHand,
+                  nightModeEnabled: nightModeEnabled,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class AnalogClockPainter extends CustomPainter {
-  final DateTime time;
+class AnalogClockDialPainter extends CustomPainter {
   final ColorScheme colorScheme;
-  final bool showSecondHand;
   final bool nightModeEnabled;
 
-  const AnalogClockPainter({
-    required this.time,
+  const AnalogClockDialPainter({
     required this.colorScheme,
-    required this.showSecondHand,
     required this.nightModeEnabled,
   });
 
@@ -52,7 +65,6 @@ class AnalogClockPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final centerX = size.width / 2;
     final centerY = size.height / 2;
-    final center = Offset(centerX, centerY);
     final radius = math.min(centerX, centerY);
     final onSurface = nightModeEnabled
         ? colorScheme.onSurface.withValues(alpha: 0.82)
@@ -115,6 +127,43 @@ class AnalogClockPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(numberX, numberY));
     }
 
+    final centerDotPaint = Paint()..color = primary;
+    canvas.drawCircle(Offset(centerX, centerY), 5, centerDotPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant AnalogClockDialPainter oldDelegate) {
+    return oldDelegate.colorScheme != colorScheme ||
+        oldDelegate.nightModeEnabled != nightModeEnabled;
+  }
+}
+
+class AnalogClockHandsPainter extends CustomPainter {
+  final DateTime time;
+  final ColorScheme colorScheme;
+  final bool showSecondHand;
+  final bool nightModeEnabled;
+
+  const AnalogClockHandsPainter({
+    required this.time,
+    required this.colorScheme,
+    required this.showSecondHand,
+    required this.nightModeEnabled,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+    final center = Offset(centerX, centerY);
+    final radius = math.min(centerX, centerY);
+    final onSurface = nightModeEnabled
+        ? colorScheme.onSurface.withValues(alpha: 0.82)
+        : colorScheme.onSurface;
+    final primary = nightModeEnabled
+        ? colorScheme.primary.withValues(alpha: 0.7)
+        : colorScheme.primary;
+
     final hourAngle =
         (time.hour % 12 + time.minute / 60) * math.pi / 6 - math.pi / 2;
     final hourHandEnd = Offset(
@@ -151,13 +200,10 @@ class AnalogClockPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(center, secondHandEnd, secondHandPaint);
     }
-
-    final centerDotPaint = Paint()..color = primary;
-    canvas.drawCircle(center, 5, centerDotPaint);
   }
 
   @override
-  bool shouldRepaint(covariant AnalogClockPainter oldDelegate) {
+  bool shouldRepaint(covariant AnalogClockHandsPainter oldDelegate) {
     return oldDelegate.time != time ||
         oldDelegate.colorScheme != colorScheme ||
         oldDelegate.showSecondHand != showSecondHand ||

@@ -40,6 +40,10 @@ class CalendarPanel extends StatelessWidget {
       focusedDay.year,
       focusedDay.month,
     );
+    final today = DateTime.now();
+    final theme = Theme.of(context);
+    final weekdayHeaderColor = theme.colorScheme.secondary;
+    final weekendOnSurfaceColor = theme.colorScheme.onSurface;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -58,6 +62,7 @@ class CalendarPanel extends StatelessWidget {
           translations.calendarHeaderFormat,
           locale.languageCode,
         );
+        final dayFormat = DateFormat.d();
 
         return Column(
           key: Key('calendar-${density.name}'),
@@ -122,8 +127,8 @@ class CalendarPanel extends StatelessWidget {
                         fontSize: fontSize * 0.9,
                         fontWeight: FontWeight.bold,
                         color: index == 0 || index == 6
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context).colorScheme.onSurface,
+                            ? weekdayHeaderColor
+                            : weekendOnSurfaceColor,
                       ),
                     );
                   }),
@@ -155,11 +160,7 @@ class CalendarPanel extends StatelessWidget {
                     day,
                     selectedDay,
                   );
-                  final isToday = ClockController.isSameDay(
-                    day,
-                    DateTime.now(),
-                  );
-                  final theme = Theme.of(context);
+                  final isToday = ClockController.isSameDay(day, today);
 
                   return GestureDetector(
                     onTap: () => onDaySelected(day),
@@ -174,7 +175,7 @@ class CalendarPanel extends StatelessWidget {
                         borderRadius: BorderRadius.circular(cellSize * 0.12),
                       ),
                       child: Text(
-                        DateFormat.d().format(day),
+                        dayFormat.format(day),
                         style: TextStyle(
                           fontSize: fontSize,
                           color: isToday
