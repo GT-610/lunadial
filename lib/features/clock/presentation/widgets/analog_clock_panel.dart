@@ -130,26 +130,67 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     return baseLayout;
   }
 
-  final regularVertical = _buildVerticalLayout(
-    availableWidth: availableWidth,
-    availableHeight: availableHeight,
-    spacing: baseLayout.spacing,
-    density: baseLayout.calendarDensity,
-    preferredClockSize: baseLayout.clockSize,
-    preferredCalendarWidth: baseLayout.calendarWidth,
-    focusedDay: focusedDay,
-    padding: baseLayout.padding,
-  );
+  final sameDirectionFallback = baseLayout.direction == Axis.horizontal
+      ? _buildHorizontalLayout(
+          availableWidth: availableWidth,
+          availableHeight: availableHeight,
+          spacing: baseLayout.spacing,
+          density: baseLayout.calendarDensity,
+          preferredClockSize: baseLayout.clockSize,
+          preferredCalendarWidth: baseLayout.calendarWidth,
+          focusedDay: focusedDay,
+          padding: baseLayout.padding,
+        )
+      : _buildVerticalLayout(
+          availableWidth: availableWidth,
+          availableHeight: availableHeight,
+          spacing: baseLayout.spacing,
+          density: baseLayout.calendarDensity,
+          preferredClockSize: baseLayout.clockSize,
+          preferredCalendarWidth: baseLayout.calendarWidth,
+          focusedDay: focusedDay,
+          padding: baseLayout.padding,
+        );
   if (_fitsLayout(
-    regularVertical,
+    sameDirectionFallback,
     availableWidth,
     availableHeight,
     focusedDay,
   )) {
-    return regularVertical;
+    return sameDirectionFallback;
   }
 
-  final compactVertical = _buildVerticalLayout(
+  final oppositeDirectionFallback = baseLayout.direction == Axis.horizontal
+      ? _buildVerticalLayout(
+          availableWidth: availableWidth,
+          availableHeight: availableHeight,
+          spacing: baseLayout.spacing,
+          density: baseLayout.calendarDensity,
+          preferredClockSize: baseLayout.clockSize,
+          preferredCalendarWidth: baseLayout.calendarWidth,
+          focusedDay: focusedDay,
+          padding: baseLayout.padding,
+        )
+      : _buildHorizontalLayout(
+          availableWidth: availableWidth,
+          availableHeight: availableHeight,
+          spacing: baseLayout.spacing,
+          density: baseLayout.calendarDensity,
+          preferredClockSize: baseLayout.clockSize,
+          preferredCalendarWidth: baseLayout.calendarWidth,
+          focusedDay: focusedDay,
+          padding: baseLayout.padding,
+        );
+  if (_fitsLayout(
+    oppositeDirectionFallback,
+    availableWidth,
+    availableHeight,
+    focusedDay,
+  )) {
+    return oppositeDirectionFallback;
+  }
+
+  final compactFallback = _buildVerticalLayout(
     availableWidth: availableWidth,
     availableHeight: availableHeight,
     spacing: baseLayout.spacing,
@@ -160,15 +201,15 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     padding: baseLayout.padding,
   );
   if (_fitsLayout(
-    compactVertical,
+    compactFallback,
     availableWidth,
     availableHeight,
     focusedDay,
   )) {
-    return compactVertical;
+    return compactFallback;
   }
 
-  return compactVertical;
+  return compactFallback;
 }
 
 AnalogClockLayoutSpec _buildVerticalLayout({
@@ -208,6 +249,58 @@ AnalogClockLayoutSpec _buildVerticalLayout({
 
   return AnalogClockLayoutSpec(
     direction: Axis.vertical,
+    padding: padding,
+    clockSize: scaledClockSize,
+    calendarWidth: scaledCalendarWidth,
+    spacing: scaledSpacing,
+    calendarDensity: density,
+  );
+}
+
+AnalogClockLayoutSpec _buildHorizontalLayout({
+  required double availableWidth,
+  required double availableHeight,
+  required double spacing,
+  required CalendarDensity density,
+  required double preferredClockSize,
+  required double preferredCalendarWidth,
+  required DateTime focusedDay,
+  required EdgeInsets padding,
+}) {
+  final baseSpacing = spacing.clamp(8.0, 24.0);
+  final baseClockSize = _boundedSize(preferredClockSize, availableHeight);
+  final baseCalendarWidth = _boundedSize(
+    preferredCalendarWidth,
+    availableWidth - baseClockSize - baseSpacing,
+  );
+  final calendarHeight = _estimateCalendarHeight(
+    width: baseCalendarWidth,
+    density: density,
+    focusedDay: focusedDay,
+  );
+  final requiredWidth = baseClockSize + baseSpacing + baseCalendarWidth;
+  final requiredHeight = baseClockSize > calendarHeight
+      ? baseClockSize
+      : calendarHeight;
+  final scale =
+      (requiredWidth > availableWidth || requiredHeight > availableHeight) &&
+          requiredWidth > 0 &&
+          requiredHeight > 0
+      ? (availableWidth / requiredWidth < availableHeight / requiredHeight
+                ? availableWidth / requiredWidth
+                : availableHeight / requiredHeight)
+            .clamp(0.55, 1.0)
+      : 1.0;
+
+  final scaledSpacing = (baseSpacing * scale).clamp(6.0, 24.0);
+  final scaledClockSize = _boundedSize(baseClockSize * scale, availableHeight);
+  final scaledCalendarWidth = _boundedSize(
+    baseCalendarWidth * scale,
+    availableWidth - scaledClockSize - scaledSpacing,
+  );
+
+  return AnalogClockLayoutSpec(
+    direction: Axis.horizontal,
     padding: padding,
     clockSize: scaledClockSize,
     calendarWidth: scaledCalendarWidth,
@@ -266,7 +359,7 @@ double _estimateCalendarHeight({
 
 double _boundedSize(double preferred, double available) {
   if (available <= 0) {
-    return available;
+    return 0.0;
   }
   return preferred.clamp(0.0, available).toDouble();
 }

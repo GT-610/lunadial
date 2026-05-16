@@ -122,60 +122,81 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
   final viewport = resolveClockViewportClass(size);
   final width = size.width;
   final height = size.height;
+  final isLandscape = width >= height;
 
   switch (viewport) {
     case ClockViewportClass.compactPhone:
+      final useHorizontal = isLandscape && width > height * 1.2;
       final padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 16);
       return AnalogClockLayoutSpec(
-        direction: Axis.vertical,
+        direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: _safeClamp(width - padding.horizontal, 180.0, height * 0.48),
-        calendarWidth: _safeClamp(width - padding.horizontal, 180.0, 280.0),
+        clockSize: useHorizontal
+            ? _safeClamp(height * 0.78, 140.0, width * 0.55)
+            : _safeClamp(width - padding.horizontal, 180.0, height * 0.48),
+        calendarWidth: useHorizontal
+            ? _safeClamp(width * 0.38, 140.0, 260.0)
+            : _safeClamp(width - padding.horizontal, 180.0, 280.0),
         spacing: 12,
         calendarDensity: CalendarDensity.compact,
       );
     case ClockViewportClass.phone:
+      final useHorizontal = isLandscape && width > height * 1.2;
       final padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 20);
       return AnalogClockLayoutSpec(
-        direction: Axis.vertical,
+        direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: _safeClamp(width - padding.horizontal, 240.0, height * 0.52),
-        calendarWidth: _safeClamp(width - padding.horizontal, 220.0, 320.0),
+        clockSize: useHorizontal
+            ? _safeClamp(height * 0.78, 200.0, width * 0.52)
+            : _safeClamp(width - padding.horizontal, 240.0, height * 0.52),
+        calendarWidth: useHorizontal
+            ? _safeClamp(width * 0.36, 180.0, 320.0)
+            : _safeClamp(width - padding.horizontal, 220.0, 320.0),
         spacing: 16,
         calendarDensity: CalendarDensity.compact,
       );
     case ClockViewportClass.largePhone:
-      final useHorizontal = width > height * 1.15;
+      final useHorizontal = isLandscape && width > height * 1.15;
       final padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 24);
       return AnalogClockLayoutSpec(
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.68, 260.0, width * 0.42)
+            ? _safeClamp(height * 0.78, 260.0, width * 0.5)
             : _safeClamp(width - padding.horizontal, 280.0, height * 0.5),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.32, 240.0, 360.0)
+            ? _safeClamp(width * 0.36, 220.0, 380.0)
             : _safeClamp(width - padding.horizontal, 240.0, 360.0),
         spacing: 20,
         calendarDensity: CalendarDensity.regular,
       );
     case ClockViewportClass.tablet:
+      final useHorizontal = isLandscape;
       final padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 28);
       return AnalogClockLayoutSpec(
-        direction: Axis.horizontal,
+        direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: _safeClamp(height * 0.66, 320.0, width * 0.42),
-        calendarWidth: _safeClamp(width * 0.34, 280.0, 420.0),
+        clockSize: useHorizontal
+            ? _safeClamp(height * 0.8, 320.0, width * 0.52)
+            : _safeClamp(width - padding.horizontal, 320.0, height * 0.5),
+        calendarWidth: useHorizontal
+            ? _safeClamp(width * 0.38, 260.0, width * 0.44)
+            : _safeClamp(width - padding.horizontal, 280.0, 420.0),
         spacing: 24,
         calendarDensity: CalendarDensity.regular,
       );
     case ClockViewportClass.largeWindow:
+      final useHorizontal = isLandscape;
       final padding = const EdgeInsets.symmetric(horizontal: 36, vertical: 32);
       return AnalogClockLayoutSpec(
-        direction: Axis.horizontal,
+        direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: _safeClamp(height * 0.7, 360.0, width * 0.38),
-        calendarWidth: _safeClamp(width * 0.28, 320.0, 460.0),
+        clockSize: useHorizontal
+            ? _safeClamp(height * 0.82, 360.0, width * 0.5)
+            : _safeClamp(width - padding.horizontal, 360.0, height * 0.5),
+        calendarWidth: useHorizontal
+            ? _safeClamp(width * 0.38, 320.0, width * 0.44)
+            : _safeClamp(width - padding.horizontal, 320.0, 460.0),
         spacing: 28,
         calendarDensity: CalendarDensity.regular,
       );
