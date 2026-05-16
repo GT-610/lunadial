@@ -5,7 +5,7 @@ import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
-class DigitalClockView extends StatelessWidget {
+class DigitalClockView extends StatefulWidget {
   const DigitalClockView({
     super.key,
     required this.currentTime,
@@ -26,11 +26,28 @@ class DigitalClockView extends StatelessWidget {
   final bool isLandscape;
 
   @override
+  State<DigitalClockView> createState() => _DigitalClockViewState();
+}
+
+class _DigitalClockViewState extends State<DigitalClockView> {
+  DateFormat? _dateFormat;
+  String? _dateFormatKey;
+
+  DateFormat _resolveDateFormat(String localeName, String dateFormatPattern) {
+    final key = '$localeName|$dateFormatPattern';
+    if (_dateFormatKey != key || _dateFormat == null) {
+      _dateFormatKey = key;
+      _dateFormat = DateFormat(dateFormatPattern, localeName);
+    }
+    return _dateFormat!;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
     final localeName = locale.toString();
-    final dateFormat = DateFormat(translations.dateFormat, localeName);
+    final dateFormat = _resolveDateFormat(localeName, translations.dateFormat);
     final use24HourFormat = _resolveUse24HourFormat(context, localeName);
     final timeText = _formatTime(
       locale: locale,
@@ -40,35 +57,35 @@ class DigitalClockView extends StatelessWidget {
     final timeFontSize = _resolveTimeFontSize();
     final verticalSpacing = _resolveVerticalSpacing();
     final theme = Theme.of(context);
-    final dateColor = nightModeEnabled
+    final dateColor = widget.nightModeEnabled
         ? theme.colorScheme.onSurface.withValues(alpha: 0.42)
         : theme.colorScheme.onSurface;
-    final timeColor = nightModeEnabled
+    final timeColor = widget.nightModeEnabled
         ? theme.colorScheme.onSurface.withValues(alpha: 0.92)
         : theme.colorScheme.onSurface;
-    final dateFontSize = nightModeEnabled && isLandscape
-        ? layout.dateFontSize * 0.9
-        : layout.dateFontSize;
+    final dateFontSize = widget.nightModeEnabled && widget.isLandscape
+        ? widget.layout.dateFontSize * 0.9
+        : widget.layout.dateFontSize;
 
     return Semantics(
       label: translations.digitalClockSemantics,
       child: Center(
         child: Padding(
-          padding: layout.padding,
+          padding: widget.layout.padding,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
+            constraints: BoxConstraints(maxWidth: widget.layout.maxContentWidth),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    dateFormat.format(currentTime),
+                    dateFormat.format(widget.currentTime),
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: dateFontSize,
                       color: dateColor,
-                      fontWeight: nightModeEnabled ? FontWeight.w400 : null,
+                      fontWeight: widget.nightModeEnabled ? FontWeight.w400 : null,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -80,8 +97,8 @@ class DigitalClockView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: timeFontSize,
                       color: timeColor,
-                      fontWeight: nightModeEnabled ? FontWeight.w300 : null,
-                      letterSpacing: nightModeEnabled && isLandscape ? 2.4 : 0,
+                      fontWeight: widget.nightModeEnabled ? FontWeight.w300 : null,
+                      letterSpacing: widget.nightModeEnabled && widget.isLandscape ? 2.4 : 0,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -95,25 +112,27 @@ class DigitalClockView extends StatelessWidget {
   }
 
   double _resolveTimeFontSize() {
-    final base = showSeconds ? layout.timeFontSize : layout.timeFontSize * 1.08;
-    if (!nightModeEnabled) {
+    final base = widget.showSeconds
+        ? widget.layout.timeFontSize
+        : widget.layout.timeFontSize * 1.08;
+    if (!widget.nightModeEnabled) {
       return base;
     }
-    return isLandscape ? base * 1.12 : base * 1.04;
+    return widget.isLandscape ? base * 1.12 : base * 1.04;
   }
 
   double _resolveVerticalSpacing() {
-    final base = showSeconds
-        ? layout.verticalSpacing
-        : layout.verticalSpacing * 1.15;
-    if (!nightModeEnabled) {
+    final base = widget.showSeconds
+        ? widget.layout.verticalSpacing
+        : widget.layout.verticalSpacing * 1.15;
+    if (!widget.nightModeEnabled) {
       return base;
     }
-    return isLandscape ? base * 0.78 : base * 0.92;
+    return widget.isLandscape ? base * 0.78 : base * 0.92;
   }
 
   bool _resolveUse24HourFormat(BuildContext context, String localeName) {
-    switch (timeFormatPreference) {
+    switch (widget.timeFormatPreference) {
       case TimeFormatPreference.system:
         final mediaQuery = MediaQuery.maybeOf(context);
         if (mediaQuery != null) {
@@ -133,20 +152,20 @@ class DigitalClockView extends StatelessWidget {
     required bool use24HourFormat,
   }) {
     if (use24HourFormat) {
-      final hourPattern = digitalClockLeadingZero ? 'HH' : 'H';
-      final secondPattern = showSeconds ? ':ss' : '';
+      final hourPattern = widget.digitalClockLeadingZero ? 'HH' : 'H';
+      final secondPattern = widget.showSeconds ? ':ss' : '';
       return DateFormat(
         '$hourPattern:mm$secondPattern',
         localeName,
-      ).format(currentTime);
+      ).format(widget.currentTime);
     }
 
     final basePattern = _twelveHourPattern(
       locale: locale,
-      showSeconds: showSeconds,
-      leadingZero: digitalClockLeadingZero,
+      showSeconds: widget.showSeconds,
+      leadingZero: widget.digitalClockLeadingZero,
     );
-    return DateFormat(basePattern, localeName).format(currentTime);
+    return DateFormat(basePattern, localeName).format(widget.currentTime);
   }
 
   String _twelveHourPattern({

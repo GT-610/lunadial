@@ -67,127 +67,135 @@ class _ClockHomePageState extends State<ClockHomePage> {
     final session = context.watch<AppSessionController>();
     final translations = AppLocalizations.of(context)!;
 
-    return AnimatedBuilder(
-      animation: _clockController,
-      builder: (context, _) {
-        if (session.isFullscreen) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: GestureDetector(
-              key: const Key('fullscreen-surface'),
-              onTap: _revealFullscreenButton,
-              behavior: HitTestBehavior.opaque,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Stack(
-                    children: [
-                      _buildResponsiveClockContent(
-                        constraints.biggest,
-                        settings.clockDisplayMode,
-                        settings,
-                      ),
-                      Positioned(
-                        top: 20,
-                        right: 20,
-                        child: FullscreenExitButton(
-                          controller: _fullscreenExitController,
-                          onExit: () => _exitFullscreen(session),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+    if (session.isFullscreen) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: GestureDetector(
+          key: const Key('fullscreen-surface'),
+          onTap: _revealFullscreenButton,
+          behavior: HitTestBehavior.opaque,
+          child: Stack(
+            children: [
+              _TickingClockContent(
+                clockController: _clockController,
+                displayMode: settings.clockDisplayMode,
+                settings: settings,
               ),
-            ),
-          );
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(translations.appTitle),
-            backgroundColor: pureBlackAppBarBackground(settings.themeColor),
-            actions: [
-              Semantics(
-                label: translations.enterFullscreenMode,
-                button: true,
-                child: IconButton(
-                  key: const Key('enter-fullscreen-button'),
-                  icon: const Icon(Icons.fullscreen),
-                  onPressed: () => _enterFullscreen(session),
-                ),
-              ),
-              Semantics(
-                label: translations.openSettings,
-                button: true,
-                child: IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (context) => const SettingsPage(),
-                      ),
-                    );
-                  },
+              Positioned(
+                top: 20,
+                right: 20,
+                child: FullscreenExitButton(
+                  controller: _fullscreenExitController,
+                  onExit: () => _exitFullscreen(session),
                 ),
               ),
             ],
           ),
-          backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              return _buildResponsiveClockContent(
-                constraints.biggest,
-                settings.clockDisplayMode,
-                settings,
-              );
-            },
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(translations.appTitle),
+        backgroundColor: pureBlackAppBarBackground(settings.themeColor),
+        actions: [
+          Semantics(
+            label: translations.enterFullscreenMode,
+            button: true,
+            child: IconButton(
+              key: const Key('enter-fullscreen-button'),
+              icon: const Icon(Icons.fullscreen),
+              onPressed: () => _enterFullscreen(session),
+            ),
           ),
-        );
-      },
+          Semantics(
+            label: translations.openSettings,
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
+      body: _TickingClockContent(
+        clockController: _clockController,
+        displayMode: settings.clockDisplayMode,
+        settings: settings,
+      ),
     );
   }
+}
 
-  Widget _buildResponsiveClockContent(
-    Size availableSize,
-    ClockDisplayMode displayMode,
-    AppSettings settings,
-  ) {
-    final displayConfig = NightClockDisplayConfig.resolve(
-      settings: settings,
-      currentTime: _clockController.currentTime,
-      platformBrightness: MediaQuery.platformBrightnessOf(context),
-      isLandscape: availableSize.width >= availableSize.height,
-    );
+class _TickingClockContent extends StatelessWidget {
+  const _TickingClockContent({
+    required this.clockController,
+    required this.displayMode,
+    required this.settings,
+  });
 
-    final clockContent = displayMode == ClockDisplayMode.digital
-        ? DigitalClockView(
-            currentTime: _clockController.currentTime,
-            layout: resolveDigitalClockLayout(availableSize),
-            timeFormatPreference: settings.timeFormatPreference,
-            showSeconds: settings.showSeconds,
-            digitalClockLeadingZero: settings.digitalClockLeadingZero,
-            nightModeEnabled: displayConfig.isNightModeActive,
-            isLandscape: displayConfig.isLandscape,
-          )
-        : AnalogClockPanel(
-            currentTime: _clockController.currentTime,
-            focusedDay: _clockController.focusedDay,
-            selectedDay: _clockController.selectedDay,
-            onDaySelected: _clockController.selectDay,
-            onPageChanged: _clockController.focusDay,
-            layout: resolveAnalogClockLayout(availableSize),
-            showSecondHand: settings.showSeconds,
-            nightModeEnabled: displayConfig.isNightModeActive,
-          );
+  final ClockController clockController;
+  final ClockDisplayMode displayMode;
+  final AppSettings settings;
 
-    return ColoredBox(
-      color: displayConfig.isNightModeActive
-          ? Colors.black
-          : Colors.transparent,
-      child: BurnInProtectionLayer(
-        enabled: displayConfig.shouldUseBurnInProtection,
-        child: FadeIn(child: clockContent),
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableSize = constraints.biggest;
+        final isLandscape = availableSize.width >= availableSize.height;
+
+        final displayConfig = NightClockDisplayConfig.resolve(
+          settings: settings,
+          currentTime: clockController.currentTime,
+          platformBrightness: MediaQuery.platformBrightnessOf(context),
+          isLandscape: isLandscape,
+        );
+
+        return AnimatedBuilder(
+          animation: clockController,
+          builder: (context, _) {
+            final clockContent = displayMode == ClockDisplayMode.digital
+                ? DigitalClockView(
+                    currentTime: clockController.currentTime,
+                    layout: resolveDigitalClockLayout(availableSize),
+                    timeFormatPreference: settings.timeFormatPreference,
+                    showSeconds: settings.showSeconds,
+                    digitalClockLeadingZero: settings.digitalClockLeadingZero,
+                    nightModeEnabled: displayConfig.isNightModeActive,
+                    isLandscape: displayConfig.isLandscape,
+                  )
+                : AnalogClockPanel(
+                    currentTime: clockController.currentTime,
+                    focusedDay: clockController.focusedDay,
+                    selectedDay: clockController.selectedDay,
+                    onDaySelected: clockController.selectDay,
+                    onPageChanged: clockController.focusDay,
+                    layout: resolveAnalogClockLayout(availableSize),
+                    showSecondHand: settings.showSeconds,
+                    nightModeEnabled: displayConfig.isNightModeActive,
+                  );
+
+            return ColoredBox(
+              color: displayConfig.isNightModeActive
+                  ? Colors.black
+                  : Colors.transparent,
+              child: BurnInProtectionLayer(
+                enabled: displayConfig.shouldUseBurnInProtection,
+                child: FadeIn(child: clockContent),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
