@@ -397,9 +397,13 @@ class _NightModeStartTimeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<AppSettingsController, NightModeBehavior>(
-      selector: (_, controller) => controller.settings.nightModeBehavior,
-      builder: (context, behavior, _) {
+    return Selector<AppSettingsController, (NightModeBehavior, TimeOfDay)>(
+      selector: (_, controller) => (
+        controller.settings.nightModeBehavior,
+        controller.settings.nightModeStartTime,
+      ),
+      builder: (context, data, _) {
+        final (behavior, startTime) = data;
         if (behavior != NightModeBehavior.scheduled) {
           return const SizedBox.shrink();
         }
@@ -409,12 +413,12 @@ class _NightModeStartTimeTile extends StatelessWidget {
           title: translations.nightModeStartTime,
           subtitle: translations.nightModeStartTimeDescription,
           trailing: _buildChevronValue(
-            _timeOfDayLabel(context, controller.settings.nightModeStartTime),
+            _timeOfDayLabel(context, startTime),
           ),
           onTap: () => _pickNightModeTime(
             context,
             title: translations.nightModeStartTime,
-            initialTime: controller.settings.nightModeStartTime,
+            initialTime: startTime,
             onSelected: controller.setNightModeStartTime,
           ),
         );
@@ -428,9 +432,13 @@ class _NightModeEndTimeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<AppSettingsController, NightModeBehavior>(
-      selector: (_, controller) => controller.settings.nightModeBehavior,
-      builder: (context, behavior, _) {
+    return Selector<AppSettingsController, (NightModeBehavior, TimeOfDay)>(
+      selector: (_, controller) => (
+        controller.settings.nightModeBehavior,
+        controller.settings.nightModeEndTime,
+      ),
+      builder: (context, data, _) {
+        final (behavior, endTime) = data;
         if (behavior != NightModeBehavior.scheduled) {
           return const SizedBox.shrink();
         }
@@ -440,12 +448,12 @@ class _NightModeEndTimeTile extends StatelessWidget {
           title: translations.nightModeEndTime,
           subtitle: translations.nightModeEndTimeDescription,
           trailing: _buildChevronValue(
-            _timeOfDayLabel(context, controller.settings.nightModeEndTime),
+            _timeOfDayLabel(context, endTime),
           ),
           onTap: () => _pickNightModeTime(
             context,
             title: translations.nightModeEndTime,
-            initialTime: controller.settings.nightModeEndTime,
+            initialTime: endTime,
             onSelected: controller.setNightModeEndTime,
           ),
         );
