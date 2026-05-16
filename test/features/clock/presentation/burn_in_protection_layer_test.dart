@@ -17,7 +17,10 @@ void main() {
     );
 
     final transform = tester.widget<Transform>(
-      find.byKey(const Key('burn-in-transform')),
+      find.descendant(
+        of: find.byType(BurnInProtectionLayer),
+        matching: find.byType(Transform),
+      ),
     );
     expect(transform.transform.getTranslation().x, 0);
     expect(transform.transform.getTranslation().y, 0);
@@ -27,20 +30,24 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: BurnInProtectionLayer(
           enabled: true,
-          stepDuration: Duration(milliseconds: 10),
-          child: SizedBox(width: 100, height: 100),
+          stepDuration: const Duration(milliseconds: 10),
+          child: const SizedBox(width: 100, height: 100),
         ),
       ),
     );
 
     await tester.pump(const Duration(milliseconds: 10));
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
 
     final transform = tester.widget<Transform>(
-      find.byKey(const Key('burn-in-transform')),
+      find.descendant(
+        of: find.byType(BurnInProtectionLayer),
+        matching: find.byType(Transform),
+      ),
     );
     expect(transform.transform.getTranslation().x, isNonZero);
   });
@@ -49,28 +56,36 @@ void main() {
     'burn-in protection layer does not snap back to origin between steps',
     (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: BurnInProtectionLayer(
             enabled: true,
-            stepDuration: Duration(milliseconds: 10),
-            child: SizedBox(width: 100, height: 100),
+            stepDuration: const Duration(milliseconds: 10),
+            child: const SizedBox(width: 100, height: 100),
           ),
         ),
       );
 
       await tester.pump(const Duration(milliseconds: 10));
+      await tester.pump();
       await tester.pump(const Duration(milliseconds: 900));
 
       final firstTransform = tester.widget<Transform>(
-        find.byKey(const Key('burn-in-transform')),
+        find.descendant(
+          of: find.byType(BurnInProtectionLayer),
+          matching: find.byType(Transform),
+        ),
       );
       expect(firstTransform.transform.getTranslation().x, isNonZero);
 
       await tester.pump(const Duration(milliseconds: 10));
+      await tester.pump();
       await tester.pump(const Duration(milliseconds: 1));
 
       final secondTransform = tester.widget<Transform>(
-        find.byKey(const Key('burn-in-transform')),
+        find.descendant(
+          of: find.byType(BurnInProtectionLayer),
+          matching: find.byType(Transform),
+        ),
       );
       expect(secondTransform.transform.getTranslation().x, isNonZero);
     },

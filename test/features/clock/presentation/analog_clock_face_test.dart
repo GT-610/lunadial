@@ -20,13 +20,12 @@ void main() {
       ),
     );
 
-    final customPaint = tester.widget<CustomPaint>(
-      find.descendant(
-        of: find.byType(AnalogClockFace),
-        matching: find.byType(CustomPaint),
+    final handsPaint = tester.widget<CustomPaint>(
+      find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is AnalogClockHandsPainter,
       ),
     );
-    final painter = customPaint.painter! as AnalogClockPainter;
+    final painter = handsPaint.painter! as AnalogClockHandsPainter;
 
     expect(painter.showSecondHand, isTrue);
   });
@@ -47,13 +46,12 @@ void main() {
       ),
     );
 
-    final customPaint = tester.widget<CustomPaint>(
-      find.descendant(
-        of: find.byType(AnalogClockFace),
-        matching: find.byType(CustomPaint),
+    final handsPaint = tester.widget<CustomPaint>(
+      find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is AnalogClockHandsPainter,
       ),
     );
-    final painter = customPaint.painter! as AnalogClockPainter;
+    final painter = handsPaint.painter! as AnalogClockHandsPainter;
 
     expect(painter.showSecondHand, isFalse);
     expect(painter.nightModeEnabled, isTrue);

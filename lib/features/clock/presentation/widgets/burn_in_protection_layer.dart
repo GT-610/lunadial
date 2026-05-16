@@ -81,7 +81,6 @@ class _BurnInProtectionLayerState extends State<BurnInProtectionLayer> {
       curve: Curves.easeInOut,
       builder: (context, animatedOffset, child) {
         return Transform.translate(
-          key: const Key('burn-in-transform'),
           offset: animatedOffset,
           child: child,
         );
