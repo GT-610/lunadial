@@ -80,10 +80,7 @@ class _BurnInProtectionLayerState extends State<BurnInProtectionLayer> {
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeInOut,
       builder: (context, animatedOffset, child) {
-        return Transform.translate(
-          offset: animatedOffset,
-          child: child,
-        );
+        return Transform.translate(offset: animatedOffset, child: child);
       },
       child: widget.child,
     );

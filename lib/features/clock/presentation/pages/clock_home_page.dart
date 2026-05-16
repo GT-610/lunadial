@@ -2,20 +2,18 @@ import 'package:fl_lib/fl_lib.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lunadial/features/clock/application/app_session_controller.dart';
 import 'package:lunadial/features/clock/application/clock_controller.dart';
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/features/clock/domain/night_clock_display_config.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
 import 'package:lunadial/features/clock/presentation/widgets/burn_in_protection_layer.dart';
 import 'package:lunadial/features/clock/presentation/widgets/digital_clock_view.dart';
-import 'package:lunadial/features/clock/presentation/widgets/fullscreen_exit_button.dart';
+import 'package:lunadial/features/clock/presentation/widgets/settings_reveal_button.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
-import 'package:lunadial/shared/presentation/app_theme_utils.dart';
 
 class ClockHomePage extends StatefulWidget {
   const ClockHomePage({super.key});
@@ -26,120 +24,68 @@ class ClockHomePage extends StatefulWidget {
 
 class _ClockHomePageState extends State<ClockHomePage> {
   late final ClockController _clockController = ClockController();
-  late final FullscreenExitButtonController _fullscreenExitController =
-      FullscreenExitButtonController();
+  late final SettingsButtonController _settingsButtonController =
+      SettingsButtonController();
 
   @override
   void dispose() {
-    _fullscreenExitController.dispose();
+    _settingsButtonController.dispose();
     _clockController.dispose();
     super.dispose();
   }
 
-  void _enterFullscreen(AppSessionController session) {
-    _fullscreenExitController.showTemporarily();
-    session.setFullscreen(true);
-    _persistDedicatedClockState(true);
-  }
-
-  void _exitFullscreen(AppSessionController session) {
-    _fullscreenExitController.hide();
-    session.setFullscreen(false);
-    _persistDedicatedClockState(false);
-  }
-
-  void _revealFullscreenButton() {
-    _fullscreenExitController.showTemporarily();
-  }
-
-  void _persistDedicatedClockState(bool isFullscreen) {
-    final settingsController = context.read<AppSettingsController>();
-    if (!settingsController.settings.dedicatedClockModeEnabled) {
-      return;
+  void _onScreenTap() {
+    if (_settingsButtonController.isVisible) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => const SettingsPage()));
+    } else {
+      _settingsButtonController.showTemporarily();
     }
-
-    settingsController.setRestoreFullscreenOnLaunch(isFullscreen);
   }
 
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettingsController>().settings;
-    final session = context.watch<AppSessionController>();
     final translations = AppLocalizations.of(context)!;
 
-    if (session.isFullscreen) {
-      const fullscreenColorScheme = ColorScheme.dark(
-        onSurface: Colors.white,
-      );
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: GestureDetector(
-          key: const Key('fullscreen-surface'),
-          onTap: _revealFullscreenButton,
-          behavior: HitTestBehavior.opaque,
-          child: Stack(
-            children: [
-              Theme(
-                data: Theme.of(context).copyWith(
-                  colorScheme: fullscreenColorScheme,
-                ),
-                child: _TickingClockContent(
-                  clockController: _clockController,
-                  displayMode: settings.clockDisplayMode,
-                  settings: settings,
-                  isFullscreen: true,
-                ),
-              ),
-              Positioned(
-                top: 20,
-                right: 20,
-                child: FullscreenExitButton(
-                  controller: _fullscreenExitController,
-                  onExit: () => _exitFullscreen(session),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(translations.appTitle),
-        backgroundColor: pureBlackAppBarBackground(settings.themeColor),
-        actions: [
-          Semantics(
-            label: translations.enterFullscreenMode,
-            button: true,
-            child: IconButton(
-              key: const Key('enter-fullscreen-button'),
-              icon: const Icon(Icons.fullscreen),
-              onPressed: () => _enterFullscreen(session),
+      body: GestureDetector(
+        key: const Key('clock-surface'),
+        onTap: _onScreenTap,
+        behavior: HitTestBehavior.opaque,
+        child: Stack(
+          children: [
+            _TickingClockContent(
+              clockController: _clockController,
+              displayMode: settings.clockDisplayMode,
+              settings: settings,
             ),
-          ),
-          Semantics(
-            label: translations.openSettings,
-            button: true,
-            child: IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
-              },
+            Positioned(
+              top: 20,
+              left: 0,
+              right: 0,
+              child: _ClockTitle(
+                controller: _settingsButtonController,
+                title: translations.appTitle,
+              ),
             ),
-          ),
-        ],
-      ),
-      backgroundColor: pureBlackScaffoldBackground(settings.themeColor),
-      body: _TickingClockContent(
-        clockController: _clockController,
-        displayMode: settings.clockDisplayMode,
-        settings: settings,
-        isFullscreen: false,
+            Positioned(
+              top: 20,
+              right: 20,
+              child: SettingsRevealButton(
+                controller: _settingsButtonController,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SettingsPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -150,13 +96,11 @@ class _TickingClockContent extends StatelessWidget {
     required this.clockController,
     required this.displayMode,
     required this.settings,
-    this.isFullscreen = false,
   });
 
   final ClockController clockController;
   final ClockDisplayMode displayMode;
   final AppSettings settings;
-  final bool isFullscreen;
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +119,6 @@ class _TickingClockContent extends StatelessWidget {
               currentTime: clockController.currentTime,
               platformBrightness: MediaQuery.platformBrightnessOf(context),
               isLandscape: isLandscape,
-              isFullscreen: isFullscreen,
             );
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
@@ -208,6 +151,39 @@ class _TickingClockContent extends StatelessWidget {
               ),
             );
           },
+        );
+      },
+    );
+  }
+}
+
+class _ClockTitle extends StatelessWidget {
+  const _ClockTitle({required this.controller, required this.title});
+
+  final SettingsButtonController controller;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return IgnorePointer(
+          ignoring: true,
+          child: AnimatedOpacity(
+            opacity: controller.isVisible ? 1 : 0,
+            duration: const Duration(milliseconds: 300),
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
         );
       },
     );

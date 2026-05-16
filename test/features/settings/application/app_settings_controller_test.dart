@@ -27,22 +27,6 @@ void main() {
     expect(controller.saveError, isNull);
   });
 
-  test(
-    'disabling dedicated clock mode clears fullscreen restore state',
-    () async {
-      final repository = _FailingSettingsRepository()..shouldFail = false;
-      final controller = AppSettingsController(repository: repository);
-      await controller.initialize();
-
-      await controller.setDedicatedClockModeEnabled(true);
-      await controller.setRestoreFullscreenOnLaunch(true);
-      await controller.setDedicatedClockModeEnabled(false);
-
-      expect(controller.settings.dedicatedClockModeEnabled, isFalse);
-      expect(controller.settings.restoreFullscreenOnLaunch, isFalse);
-    },
-  );
-
   test('display settings update through controller', () async {
     final repository = _FailingSettingsRepository()..shouldFail = false;
     final controller = AppSettingsController(repository: repository);
@@ -82,16 +66,6 @@ void main() {
       const TimeOfDay(hour: 6, minute: 30),
     );
     expect(controller.settings.burnInProtectionEnabled, isFalse);
-  });
-
-  test('dedicated landscape preference updates through controller', () async {
-    final repository = _FailingSettingsRepository()..shouldFail = false;
-    final controller = AppSettingsController(repository: repository);
-    await controller.initialize();
-
-    await controller.setPreferLandscapeInDedicatedMode(false);
-
-    expect(controller.settings.preferLandscapeInDedicatedMode, isFalse);
   });
 }
 

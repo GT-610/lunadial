@@ -96,22 +96,10 @@ class _SettingsPageState extends State<SettingsPage> {
         title: translations.screen,
         child: _buildSettingsGroup([
           _buildSwitchTile(
-            title: translations.dedicatedClockMode,
-            subtitle: translations.dedicatedClockModeDescription,
-            value: settings.dedicatedClockModeEnabled,
-            onChanged: settingsController.setDedicatedClockModeEnabled,
-          ),
-          _buildSwitchTile(
             title: translations.keepScreenOn,
             subtitle: translations.keepScreenOnDescription,
             value: settings.keepScreenOn,
             onChanged: settingsController.setKeepScreenOn,
-          ),
-          _buildSwitchTile(
-            title: translations.preferLandscapeInDedicatedMode,
-            subtitle: translations.preferLandscapeInDedicatedModeDescription,
-            value: settings.preferLandscapeInDedicatedMode,
-            onChanged: settingsController.setPreferLandscapeInDedicatedMode,
           ),
         ]),
       ),

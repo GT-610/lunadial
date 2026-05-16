@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:lunadial/app/view/device_display_sync.dart';
-import 'package:lunadial/features/clock/application/app_session_controller.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
@@ -35,135 +34,58 @@ void main() {
           .setMockMethodCallHandler(SystemChannels.platform, null);
     });
 
-    testWidgets(
-      'applies landscape and immersive behavior in dedicated fullscreen mode',
-      (tester) async {
-        final settingsController = AppSettingsController(
-          repository: _MemorySettingsRepository(
-            initialSettings: const AppSettings(
-              themeColor: Colors.green,
-              themeMode: ThemeMode.system,
-              keepScreenOn: false,
-              dedicatedClockModeEnabled: true,
-              restoreFullscreenOnLaunch: true,
-              clockDisplayMode: ClockDisplayMode.digital,
-              localeOption: AppLocaleOption.system,
-              timeFormatPreference: TimeFormatPreference.system,
-              showSeconds: true,
-              digitalClockLeadingZero: true,
-              nightModeBehavior: NightModeBehavior.off,
-              nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
-              nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
-              burnInProtectionEnabled: true,
-              preferLandscapeInDedicatedMode: true,
-            ),
+    testWidgets('applies immersiveSticky on Android', (tester) async {
+      final settingsController = AppSettingsController(
+        repository: _MemorySettingsRepository(
+          initialSettings: const AppSettings(
+            themeColor: Colors.green,
+            themeMode: ThemeMode.system,
+            keepScreenOn: false,
+            clockDisplayMode: ClockDisplayMode.digital,
+            localeOption: AppLocaleOption.system,
+            timeFormatPreference: TimeFormatPreference.system,
+            showSeconds: true,
+            digitalClockLeadingZero: true,
+            nightModeBehavior: NightModeBehavior.off,
+            nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
+            nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
+            burnInProtectionEnabled: true,
           ),
-        );
-        await settingsController.initialize();
-        final sessionController = AppSessionController(initialFullscreen: true);
+        ),
+      );
+      await settingsController.initialize();
 
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              ChangeNotifierProvider<AppSettingsController>.value(
-                value: settingsController,
-              ),
-              ChangeNotifierProvider<AppSessionController>.value(
-                value: sessionController,
-              ),
+      await tester.pumpWidget(
+        ChangeNotifierProvider<AppSettingsController>.value(
+          value: settingsController,
+          child: MaterialApp(
+            localizationsDelegates: const [
+              LibLocalizations.delegate,
+              ...AppLocalizations.localizationsDelegates,
             ],
-            child: MaterialApp(
-              localizationsDelegates: const [
-                LibLocalizations.delegate,
-                ...AppLocalizations.localizationsDelegates,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              home: const DeviceDisplaySync(
-                debugPlatformOverride: TargetPlatform.android,
-                child: SizedBox.shrink(),
-              ),
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const DeviceDisplaySync(
+              debugPlatformOverride: TargetPlatform.android,
+              child: SizedBox.shrink(),
             ),
           ),
-        );
-        await tester.pump();
+        ),
+      );
+      await tester.pump();
 
-        expect(
-          methodCalls.any(
-            (call) => call.method == 'SystemChrome.setPreferredOrientations',
-          ),
-          isTrue,
-        );
-        expect(
-          methodCalls.any(
-            (call) => call.method == 'SystemChrome.setEnabledSystemUIMode',
-          ),
-          isTrue,
-        );
-      },
-    );
-
-    testWidgets(
-      'restores fullscreen state when app resumes in dedicated mode',
-      (tester) async {
-        final settingsController = AppSettingsController(
-          repository: _MemorySettingsRepository(
-            initialSettings: const AppSettings(
-              themeColor: Colors.green,
-              themeMode: ThemeMode.system,
-              keepScreenOn: false,
-              dedicatedClockModeEnabled: true,
-              restoreFullscreenOnLaunch: true,
-              clockDisplayMode: ClockDisplayMode.digital,
-              localeOption: AppLocaleOption.system,
-              timeFormatPreference: TimeFormatPreference.system,
-              showSeconds: true,
-              digitalClockLeadingZero: true,
-              nightModeBehavior: NightModeBehavior.off,
-              nightModeStartTime: TimeOfDay(hour: 22, minute: 0),
-              nightModeEndTime: TimeOfDay(hour: 7, minute: 0),
-              burnInProtectionEnabled: true,
-              preferLandscapeInDedicatedMode: true,
-            ),
-          ),
-        );
-        await settingsController.initialize();
-        final sessionController = AppSessionController(
-          initialFullscreen: false,
-        );
-
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              ChangeNotifierProvider<AppSettingsController>.value(
-                value: settingsController,
-              ),
-              ChangeNotifierProvider<AppSessionController>.value(
-                value: sessionController,
-              ),
-            ],
-            child: MaterialApp(
-              localizationsDelegates: const [
-                LibLocalizations.delegate,
-                ...AppLocalizations.localizationsDelegates,
-              ],
-              supportedLocales: AppLocalizations.supportedLocales,
-              home: const DeviceDisplaySync(
-                debugPlatformOverride: TargetPlatform.android,
-                child: SizedBox.shrink(),
-              ),
-            ),
-          ),
-        );
-
-        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.resumed,
-        );
-        await tester.pump();
-
-        expect(sessionController.isFullscreen, isTrue);
-      },
-    );
+      expect(
+        methodCalls.any(
+          (call) => call.method == 'SystemChrome.setPreferredOrientations',
+        ),
+        isTrue,
+      );
+      expect(
+        methodCalls.any(
+          (call) => call.method == 'SystemChrome.setEnabledSystemUIMode',
+        ),
+        isTrue,
+      );
+    });
   });
 }
 

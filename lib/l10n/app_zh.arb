@@ -47,14 +47,6 @@
   "@keepScreenOnDescription": {
     "description": "Keep screen on setting description"
   },
-  "preferLandscapeInDedicatedMode": "专用模式优先横屏",
-  "@preferLandscapeInDedicatedMode": {
-    "description": "Landscape preference setting title for dedicated mode"
-  },
-  "preferLandscapeInDedicatedModeDescription": "在专用时钟模式下优先保持 Android 设备横屏展示",
-  "@preferLandscapeInDedicatedModeDescription": {
-    "description": "Landscape preference setting description for dedicated mode"
-  },
   "nightAndBurnIn": "夜间与防烧屏",
   "@nightAndBurnIn": {
     "description": "Night mode and burn-in settings section title"
@@ -130,14 +122,6 @@
   "burnInProtectionDescription": "在夜间展示实际生效时进行轻微周期位移，降低静态画面长期停留的风险",
   "@burnInProtectionDescription": {
     "description": "Burn-in protection setting description"
-  },
-  "dedicatedClockMode": "专用时钟模式",
-  "@dedicatedClockMode": {
-    "description": "Dedicated clock mode setting title"
-  },
-  "dedicatedClockModeDescription": "记住启动时的全屏时钟状态，减少界面干扰，更适合闲置设备长期展示。",
-  "@dedicatedClockModeDescription": {
-    "description": "Dedicated clock mode setting description"
   },
   "clockStyle": "时钟样式",
   "@clockStyle": {
@@ -303,14 +287,6 @@
   "languageDescription": "选择应用语言",
   "@languageDescription": {
     "description": "Language setting description"
-  },
-  "enterFullscreenMode": "进入全屏模式",
-  "@enterFullscreenMode": {
-    "description": "Accessibility label for entering fullscreen mode"
-  },
-  "exitFullscreenMode": "退出全屏模式",
-  "@exitFullscreenMode": {
-    "description": "Accessibility label for exiting fullscreen mode"
   },
   "openSettings": "打开设置",
   "@openSettings": {
