@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
+import 'package:lunadial/features/settings/domain/app_settings.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -44,8 +45,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settingsController = context.watch<AppSettingsController>();
-    final settings = settingsController.settings;
+    final settingsController = context.read<AppSettingsController>();
+    final settings = context.select<AppSettingsController, AppSettings>(
+      (controller) => controller.settings,
+    );
     final translations = AppLocalizations.of(context)!;
 
     final settingsSections = <Widget>[
@@ -246,13 +249,24 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (settingsController.hasSaveError) ...[
-                  SettingsSaveErrorBanner(
-                    error: settingsController.saveError,
-                    onRetry: settingsController.retrySave,
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                Selector<AppSettingsController, bool>(
+                  selector: (_, controller) => controller.hasSaveError,
+                  builder: (context, hasSaveError, _) {
+                    if (!hasSaveError) {
+                      return const SizedBox.shrink();
+                    }
+                    final controller = context.read<AppSettingsController>();
+                    return Column(
+                      children: [
+                        SettingsSaveErrorBanner(
+                          error: controller.saveError,
+                          onRetry: controller.retrySave,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    );
+                  },
+                ),
                 if (columns == 1)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
