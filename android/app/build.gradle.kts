@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.gt610.lunadial"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -41,8 +41,4 @@ android {
 
 flutter {
     source = "../.."
-}
-
-android {
-    ndkVersion = "27.0.12077973"
 }
