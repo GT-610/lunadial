@@ -79,15 +79,17 @@ class _DigitalClockViewState extends State<DigitalClockView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    dateFormat.format(widget.currentTime),
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: dateFontSize,
-                      color: dateColor,
-                      fontWeight: widget.nightModeEnabled ? FontWeight.w400 : null,
+                  RepaintBoundary(
+                    child: Text(
+                      dateFormat.format(widget.currentTime),
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: dateFontSize,
+                        color: dateColor,
+                        fontWeight: widget.nightModeEnabled ? FontWeight.w400 : null,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: verticalSpacing),
                   Text(

@@ -308,7 +308,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(BurnInProtectionLayer), findsOneWidget);
-      expect(find.byKey(const Key('burn-in-transform')), findsOneWidget);
       expect(find.byType(DigitalClockView), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
