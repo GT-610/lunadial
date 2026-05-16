@@ -132,10 +132,10 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.72, 140.0, height * 0.55)
+            ? _safeClamp(height * 0.78, 140.0, width * 0.55)
             : _safeClamp(width - padding.horizontal, 180.0, height * 0.48),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.35, 140.0, 220.0)
+            ? _safeClamp(width * 0.38, 140.0, 260.0)
             : _safeClamp(width - padding.horizontal, 180.0, 280.0),
         spacing: 12,
         calendarDensity: CalendarDensity.compact,
@@ -147,10 +147,10 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.7, 200.0, height * 0.58)
+            ? _safeClamp(height * 0.78, 200.0, width * 0.52)
             : _safeClamp(width - padding.horizontal, 240.0, height * 0.52),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.35, 180.0, 280.0)
+            ? _safeClamp(width * 0.36, 180.0, 320.0)
             : _safeClamp(width - padding.horizontal, 220.0, 320.0),
         spacing: 16,
         calendarDensity: CalendarDensity.compact,
@@ -162,10 +162,10 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.68, 260.0, width * 0.42)
+            ? _safeClamp(height * 0.78, 260.0, width * 0.5)
             : _safeClamp(width - padding.horizontal, 280.0, height * 0.5),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.32, 240.0, 360.0)
+            ? _safeClamp(width * 0.36, 220.0, 380.0)
             : _safeClamp(width - padding.horizontal, 240.0, 360.0),
         spacing: 20,
         calendarDensity: CalendarDensity.regular,
@@ -177,10 +177,10 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.66, 320.0, width * 0.42)
+            ? _safeClamp(height * 0.8, 320.0, width * 0.52)
             : _safeClamp(width - padding.horizontal, 320.0, height * 0.5),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.34, 280.0, 420.0)
+            ? _safeClamp(width * 0.38, 260.0, width * 0.44)
             : _safeClamp(width - padding.horizontal, 280.0, 420.0),
         spacing: 24,
         calendarDensity: CalendarDensity.regular,
@@ -192,10 +192,10 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
         clockSize: useHorizontal
-            ? _safeClamp(height * 0.7, 360.0, width * 0.38)
+            ? _safeClamp(height * 0.82, 360.0, width * 0.5)
             : _safeClamp(width - padding.horizontal, 360.0, height * 0.5),
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.28, 320.0, 460.0)
+            ? _safeClamp(width * 0.38, 320.0, width * 0.44)
             : _safeClamp(width - padding.horizontal, 320.0, 460.0),
         spacing: 28,
         calendarDensity: CalendarDensity.regular,
