@@ -270,7 +270,7 @@ AnalogClockLayoutSpec _buildHorizontalLayout({
   final baseClockSize = _boundedSize(preferredClockSize, availableHeight);
   final baseCalendarWidth = _boundedSize(
     preferredCalendarWidth,
-    availableWidth - preferredClockSize - spacing,
+    availableWidth - baseClockSize - spacing,
   );
   final baseSpacing = spacing.clamp(8.0, 24.0);
   final calendarHeight = _estimateCalendarHeight(
@@ -292,12 +292,12 @@ AnalogClockLayoutSpec _buildHorizontalLayout({
             .clamp(0.55, 1.0)
       : 1.0;
 
+  final scaledSpacing = (baseSpacing * scale).clamp(6.0, 24.0);
   final scaledClockSize = _boundedSize(baseClockSize * scale, availableHeight);
   final scaledCalendarWidth = _boundedSize(
     baseCalendarWidth * scale,
-    availableWidth - scaledClockSize - baseSpacing,
+    availableWidth - scaledClockSize - scaledSpacing,
   );
-  final scaledSpacing = (baseSpacing * scale).clamp(6.0, 24.0);
 
   return AnalogClockLayoutSpec(
     direction: Axis.horizontal,
@@ -359,7 +359,7 @@ double _estimateCalendarHeight({
 
 double _boundedSize(double preferred, double available) {
   if (available <= 0) {
-    return available;
+    return 0.0;
   }
   return preferred.clamp(0.0, available).toDouble();
 }
