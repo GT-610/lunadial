@@ -21,10 +21,9 @@ void main() {
     );
 
     final handsPaint = tester.widget<CustomPaint>(
-      find.descendant(
-        of: find.byType(AnalogClockFace),
-        matching: find.byType(CustomPaint),
-      ).last,
+      find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is AnalogClockHandsPainter,
+      ),
     );
     final painter = handsPaint.painter! as AnalogClockHandsPainter;
 
@@ -48,10 +47,9 @@ void main() {
     );
 
     final handsPaint = tester.widget<CustomPaint>(
-      find.descendant(
-        of: find.byType(AnalogClockFace),
-        matching: find.byType(CustomPaint),
-      ).last,
+      find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.painter is AnalogClockHandsPainter,
+      ),
     );
     final painter = handsPaint.painter! as AnalogClockHandsPainter;
 

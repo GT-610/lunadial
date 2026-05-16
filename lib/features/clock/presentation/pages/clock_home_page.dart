@@ -152,6 +152,8 @@ class _TickingClockContent extends StatelessWidget {
       builder: (context, constraints) {
         final availableSize = constraints.biggest;
         final isLandscape = availableSize.width >= availableSize.height;
+        final digitalLayout = resolveDigitalClockLayout(availableSize);
+        final analogLayout = resolveAnalogClockLayout(availableSize);
 
         return AnimatedBuilder(
           animation: clockController,
@@ -165,7 +167,7 @@ class _TickingClockContent extends StatelessWidget {
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
                     currentTime: clockController.currentTime,
-                    layout: resolveDigitalClockLayout(availableSize),
+                    layout: digitalLayout,
                     timeFormatPreference: settings.timeFormatPreference,
                     showSeconds: settings.showSeconds,
                     digitalClockLeadingZero: settings.digitalClockLeadingZero,
@@ -178,7 +180,7 @@ class _TickingClockContent extends StatelessWidget {
                     selectedDay: clockController.selectedDay,
                     onDaySelected: clockController.selectDay,
                     onPageChanged: clockController.focusDay,
-                    layout: resolveAnalogClockLayout(availableSize),
+                    layout: analogLayout,
                     showSecondHand: settings.showSeconds,
                     nightModeEnabled: displayConfig.isNightModeActive,
                   );
