@@ -65,6 +65,18 @@ class ClockController extends ChangeNotifier {
         left.day == right.day;
   }
 
+  void stopTicker() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void resumeTicker() {
+    if (_timer != null) {
+      return;
+    }
+    _startPreciseTimer();
+  }
+
   void _startPreciseTimer() {
     void tick() {
       _currentTime = _now();

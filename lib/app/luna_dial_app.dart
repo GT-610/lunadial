@@ -11,6 +11,8 @@ import 'package:lunadial/l10n/app_localizations.dart';
 import 'package:lunadial/shared/presentation/app_error_shell.dart';
 import 'package:lunadial/shared/presentation/app_theme_utils.dart';
 
+final RouteObserver<ModalRoute<void>> appRouteObserver = RouteObserver<ModalRoute<void>>();
+
 class LunaDialApp extends StatelessWidget {
   const LunaDialApp({super.key});
 
@@ -43,6 +45,7 @@ class LunaDialApp extends StatelessWidget {
                 brightness: Brightness.dark,
                 seedColor: settings.themeColor,
               ).fixWindowsFont,
+              navigatorObservers: [appRouteObserver],
               builder: (context, child) {
                 return _LibL10nScope(
                   child: AppErrorShell(child: child ?? const SizedBox.shrink()),
