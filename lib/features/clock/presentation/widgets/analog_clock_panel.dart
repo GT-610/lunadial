@@ -86,8 +86,13 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
       child: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final constraintsChanged =
+                _lastConstraints == null ||
+                _lastConstraints!.maxWidth != constraints.maxWidth ||
+                _lastConstraints!.maxHeight != constraints.maxHeight;
             _lastConstraints = constraints;
-            if (_effectiveLayout == null) {
+
+            if (_effectiveLayout == null || constraintsChanged) {
               _effectiveLayout = _resolveEffectiveLayout(
                 constraints: constraints,
                 baseLayout: widget.layout,
