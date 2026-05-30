@@ -5,7 +5,7 @@ import 'package:lunadial/features/clock/presentation/widgets/analog_clock_face.d
 import 'package:lunadial/features/clock/presentation/widgets/calendar_panel.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
-class AnalogClockPanel extends StatelessWidget {
+class AnalogClockPanel extends StatefulWidget {
   const AnalogClockPanel({
     super.key,
     required this.currentTime,
@@ -28,6 +28,64 @@ class AnalogClockPanel extends StatelessWidget {
   final bool nightModeEnabled;
 
   @override
+  State<AnalogClockPanel> createState() => _AnalogClockPanelState();
+}
+
+class _AnalogClockPanelState extends State<AnalogClockPanel> {
+  Widget? _calendarWidget;
+  AnalogClockLayoutSpec? _effectiveLayout;
+  BoxConstraints? _lastConstraints;
+  DateTime? _today;
+
+  bool _calendarDepsChanged(AnalogClockPanel oldWidget) {
+    return !identical(oldWidget.focusedDay, widget.focusedDay) ||
+        !identical(oldWidget.selectedDay, widget.selectedDay) ||
+        !identical(oldWidget.layout, widget.layout) ||
+        oldWidget.nightModeEnabled != widget.nightModeEnabled ||
+        !identical(oldWidget.onDaySelected, widget.onDaySelected) ||
+        !identical(oldWidget.onPageChanged, widget.onPageChanged);
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  void _rebuildCalendar() {
+    if (_lastConstraints == null) return;
+    _today = DateTime.now();
+    _effectiveLayout = _resolveEffectiveLayout(
+      constraints: _lastConstraints!,
+      baseLayout: widget.layout,
+      focusedDay: widget.focusedDay,
+    );
+    _calendarWidget = Opacity(
+      opacity: widget.nightModeEnabled ? 0.58 : 1,
+      child: SizedBox(
+        width: _effectiveLayout!.calendarWidth,
+        child: CalendarPanel(
+          focusedDay: widget.focusedDay,
+          selectedDay: widget.selectedDay,
+          onDaySelected: widget.onDaySelected,
+          onPageChanged: widget.onPageChanged,
+          density: _effectiveLayout!.calendarDensity,
+          today: _today!,
+        ),
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant AnalogClockPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final now = DateTime.now();
+    if (_today == null || !_isSameDay(_today!, now)) {
+      _rebuildCalendar();
+    } else if (_calendarDepsChanged(oldWidget)) {
+      _rebuildCalendar();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
 
@@ -36,17 +94,26 @@ class AnalogClockPanel extends StatelessWidget {
       child: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final effectiveLayout = _resolveEffectiveLayout(
-              constraints: constraints,
-              baseLayout: layout,
-              focusedDay: focusedDay,
-            );
+            final constraintsChanged =
+                _lastConstraints == null ||
+                _lastConstraints!.maxWidth != constraints.maxWidth ||
+                _lastConstraints!.maxHeight != constraints.maxHeight;
+            _lastConstraints = constraints;
+
+            if (_effectiveLayout == null || constraintsChanged) {
+              _effectiveLayout = _resolveEffectiveLayout(
+                constraints: constraints,
+                baseLayout: widget.layout,
+                focusedDay: widget.focusedDay,
+              );
+              _rebuildCalendar();
+            }
 
             final clock = DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
-                  width: nightModeEnabled ? 1.5 : 2,
-                  color: nightModeEnabled
+                  width: widget.nightModeEnabled ? 1.5 : 2,
+                  color: widget.nightModeEnabled
                       ? Theme.of(
                           context,
                         ).colorScheme.outline.withValues(alpha: 0.45)
@@ -55,43 +122,29 @@ class AnalogClockPanel extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: AnalogClockFace(
-                time: currentTime,
-                size: effectiveLayout.clockSize,
-                showSecondHand: showSecondHand,
-                nightModeEnabled: nightModeEnabled,
-              ),
-            );
-
-            final calendar = Opacity(
-              opacity: nightModeEnabled ? 0.58 : 1,
-              child: SizedBox(
-                width: effectiveLayout.calendarWidth,
-                child: CalendarPanel(
-                  focusedDay: focusedDay,
-                  selectedDay: selectedDay,
-                  onDaySelected: onDaySelected,
-                  onPageChanged: onPageChanged,
-                  density: effectiveLayout.calendarDensity,
-                ),
+                time: widget.currentTime,
+                size: _effectiveLayout!.clockSize,
+                showSecondHand: widget.showSecondHand,
+                nightModeEnabled: widget.nightModeEnabled,
               ),
             );
 
             final children = [
               clock,
               SizedBox(
-                width: effectiveLayout.direction == Axis.horizontal
-                    ? effectiveLayout.spacing
+                width: _effectiveLayout!.direction == Axis.horizontal
+                    ? _effectiveLayout!.spacing
                     : 0,
-                height: effectiveLayout.direction == Axis.vertical
-                    ? effectiveLayout.spacing
+                height: _effectiveLayout!.direction == Axis.vertical
+                    ? _effectiveLayout!.spacing
                     : 0,
               ),
-              calendar,
+              _calendarWidget!,
             ];
 
             return Padding(
-              padding: effectiveLayout.padding,
-              child: effectiveLayout.direction == Axis.horizontal
+              padding: _effectiveLayout!.padding,
+              child: _effectiveLayout!.direction == Axis.horizontal
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
