@@ -41,8 +41,13 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
     return !identical(oldWidget.focusedDay, widget.focusedDay) ||
         !identical(oldWidget.selectedDay, widget.selectedDay) ||
         !identical(oldWidget.layout, widget.layout) ||
+        oldWidget.nightModeEnabled != widget.nightModeEnabled ||
         !identical(oldWidget.onDaySelected, widget.onDaySelected) ||
         !identical(oldWidget.onPageChanged, widget.onPageChanged);
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   void _rebuildCalendar() {
@@ -72,7 +77,10 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
   @override
   void didUpdateWidget(covariant AnalogClockPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_calendarDepsChanged(oldWidget)) {
+    final now = DateTime.now();
+    if (_today == null || !_isSameDay(_today!, now)) {
+      _rebuildCalendar();
+    } else if (_calendarDepsChanged(oldWidget)) {
       _rebuildCalendar();
     }
   }
