@@ -13,6 +13,7 @@ class CalendarPanel extends StatelessWidget {
     required this.onDaySelected,
     required this.onPageChanged,
     required this.density,
+    required this.today,
   });
 
   final DateTime focusedDay;
@@ -20,6 +21,7 @@ class CalendarPanel extends StatelessWidget {
   final ValueChanged<DateTime> onDaySelected;
   final ValueChanged<DateTime> onPageChanged;
   final CalendarDensity density;
+  final DateTime today;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class CalendarPanel extends StatelessWidget {
       focusedDay.year,
       focusedDay.month,
     );
-    final today = DateTime.now();
+    final today = this.today;
     final theme = Theme.of(context);
     final weekdayHeaderColor = theme.colorScheme.secondary;
     final weekendOnSurfaceColor = theme.colorScheme.onSurface;

@@ -35,6 +35,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
   Widget? _calendarWidget;
   AnalogClockLayoutSpec? _effectiveLayout;
   BoxConstraints? _lastConstraints;
+  DateTime? _today;
 
   bool _calendarDepsChanged(AnalogClockPanel oldWidget) {
     return !identical(oldWidget.focusedDay, widget.focusedDay) ||
@@ -46,6 +47,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
 
   void _rebuildCalendar() {
     if (_lastConstraints == null) return;
+    _today = DateTime.now();
     _effectiveLayout = _resolveEffectiveLayout(
       constraints: _lastConstraints!,
       baseLayout: widget.layout,
@@ -61,6 +63,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
           onDaySelected: widget.onDaySelected,
           onPageChanged: widget.onPageChanged,
           density: _effectiveLayout!.calendarDensity,
+          today: _today!,
         ),
       ),
     );
