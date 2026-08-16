@@ -11,10 +11,6 @@
   "@appearance": {
     "description": "Appearance settings section title"
   },
-  "appearanceDescription": "自定义 LunaDial 的外观",
-  "@appearanceDescription": {
-    "description": "Appearance settings section description"
-  },
   "themeColor": "主题颜色",
   "@themeColor": {
     "description": "Theme color setting title"
@@ -43,10 +39,6 @@
   "@screen": {
     "description": "Screen settings section title"
   },
-  "screenDescription": "配置屏幕行为",
-  "@screenDescription": {
-    "description": "Screen settings section description"
-  },
   "keepScreenOn": "保持屏幕常亮",
   "@keepScreenOn": {
     "description": "Keep screen on setting title"
@@ -66,14 +58,6 @@
   "nightDisplayModeDescription": "选择 LunaDial 何时切换到更克制、更低干扰的夜间展示风格",
   "@nightDisplayModeDescription": {
     "description": "Night display behavior setting description"
-  },
-  "nightMode": "夜间模式",
-  "@nightMode": {
-    "description": "Night mode setting title"
-  },
-  "nightModeDescription": "启用更克制的暗色常驻展示风格，更适合横屏长期摆放",
-  "@nightModeDescription": {
-    "description": "Night mode setting description"
   },
   "nightModeOff": "关闭",
   "@nightModeOff": {
@@ -135,10 +119,6 @@
   "@clockStyle": {
     "description": "Clock style settings section title"
   },
-  "clockStyleDescription": "更改时间的显示方式",
-  "@clockStyleDescription": {
-    "description": "Clock style settings section description"
-  },
   "digitalClock": "数字时钟",
   "@digitalClock": {
     "description": "Digital clock setting title"
@@ -194,10 +174,6 @@
   "digitalClockLeadingZeroDescription": "在需要时为数字时钟小时补前导零",
   "@digitalClockLeadingZeroDescription": {
     "description": "Leading zero setting description"
-  },
-  "digitalClockDescription": "使用数字格式而非模拟时钟",
-  "@digitalClockDescription": {
-    "description": "Digital clock setting description"
   },
   "information": "关于",
   "@information": {

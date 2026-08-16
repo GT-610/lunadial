@@ -1,9 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-
-import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 
 class DeviceDisplaySync extends StatefulWidget {
   const DeviceDisplaySync({
@@ -21,43 +20,24 @@ class DeviceDisplaySync extends StatefulWidget {
 
 class _DeviceDisplaySyncState extends State<DeviceDisplaySync>
     with WidgetsBindingObserver {
-  AppSettingsController? _settingsController;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final nextSettings = context.read<AppSettingsController>();
-
-    if (!identical(_settingsController, nextSettings)) {
-      _settingsController?.removeListener(_handleStateChange);
-      _settingsController = nextSettings..addListener(_handleStateChange);
-    }
-
-    _synchronizeDisplayState();
+    unawaited(_synchronizeDisplayState());
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _synchronizeDisplayState();
+      unawaited(_synchronizeDisplayState());
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _settingsController?.removeListener(_handleStateChange);
     super.dispose();
-  }
-
-  void _handleStateChange() {
-    _synchronizeDisplayState();
   }
 
   Future<void> _synchronizeDisplayState() async {

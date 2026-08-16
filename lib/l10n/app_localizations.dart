@@ -113,12 +113,6 @@ abstract class AppLocalizations {
   /// **'Appearance'**
   String get appearance;
 
-  /// Appearance settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Customize the look and feel of LunaDial'**
-  String get appearanceDescription;
-
   /// Theme color setting title
   ///
   /// In en, this message translates to:
@@ -161,12 +155,6 @@ abstract class AppLocalizations {
   /// **'Screen'**
   String get screen;
 
-  /// Screen settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Configure screen behavior'**
-  String get screenDescription;
-
   /// Keep screen on setting title
   ///
   /// In en, this message translates to:
@@ -196,18 +184,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose when LunaDial switches to its calmer low-distraction night presentation'**
   String get nightDisplayModeDescription;
-
-  /// Night mode setting title
-  ///
-  /// In en, this message translates to:
-  /// **'Night Mode'**
-  String get nightMode;
-
-  /// Night mode setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Use a calmer dark presentation designed for long landscape display sessions'**
-  String get nightModeDescription;
 
   /// Night display behavior option that disables night mode
   ///
@@ -299,12 +275,6 @@ abstract class AppLocalizations {
   /// **'Clock Style'**
   String get clockStyle;
 
-  /// Clock style settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Change how the time is displayed'**
-  String get clockStyleDescription;
-
   /// Digital clock setting title
   ///
   /// In en, this message translates to:
@@ -388,12 +358,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pad the digital clock hour with a leading zero when needed'**
   String get digitalClockLeadingZeroDescription;
-
-  /// Digital clock setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Use digital format instead of analog'**
-  String get digitalClockDescription;
 
   /// Information settings section title
   ///

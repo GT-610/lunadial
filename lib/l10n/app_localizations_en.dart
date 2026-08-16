@@ -18,9 +18,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearance => 'Appearance';
 
   @override
-  String get appearanceDescription => 'Customize the look and feel of LunaDial';
-
-  @override
   String get themeColor => 'Theme Color';
 
   @override
@@ -42,9 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get screen => 'Screen';
 
   @override
-  String get screenDescription => 'Configure screen behavior';
-
-  @override
   String get keepScreenOn => 'Keep Screen On';
 
   @override
@@ -58,12 +52,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nightDisplayModeDescription => 'Choose when LunaDial switches to its calmer low-distraction night presentation';
-
-  @override
-  String get nightMode => 'Night Mode';
-
-  @override
-  String get nightModeDescription => 'Use a calmer dark presentation designed for long landscape display sessions';
 
   @override
   String get nightModeOff => 'Off';
@@ -111,9 +99,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clockStyle => 'Clock Style';
 
   @override
-  String get clockStyleDescription => 'Change how the time is displayed';
-
-  @override
   String get digitalClock => 'Digital Clock';
 
   @override
@@ -154,9 +139,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get digitalClockLeadingZeroDescription => 'Pad the digital clock hour with a leading zero when needed';
-
-  @override
-  String get digitalClockDescription => 'Use digital format instead of analog';
 
   @override
   String get information => 'Information';

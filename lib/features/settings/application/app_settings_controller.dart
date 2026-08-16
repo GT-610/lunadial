@@ -9,23 +9,19 @@ import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
-enum AppSettingsSaveState { idle, saving, error }
-
 class AppSettingsController extends ChangeNotifier {
   final AppSettingsRepository repository;
 
   AppSettingsController({required this.repository});
 
   AppSettings _settings = AppSettings.defaults();
-  AppSettingsSaveState _saveState = AppSettingsSaveState.idle;
   Object? _saveError;
   AppSettings? _pendingSettings;
   Future<void>? _saveLoop;
 
   AppSettings get settings => _settings;
-  AppSettingsSaveState get saveState => _saveState;
   Object? get saveError => _saveError;
-  bool get hasSaveError => _saveState == AppSettingsSaveState.error;
+  bool get hasSaveError => _saveError != null;
 
   Future<void> initialize() async {
     _settings = await repository.load();
@@ -84,10 +80,7 @@ class AppSettingsController extends ChangeNotifier {
 
   Future<void> _enqueueSave(AppSettings settingsToPersist) {
     _pendingSettings = settingsToPersist;
-    if (_saveState != AppSettingsSaveState.saving || _saveError != null) {
-      _saveState = AppSettingsSaveState.saving;
-      _saveError = null;
-    }
+    _saveError = null;
     notifyListeners();
 
     return _saveLoop ??= _drainSaveQueue();
@@ -100,13 +93,8 @@ class AppSettingsController extends ChangeNotifier {
         _pendingSettings = null;
         await repository.save(settingsToPersist);
       }
-
-      _saveState = AppSettingsSaveState.idle;
-      _saveError = null;
-      notifyListeners();
     } catch (error) {
       _pendingSettings = null;
-      _saveState = AppSettingsSaveState.error;
       _saveError = error;
       notifyListeners();
     } finally {

@@ -29,7 +29,6 @@ void main() {
       settings: baseSettings,
       currentTime: DateTime(2026, 4, 17, 23, 0),
       platformBrightness: Brightness.dark,
-      isLandscape: true,
     );
 
     expect(config.isNightModeActive, isFalse);
@@ -41,7 +40,6 @@ void main() {
       settings: baseSettings.copyWith(nightModeBehavior: NightModeBehavior.on),
       currentTime: DateTime(2026, 4, 17, 10, 0),
       platformBrightness: Brightness.light,
-      isLandscape: false,
     );
 
     expect(config.isNightModeActive, isTrue);
@@ -55,7 +53,6 @@ void main() {
       ),
       currentTime: DateTime(2026, 4, 17, 10, 0),
       platformBrightness: Brightness.dark,
-      isLandscape: false,
     );
     final lightConfig = NightClockDisplayConfig.resolve(
       settings: baseSettings.copyWith(
@@ -63,7 +60,6 @@ void main() {
       ),
       currentTime: DateTime(2026, 4, 17, 10, 0),
       platformBrightness: Brightness.light,
-      isLandscape: false,
     );
 
     expect(darkConfig.isNightModeActive, isTrue);
@@ -81,13 +77,11 @@ void main() {
       settings: settings,
       currentTime: DateTime(2026, 4, 17, 13, 0),
       platformBrightness: Brightness.light,
-      isLandscape: true,
     );
     final inactiveConfig = NightClockDisplayConfig.resolve(
       settings: settings,
       currentTime: DateTime(2026, 4, 17, 19, 0),
       platformBrightness: Brightness.dark,
-      isLandscape: true,
     );
 
     expect(activeConfig.isNightModeActive, isTrue);
@@ -105,19 +99,16 @@ void main() {
       settings: settings,
       currentTime: DateTime(2026, 4, 17, 23, 30),
       platformBrightness: Brightness.light,
-      isLandscape: true,
     );
     final earlyMorningConfig = NightClockDisplayConfig.resolve(
       settings: settings,
       currentTime: DateTime(2026, 4, 18, 6, 30),
       platformBrightness: Brightness.light,
-      isLandscape: true,
     );
     final daytimeConfig = NightClockDisplayConfig.resolve(
       settings: settings,
       currentTime: DateTime(2026, 4, 18, 12, 0),
       platformBrightness: Brightness.dark,
-      isLandscape: true,
     );
 
     expect(lateNightConfig.isNightModeActive, isTrue);

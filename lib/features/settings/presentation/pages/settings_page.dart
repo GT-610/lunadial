@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadAppVersion();
+    unawaited(_loadAppVersion());
   }
 
   Future<void> _loadAppVersion() async {
@@ -64,8 +66,8 @@ class _SettingsPageState extends State<SettingsPage> {
         title: translations.nightAndBurnIn,
         children: const [
           _NightModeBehaviorTile(),
-          _NightModeStartTimeTile(),
-          _NightModeEndTimeTile(),
+          _NightModeTimeTile.start(),
+          _NightModeTimeTile.end(),
           _BurnInProtectionTile(),
         ],
       ),
@@ -265,22 +267,10 @@ class _SwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-      child: ListTile(
-        title: Text(title),
-        subtitle: subtitle == null
-            ? null
-            : Text(
-                subtitle!,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-        trailing: Switch.adaptive(value: value, onChanged: onChanged),
-      ),
+    return _ActionTile(
+      title: title,
+      subtitle: subtitle,
+      trailing: Switch.adaptive(value: value, onChanged: onChanged),
     );
   }
 }
@@ -458,7 +448,8 @@ class _ThemeColorTile extends StatelessWidget {
         return _ActionTile(
           title: translations.themeColor,
           subtitle: translations.themeColorDescription,
-          trailing: _buildValueRow(
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 22,
@@ -593,65 +584,51 @@ class _NightModeBehaviorTile extends StatelessWidget {
   }
 }
 
-class _NightModeStartTimeTile extends StatelessWidget {
-  const _NightModeStartTimeTile();
+enum _NightModeTimeBoundary { start, end }
+
+class _NightModeTimeTile extends StatelessWidget {
+  const _NightModeTimeTile.start() : boundary = _NightModeTimeBoundary.start;
+
+  const _NightModeTimeTile.end() : boundary = _NightModeTimeBoundary.end;
+
+  final _NightModeTimeBoundary boundary;
 
   @override
   Widget build(BuildContext context) {
     return Selector<AppSettingsController, (NightModeBehavior, TimeOfDay)>(
-      selector: (_, controller) => (
-        controller.settings.nightModeBehavior,
-        controller.settings.nightModeStartTime,
-      ),
-      builder: (context, data, _) {
-        final (behavior, startTime) = data;
-        if (behavior != NightModeBehavior.scheduled) {
-          return const SizedBox.shrink();
-        }
-        final controller = context.read<AppSettingsController>();
-        final translations = AppLocalizations.of(context)!;
-        return _ActionTile(
-          title: translations.nightModeStartTime,
-          subtitle: translations.nightModeStartTimeDescription,
-          trailing: _buildChevronValue(_timeOfDayLabel(context, startTime)),
-          onTap: () => _pickNightModeTime(
-            context,
-            title: translations.nightModeStartTime,
-            initialTime: startTime,
-            onSelected: controller.setNightModeStartTime,
-          ),
+      selector: (_, controller) {
+        final settings = controller.settings;
+        return (
+          settings.nightModeBehavior,
+          boundary == _NightModeTimeBoundary.start
+              ? settings.nightModeStartTime
+              : settings.nightModeEndTime,
         );
       },
-    );
-  }
-}
-
-class _NightModeEndTimeTile extends StatelessWidget {
-  const _NightModeEndTimeTile();
-
-  @override
-  Widget build(BuildContext context) {
-    return Selector<AppSettingsController, (NightModeBehavior, TimeOfDay)>(
-      selector: (_, controller) => (
-        controller.settings.nightModeBehavior,
-        controller.settings.nightModeEndTime,
-      ),
       builder: (context, data, _) {
-        final (behavior, endTime) = data;
+        final (behavior, time) = data;
         if (behavior != NightModeBehavior.scheduled) {
           return const SizedBox.shrink();
         }
         final controller = context.read<AppSettingsController>();
         final translations = AppLocalizations.of(context)!;
+        final isStart = boundary == _NightModeTimeBoundary.start;
+        final title = isStart
+            ? translations.nightModeStartTime
+            : translations.nightModeEndTime;
         return _ActionTile(
-          title: translations.nightModeEndTime,
-          subtitle: translations.nightModeEndTimeDescription,
-          trailing: _buildChevronValue(_timeOfDayLabel(context, endTime)),
+          title: title,
+          subtitle: isStart
+              ? translations.nightModeStartTimeDescription
+              : translations.nightModeEndTimeDescription,
+          trailing: _buildChevronValue(_timeOfDayLabel(context, time)),
           onTap: () => _pickNightModeTime(
             context,
-            title: translations.nightModeEndTime,
-            initialTime: endTime,
-            onSelected: controller.setNightModeEndTime,
+            title: title,
+            initialTime: time,
+            onSelected: isStart
+                ? controller.setNightModeStartTime
+                : controller.setNightModeEndTime,
           ),
         );
       },
@@ -767,16 +744,13 @@ class _DigitalClockLeadingZeroTile extends StatelessWidget {
 }
 
 Widget _buildChevronValue(String? value) {
-  return _buildValueRow(
+  return Row(
+    mainAxisSize: MainAxisSize.min,
     children: [
       if (value != null) ...[Text(value), const SizedBox(width: 8)],
       const Icon(Icons.chevron_right),
     ],
   );
-}
-
-Widget _buildValueRow({required List<Widget> children}) {
-  return Row(mainAxisSize: MainAxisSize.min, children: children);
 }
 
 List<Widget> _intersperse(List<Widget> items, Widget separator) {
@@ -792,11 +766,11 @@ List<Widget> _intersperse(List<Widget> items, Widget separator) {
 Future<void> _showThemeColorDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
   var draftColor = settingsController.settings.themeColor;
 
-  await showDialog<void>(
+  return showDialog<void>(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
@@ -830,98 +804,45 @@ Future<void> _showThemeColorDialog(
 Future<void> _showThemeModeDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
-  final currentValue = settingsController.settings.themeMode;
-
-  await showDialog<void>(
+  return _showSelectionDialog<ThemeMode>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(translations.themeMode),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: ThemeMode.values
-            .map((mode) {
-              return ListTile(
-                title: Text(_themeModeLabel(mode, translations)),
-                trailing: mode == currentValue ? const Icon(Icons.check) : null,
-                onTap: () async {
-                  await settingsController.setThemeMode(mode);
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              );
-            })
-            .toList(growable: false),
-      ),
-    ),
+    title: translations.themeMode,
+    values: ThemeMode.values,
+    currentValue: settingsController.settings.themeMode,
+    labelFor: (mode) => _themeModeLabel(mode, translations),
+    onSelected: settingsController.setThemeMode,
   );
 }
 
 Future<void> _showLanguageDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
-  final currentValue = settingsController.settings.localeOption;
-
-  await showDialog<void>(
+  return _showSelectionDialog<AppLocaleOption>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(translations.language),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: AppLocaleOption.values
-            .map((option) {
-              return ListTile(
-                title: Text(_localeLabel(option, translations)),
-                trailing: option == currentValue
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  await settingsController.setLocaleOption(option);
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              );
-            })
-            .toList(growable: false),
-      ),
-    ),
+    title: translations.language,
+    values: AppLocaleOption.values,
+    currentValue: settingsController.settings.localeOption,
+    labelFor: (option) => _localeLabel(option, translations),
+    onSelected: settingsController.setLocaleOption,
   );
 }
 
 Future<void> _showClockModeDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
-  final currentValue = settingsController.settings.clockDisplayMode;
-
-  await showDialog<void>(
+  return _showSelectionDialog<ClockDisplayMode>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(translations.clockStyle),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: ClockDisplayMode.values
-            .map((mode) {
-              return ListTile(
-                title: Text(_clockModeLabel(mode, translations)),
-                trailing: mode == currentValue ? const Icon(Icons.check) : null,
-                onTap: () async {
-                  await settingsController.setClockDisplayMode(mode);
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              );
-            })
-            .toList(growable: false),
-      ),
-    ),
+    title: translations.clockStyle,
+    values: ClockDisplayMode.values,
+    currentValue: settingsController.settings.clockDisplayMode,
+    labelFor: (mode) => _clockModeLabel(mode, translations),
+    onSelected: settingsController.setClockDisplayMode,
   );
 }
 
@@ -929,9 +850,9 @@ Future<void> _showInfoDialog(
   BuildContext context, {
   required String title,
   required String content,
-}) async {
+}) {
   final translations = AppLocalizations.of(context)!;
-  await showDialog<void>(
+  return showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(title),
@@ -949,65 +870,70 @@ Future<void> _showInfoDialog(
 Future<void> _showTimeFormatDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
-  final currentValue = settingsController.settings.timeFormatPreference;
-
-  await showDialog<void>(
+  return _showSelectionDialog<TimeFormatPreference>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(translations.timeFormat),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: TimeFormatPreference.values
-            .map((preference) {
-              return ListTile(
-                title: Text(_timeFormatLabel(preference, translations)),
-                trailing: preference == currentValue
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  await settingsController.setTimeFormatPreference(preference);
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              );
-            })
-            .toList(growable: false),
-      ),
-    ),
+    title: translations.timeFormat,
+    values: TimeFormatPreference.values,
+    currentValue: settingsController.settings.timeFormatPreference,
+    labelFor: (preference) => _timeFormatLabel(preference, translations),
+    onSelected: settingsController.setTimeFormatPreference,
   );
 }
 
 Future<void> _showNightModeBehaviorDialog(
   BuildContext context,
   AppSettingsController settingsController,
-) async {
+) {
   final translations = AppLocalizations.of(context)!;
-  final currentValue = settingsController.settings.nightModeBehavior;
+  return _showSelectionDialog<NightModeBehavior>(
+    context: context,
+    title: translations.nightDisplayMode,
+    values: NightModeBehavior.values,
+    currentValue: settingsController.settings.nightModeBehavior,
+    labelFor: (behavior) => _nightModeBehaviorLabel(behavior, translations),
+    descriptionFor: (behavior) =>
+        _nightModeBehaviorDescription(behavior, translations),
+    onSelected: settingsController.setNightModeBehavior,
+  );
+}
 
-  await showDialog<void>(
+Future<void> _showSelectionDialog<T>({
+  required BuildContext context,
+  required String title,
+  required Iterable<T> values,
+  required T currentValue,
+  required String Function(T value) labelFor,
+  String Function(T value)? descriptionFor,
+  required Future<void> Function(T value) onSelected,
+}) {
+  return showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(translations.nightDisplayMode),
+      title: Text(title),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: NightModeBehavior.values
-            .map((behavior) {
+        children: values
+            .map((value) {
+              final description = descriptionFor?.call(value);
               return ListTile(
-                title: Text(_nightModeBehaviorLabel(behavior, translations)),
-                subtitle: Text(
-                  _nightModeBehaviorDescription(behavior, translations),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                trailing: behavior == currentValue
+                title: Text(labelFor(value)),
+                subtitle: description == null
+                    ? null
+                    : Text(
+                        description,
+                        style: TextStyle(
+                          color: Theme.of(
+                            dialogContext,
+                          ).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                trailing: value == currentValue
                     ? const Icon(Icons.check)
                     : null,
                 onTap: () async {
-                  await settingsController.setNightModeBehavior(behavior);
+                  await onSelected(value);
                   if (dialogContext.mounted) {
                     Navigator.of(dialogContext).pop();
                   }

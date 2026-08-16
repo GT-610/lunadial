@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:lunadial/features/clock/application/clock_controller.dart';
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_face.dart';
 import 'package:lunadial/features/clock/presentation/widgets/calendar_panel.dart';
@@ -46,10 +47,6 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
         oldWidget.onPageChanged != widget.onPageChanged;
   }
 
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
-
   void _rebuildCalendar() {
     if (_lastConstraints == null) return;
     _today = DateUtils.dateOnly(widget.currentTime);
@@ -77,7 +74,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
   @override
   void didUpdateWidget(covariant AnalogClockPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_today == null || !_isSameDay(_today!, widget.currentTime)) {
+    if (!ClockController.isSameDay(_today, widget.currentTime)) {
       _rebuildCalendar();
     } else if (_calendarDepsChanged(oldWidget)) {
       _rebuildCalendar();
@@ -146,7 +143,6 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
               child: _effectiveLayout!.direction == Axis.horizontal
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: children,
                     )
                   : Column(
@@ -252,15 +248,6 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     focusedDay: focusedDay,
     padding: baseLayout.padding,
   );
-  if (_fitsLayout(
-    compactFallback,
-    availableWidth,
-    availableHeight,
-    focusedDay,
-  )) {
-    return compactFallback;
-  }
-
   return compactFallback;
 }
 

@@ -42,7 +42,6 @@ class CalendarPanel extends StatelessWidget {
       focusedDay.year,
       focusedDay.month,
     );
-    final today = this.today;
     final theme = Theme.of(context);
     final weekdayHeaderColor = theme.colorScheme.secondary;
     final weekendOnSurfaceColor = theme.colorScheme.onSurface;

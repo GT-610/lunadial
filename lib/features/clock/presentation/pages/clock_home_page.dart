@@ -88,7 +88,6 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
           children: [
             _TickingClockContent(
               clockController: _clockController,
-              displayMode: settings.clockDisplayMode,
               settings: settings,
             ),
             Positioned(
@@ -117,12 +116,10 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
 class _TickingClockContent extends StatelessWidget {
   const _TickingClockContent({
     required this.clockController,
-    required this.displayMode,
     required this.settings,
   });
 
   final ClockController clockController;
-  final ClockDisplayMode displayMode;
   final AppSettings settings;
 
   @override
@@ -131,6 +128,7 @@ class _TickingClockContent extends StatelessWidget {
       builder: (context, constraints) {
         final availableSize = constraints.biggest;
         final isLandscape = availableSize.width >= availableSize.height;
+        final displayMode = settings.clockDisplayMode;
         final digitalLayout = resolveDigitalClockLayout(availableSize);
         final analogLayout = resolveAnalogClockLayout(availableSize);
 
@@ -141,7 +139,6 @@ class _TickingClockContent extends StatelessWidget {
               settings: settings,
               currentTime: clockController.currentTime,
               platformBrightness: MediaQuery.platformBrightnessOf(context),
-              isLandscape: isLandscape,
             );
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
@@ -151,7 +148,7 @@ class _TickingClockContent extends StatelessWidget {
                     showSeconds: settings.showSeconds,
                     digitalClockLeadingZero: settings.digitalClockLeadingZero,
                     nightModeEnabled: displayConfig.isNightModeActive,
-                    isLandscape: displayConfig.isLandscape,
+                    isLandscape: isLandscape,
                   )
                 : AnalogClockPanel(
                     currentTime: clockController.currentTime,
@@ -205,13 +202,13 @@ class _TopBar extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         return IgnorePointer(
+          key: const Key('settings-ignore-pointer'),
           ignoring: !controller.isVisible,
           child: AnimatedOpacity(
             opacity: controller.isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   title,
@@ -221,7 +218,7 @@ class _TopBar extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SettingsRevealButton(controller: controller, onTap: onSettings),
+                SettingsRevealButton(onTap: onSettings),
               ],
             ),
           ),

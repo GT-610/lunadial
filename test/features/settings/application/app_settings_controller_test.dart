@@ -19,13 +19,13 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(controller.settings.themeMode, ThemeMode.dark);
-    expect(controller.saveState, AppSettingsSaveState.error);
+    expect(controller.hasSaveError, isTrue);
     expect(controller.saveError, isA<StateError>());
 
     repository.shouldFail = false;
     await controller.retrySave();
 
-    expect(controller.saveState, AppSettingsSaveState.idle);
+    expect(controller.hasSaveError, isFalse);
     expect(controller.saveError, isNull);
   });
 
@@ -96,7 +96,7 @@ void main() {
       expect(repository.maxConcurrentSaves, 1);
       expect(repository.settings.themeMode, ThemeMode.dark);
       expect(repository.settings.showSeconds, isFalse);
-      expect(controller.saveState, AppSettingsSaveState.idle);
+      expect(controller.hasSaveError, isFalse);
     },
   );
 
@@ -116,7 +116,7 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(repository.saveCount, 1);
-    expect(controller.saveState, AppSettingsSaveState.saving);
+    expect(controller.hasSaveError, isFalse);
     expect(observedShowSeconds.last, isFalse);
 
     repository.completeSave(0);

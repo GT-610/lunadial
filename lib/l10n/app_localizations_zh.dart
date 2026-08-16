@@ -18,9 +18,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appearance => '外观';
 
   @override
-  String get appearanceDescription => '自定义 LunaDial 的外观';
-
-  @override
   String get themeColor => '主题颜色';
 
   @override
@@ -42,9 +39,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screen => '屏幕';
 
   @override
-  String get screenDescription => '配置屏幕行为';
-
-  @override
   String get keepScreenOn => '保持屏幕常亮';
 
   @override
@@ -58,12 +52,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightDisplayModeDescription => '选择 LunaDial 何时切换到更克制、更低干扰的夜间展示风格';
-
-  @override
-  String get nightMode => '夜间模式';
-
-  @override
-  String get nightModeDescription => '启用更克制的暗色常驻展示风格，更适合横屏长期摆放';
 
   @override
   String get nightModeOff => '关闭';
@@ -111,9 +99,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clockStyle => '时钟样式';
 
   @override
-  String get clockStyleDescription => '更改时间的显示方式';
-
-  @override
   String get digitalClock => '数字时钟';
 
   @override
@@ -154,9 +139,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get digitalClockLeadingZeroDescription => '在需要时为数字时钟小时补前导零';
-
-  @override
-  String get digitalClockDescription => '使用数字格式而非模拟时钟';
 
   @override
   String get information => '关于';
