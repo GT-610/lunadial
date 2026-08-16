@@ -1,0 +1,5 @@
+# Copy this file to key.properties and keep the real values out of Git.
+storeFile=../keystores/lunadial-release.jks
+storePassword=change-me
+keyAlias=lunadial
+keyPassword=change-me
