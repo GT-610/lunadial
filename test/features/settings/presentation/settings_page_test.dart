@@ -117,6 +117,57 @@ void main() {
 
     expect(controller.settings.localeOption, AppLocaleOption.en);
   });
+
+  testWidgets('selection dialog scrolls on short viewports', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(400, 320));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    PackageInfo.setMockInitialValues(
+      appName: 'LunaDial',
+      packageName: 'dev.lunadial.app',
+      version: '0.4.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+
+    final controller = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await controller.initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AppSettingsController>.value(
+        value: controller,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const SettingsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Night Display Mode'), 200);
+    await tester.tap(find.text('Night Display Mode'));
+    await tester.pumpAndSettle();
+
+    final dialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
+    final scrollView = dialog.content! as SingleChildScrollView;
+    final column = scrollView.child! as Column;
+    expect(column.mainAxisSize, MainAxisSize.min);
+    final scrollable = find.descendant(
+      of: find.byWidget(scrollView),
+      matching: find.byType(Scrollable),
+    );
+    final scrollableState = tester.state<ScrollableState>(scrollable);
+    expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+    scrollableState.position.jumpTo(scrollableState.position.maxScrollExtent);
+    await tester.pump();
+    expect(
+      scrollableState.position.pixels,
+      scrollableState.position.maxScrollExtent,
+    );
+    expect(tester.takeException(), isNull);
+  });
 }
 
 class _MemorySettingsRepository implements AppSettingsRepository {

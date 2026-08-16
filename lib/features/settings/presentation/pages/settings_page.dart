@@ -912,35 +912,37 @@ Future<void> _showSelectionDialog<T>({
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: values
-            .map((value) {
-              final description = descriptionFor?.call(value);
-              return ListTile(
-                title: Text(labelFor(value)),
-                subtitle: description == null
-                    ? null
-                    : Text(
-                        description,
-                        style: TextStyle(
-                          color: Theme.of(
-                            dialogContext,
-                          ).colorScheme.onSurfaceVariant,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: values
+              .map((value) {
+                final description = descriptionFor?.call(value);
+                return ListTile(
+                  title: Text(labelFor(value)),
+                  subtitle: description == null
+                      ? null
+                      : Text(
+                          description,
+                          style: TextStyle(
+                            color: Theme.of(
+                              dialogContext,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                trailing: value == currentValue
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  await onSelected(value);
-                  if (dialogContext.mounted) {
-                    Navigator.of(dialogContext).pop();
-                  }
-                },
-              );
-            })
-            .toList(growable: false),
+                  trailing: value == currentValue
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () async {
+                    await onSelected(value);
+                    if (dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop();
+                    }
+                  },
+                );
+              })
+              .toList(growable: false),
+        ),
       ),
     ),
   );
