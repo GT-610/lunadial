@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -17,13 +19,13 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(controller.settings.themeMode, ThemeMode.dark);
-    expect(controller.saveState, AppSettingsSaveState.error);
+    expect(controller.hasSaveError, isTrue);
     expect(controller.saveError, isA<StateError>());
 
     repository.shouldFail = false;
     await controller.retrySave();
 
-    expect(controller.saveState, AppSettingsSaveState.idle);
+    expect(controller.hasSaveError, isFalse);
     expect(controller.saveError, isNull);
   });
 
@@ -33,6 +35,7 @@ void main() {
     await controller.initialize();
 
     await controller.setTimeFormatPreference(TimeFormatPreference.twelveHour);
+    await controller.setUseDynamicColor(false);
     await controller.setShowSeconds(false);
     await controller.setDigitalClockLeadingZero(false);
 
@@ -40,6 +43,7 @@ void main() {
       controller.settings.timeFormatPreference,
       TimeFormatPreference.twelveHour,
     );
+    expect(controller.settings.useDynamicColor, isFalse);
     expect(controller.settings.showSeconds, isFalse);
     expect(controller.settings.digitalClockLeadingZero, isFalse);
   });
@@ -67,6 +71,59 @@ void main() {
     );
     expect(controller.settings.burnInProtectionEnabled, isFalse);
   });
+
+  test(
+    'rapid updates are persisted in order without overlapping writes',
+    () async {
+      final repository = _ControllableSettingsRepository();
+      final controller = AppSettingsController(repository: repository);
+      await controller.initialize();
+
+      final firstUpdate = controller.setThemeMode(ThemeMode.dark);
+      await repository.waitForSaveCount(1);
+
+      final secondUpdate = controller.setShowSeconds(false);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(repository.saveCount, 1);
+      expect(repository.maxConcurrentSaves, 1);
+
+      repository.completeSave(0);
+      await repository.waitForSaveCount(2);
+      repository.completeSave(1);
+      await Future.wait([firstUpdate, secondUpdate]);
+
+      expect(repository.maxConcurrentSaves, 1);
+      expect(repository.settings.themeMode, ThemeMode.dark);
+      expect(repository.settings.showSeconds, isFalse);
+      expect(controller.hasSaveError, isFalse);
+    },
+  );
+
+  test('queued updates notify listeners while a save is in progress', () async {
+    final repository = _ControllableSettingsRepository();
+    final controller = AppSettingsController(repository: repository);
+    await controller.initialize();
+    final observedShowSeconds = <bool>[];
+    controller.addListener(() {
+      observedShowSeconds.add(controller.settings.showSeconds);
+    });
+
+    final firstUpdate = controller.setThemeMode(ThemeMode.dark);
+    await repository.waitForSaveCount(1);
+
+    final secondUpdate = controller.setShowSeconds(false);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(repository.saveCount, 1);
+    expect(controller.hasSaveError, isFalse);
+    expect(observedShowSeconds.last, isFalse);
+
+    repository.completeSave(0);
+    await repository.waitForSaveCount(2);
+    repository.completeSave(1);
+    await Future.wait([firstUpdate, secondUpdate]);
+  });
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {
@@ -83,5 +140,39 @@ class _FailingSettingsRepository implements AppSettingsRepository {
     }
 
     this.settings = settings;
+  }
+}
+
+class _ControllableSettingsRepository implements AppSettingsRepository {
+  AppSettings settings = AppSettings.defaults();
+  final List<Completer<void>> _saveCompleters = [];
+  int _concurrentSaves = 0;
+  int maxConcurrentSaves = 0;
+
+  int get saveCount => _saveCompleters.length;
+
+  @override
+  Future<AppSettings> load() async => settings;
+
+  @override
+  Future<void> save(AppSettings settings) async {
+    final completer = Completer<void>();
+    _saveCompleters.add(completer);
+    _concurrentSaves++;
+    if (_concurrentSaves > maxConcurrentSaves) {
+      maxConcurrentSaves = _concurrentSaves;
+    }
+
+    await completer.future;
+    this.settings = settings;
+    _concurrentSaves--;
+  }
+
+  void completeSave(int index) => _saveCompleters[index].complete();
+
+  Future<void> waitForSaveCount(int expectedCount) async {
+    while (saveCount < expectedCount) {
+      await Future<void>.delayed(Duration.zero);
+    }
   }
 }

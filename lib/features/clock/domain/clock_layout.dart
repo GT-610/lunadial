@@ -202,6 +202,3 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
       );
   }
 }
-
-bool useHorizontalClockLayout(Size size) =>
-    resolveAnalogClockLayout(size).direction == Axis.horizontal;

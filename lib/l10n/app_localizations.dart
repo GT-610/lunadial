@@ -62,8 +62,7 @@ import 'app_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('zh'),
+    Locale('zh')
   ];
 
   /// Application title
@@ -116,12 +113,6 @@ abstract class AppLocalizations {
   /// **'Appearance'**
   String get appearance;
 
-  /// Appearance settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Customize the look and feel of LunaDial'**
-  String get appearanceDescription;
-
   /// Theme color setting title
   ///
   /// In en, this message translates to:
@@ -133,6 +124,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the primary color for the clock'**
   String get themeColorDescription;
+
+  /// Dynamic system color setting title
+  ///
+  /// In en, this message translates to:
+  /// **'Use System Colors'**
+  String get useDynamicColor;
+
+  /// Dynamic system color setting description
+  ///
+  /// In en, this message translates to:
+  /// **'Use Material You or the system accent color when available; otherwise use your custom color'**
+  String get useDynamicColorDescription;
 
   /// Theme mode setting title
   ///
@@ -151,12 +154,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Screen'**
   String get screen;
-
-  /// Screen settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Configure screen behavior'**
-  String get screenDescription;
 
   /// Keep screen on setting title
   ///
@@ -187,18 +184,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose when LunaDial switches to its calmer low-distraction night presentation'**
   String get nightDisplayModeDescription;
-
-  /// Night mode setting title
-  ///
-  /// In en, this message translates to:
-  /// **'Night Mode'**
-  String get nightMode;
-
-  /// Night mode setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Use a calmer dark presentation designed for long landscape display sessions'**
-  String get nightModeDescription;
 
   /// Night display behavior option that disables night mode
   ///
@@ -290,12 +275,6 @@ abstract class AppLocalizations {
   /// **'Clock Style'**
   String get clockStyle;
 
-  /// Clock style settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Change how the time is displayed'**
-  String get clockStyleDescription;
-
   /// Digital clock setting title
   ///
   /// In en, this message translates to:
@@ -379,12 +358,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pad the digital clock hour with a leading zero when needed'**
   String get digitalClockLeadingZeroDescription;
-
-  /// Digital clock setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Use digital format instead of analog'**
-  String get digitalClockDescription;
 
   /// Information settings section title
   ///
@@ -609,8 +582,7 @@ abstract class AppLocalizations {
   String get calendarHeaderFormat;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -619,26 +591,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'zh':
-      return AppLocalizationsZh();
+    case 'en': return AppLocalizationsEn();
+    case 'zh': return AppLocalizationsZh();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

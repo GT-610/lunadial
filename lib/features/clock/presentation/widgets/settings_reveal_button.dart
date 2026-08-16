@@ -16,8 +16,10 @@ class SettingsButtonController extends ChangeNotifier {
   bool get isVisible => _isVisible;
 
   void showTemporarily() {
-    _isVisible = true;
-    notifyListeners();
+    if (!_isVisible) {
+      _isVisible = true;
+      notifyListeners();
+    }
     _timer?.cancel();
     _timer = Timer(visibilityDuration, hide);
   }
@@ -41,39 +43,21 @@ class SettingsButtonController extends ChangeNotifier {
 }
 
 class SettingsRevealButton extends StatelessWidget {
-  final SettingsButtonController controller;
   final VoidCallback onTap;
 
-  const SettingsRevealButton({
-    super.key,
-    required this.controller,
-    required this.onTap,
-  });
+  const SettingsRevealButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
-        return IgnorePointer(
-          key: const Key('settings-ignore-pointer'),
-          ignoring: !controller.isVisible,
-          child: AnimatedOpacity(
-            opacity: controller.isVisible ? 1 : 0,
-            duration: const Duration(milliseconds: 300),
-            child: Semantics(
-              label: translations.openSettings,
-              button: true,
-              child: IconButton(
-                key: const Key('settings-reveal-button'),
-                icon: const Icon(Icons.settings),
-                onPressed: onTap,
-              ),
-            ),
-          ),
-        );
-      },
+    return Semantics(
+      label: translations.openSettings,
+      button: true,
+      child: IconButton(
+        key: const Key('settings-reveal-button'),
+        icon: const Icon(Icons.settings),
+        onPressed: onTap,
+      ),
     );
   }
 }

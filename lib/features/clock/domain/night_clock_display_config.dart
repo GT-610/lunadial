@@ -8,14 +8,12 @@ class NightClockDisplayConfig {
   const NightClockDisplayConfig({
     required this.isNightModeActive,
     required this.burnInProtectionEnabled,
-    required this.isLandscape,
   });
 
   factory NightClockDisplayConfig.resolve({
     required AppSettings settings,
     required DateTime currentTime,
     required Brightness platformBrightness,
-    required bool isLandscape,
   }) {
     final isNightModeActive = switch (settings.nightModeBehavior) {
       NightModeBehavior.off => false,
@@ -31,13 +29,11 @@ class NightClockDisplayConfig {
     return NightClockDisplayConfig(
       isNightModeActive: isNightModeActive,
       burnInProtectionEnabled: settings.burnInProtectionEnabled,
-      isLandscape: isLandscape,
     );
   }
 
   final bool isNightModeActive;
   final bool burnInProtectionEnabled;
-  final bool isLandscape;
 
   bool get shouldUseBurnInProtection =>
       isNightModeActive && burnInProtectionEnabled;

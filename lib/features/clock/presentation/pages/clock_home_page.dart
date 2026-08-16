@@ -1,4 +1,3 @@
-import 'package:fl_lib/fl_lib.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,13 +26,22 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
   late final ClockController _clockController = ClockController();
   late final SettingsButtonController _settingsButtonController =
       SettingsButtonController();
+  ModalRoute<void>? _route;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    if (route != null) {
-      appRouteObserver.subscribe(this, route);
+    if (_route == route) {
+      return;
+    }
+    final previousRoute = _route;
+    if (previousRoute != null) {
+      appRouteObserver.unsubscribe(this);
+    }
+    _route = route;
+    if (_route != null) {
+      appRouteObserver.subscribe(this, _route!);
     }
   }
 
@@ -80,7 +88,6 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
           children: [
             _TickingClockContent(
               clockController: _clockController,
-              displayMode: settings.clockDisplayMode,
               settings: settings,
             ),
             Positioned(
@@ -109,12 +116,10 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
 class _TickingClockContent extends StatelessWidget {
   const _TickingClockContent({
     required this.clockController,
-    required this.displayMode,
     required this.settings,
   });
 
   final ClockController clockController;
-  final ClockDisplayMode displayMode;
   final AppSettings settings;
 
   @override
@@ -123,6 +128,7 @@ class _TickingClockContent extends StatelessWidget {
       builder: (context, constraints) {
         final availableSize = constraints.biggest;
         final isLandscape = availableSize.width >= availableSize.height;
+        final displayMode = settings.clockDisplayMode;
         final digitalLayout = resolveDigitalClockLayout(availableSize);
         final analogLayout = resolveAnalogClockLayout(availableSize);
 
@@ -133,7 +139,6 @@ class _TickingClockContent extends StatelessWidget {
               settings: settings,
               currentTime: clockController.currentTime,
               platformBrightness: MediaQuery.platformBrightnessOf(context),
-              isLandscape: isLandscape,
             );
             final clockContent = displayMode == ClockDisplayMode.digital
                 ? DigitalClockView(
@@ -143,7 +148,7 @@ class _TickingClockContent extends StatelessWidget {
                     showSeconds: settings.showSeconds,
                     digitalClockLeadingZero: settings.digitalClockLeadingZero,
                     nightModeEnabled: displayConfig.isNightModeActive,
-                    isLandscape: displayConfig.isLandscape,
+                    isLandscape: isLandscape,
                   )
                 : AnalogClockPanel(
                     currentTime: clockController.currentTime,
@@ -163,7 +168,13 @@ class _TickingClockContent extends StatelessWidget {
                     : Colors.transparent,
                 child: BurnInProtectionLayer(
                   enabled: displayConfig.shouldUseBurnInProtection,
-                  child: FadeIn(child: clockContent),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: KeyedSubtree(
+                      key: ValueKey(displayMode),
+                      child: clockContent,
+                    ),
+                  ),
                 ),
               ),
             );
@@ -191,13 +202,13 @@ class _TopBar extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         return IgnorePointer(
+          key: const Key('settings-ignore-pointer'),
           ignoring: !controller.isVisible,
           child: AnimatedOpacity(
             opacity: controller.isVisible ? 1 : 0,
             duration: const Duration(milliseconds: 300),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   title,
@@ -207,7 +218,7 @@ class _TopBar extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SettingsRevealButton(controller: controller, onTap: onSettings),
+                SettingsRevealButton(onTap: onSettings),
               ],
             ),
           ),

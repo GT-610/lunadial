@@ -12,6 +12,7 @@ void main() {
     test('round-trips to and from map', () {
       const settings = AppSettings(
         themeColor: Colors.black,
+        useDynamicColor: false,
         themeMode: ThemeMode.dark,
         keepScreenOn: true,
         clockDisplayMode: ClockDisplayMode.analog,
@@ -28,6 +29,7 @@ void main() {
       final decoded = AppSettings.fromMap(settings.toMap());
 
       expect(decoded.themeColor, settings.themeColor);
+      expect(decoded.useDynamicColor, settings.useDynamicColor);
       expect(decoded.themeMode, settings.themeMode);
       expect(decoded.keepScreenOn, settings.keepScreenOn);
       expect(decoded.clockDisplayMode, settings.clockDisplayMode);
@@ -52,6 +54,7 @@ void main() {
 
       final defaults = AppSettings.defaults();
       expect(settings.themeColor, defaults.themeColor);
+      expect(settings.useDynamicColor, defaults.useDynamicColor);
       expect(settings.themeMode, defaults.themeMode);
       expect(settings.keepScreenOn, defaults.keepScreenOn);
       expect(settings.clockDisplayMode, defaults.clockDisplayMode);
@@ -97,6 +100,7 @@ void main() {
       });
 
       expect(settings.timeFormatPreference, TimeFormatPreference.system);
+      expect(settings.useDynamicColor, isTrue);
       expect(settings.showSeconds, isTrue);
       expect(settings.digitalClockLeadingZero, isTrue);
       expect(settings.nightModeBehavior, NightModeBehavior.off);

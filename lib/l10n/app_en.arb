@@ -11,10 +11,6 @@
   "@appearance": {
     "description": "Appearance settings section title"
   },
-  "appearanceDescription": "Customize the look and feel of LunaDial",
-  "@appearanceDescription": {
-    "description": "Appearance settings section description"
-  },
   "themeColor": "Theme Color",
   "@themeColor": {
     "description": "Theme color setting title"
@@ -22,6 +18,14 @@
   "themeColorDescription": "Choose the primary color for the clock",
   "@themeColorDescription": {
     "description": "Theme color setting description"
+  },
+  "useDynamicColor": "Use System Colors",
+  "@useDynamicColor": {
+    "description": "Dynamic system color setting title"
+  },
+  "useDynamicColorDescription": "Use Material You or the system accent color when available; otherwise use your custom color",
+  "@useDynamicColorDescription": {
+    "description": "Dynamic system color setting description"
   },
   "themeMode": "Theme Mode",
   "@themeMode": {
@@ -34,10 +38,6 @@
   "screen": "Screen",
   "@screen": {
     "description": "Screen settings section title"
-  },
-  "screenDescription": "Configure screen behavior",
-  "@screenDescription": {
-    "description": "Screen settings section description"
   },
   "keepScreenOn": "Keep Screen On",
   "@keepScreenOn": {
@@ -58,14 +58,6 @@
   "nightDisplayModeDescription": "Choose when LunaDial switches to its calmer low-distraction night presentation",
   "@nightDisplayModeDescription": {
     "description": "Night display behavior setting description"
-  },
-  "nightMode": "Night Mode",
-  "@nightMode": {
-    "description": "Night mode setting title"
-  },
-  "nightModeDescription": "Use a calmer dark presentation designed for long landscape display sessions",
-  "@nightModeDescription": {
-    "description": "Night mode setting description"
   },
   "nightModeOff": "Off",
   "@nightModeOff": {
@@ -127,10 +119,6 @@
   "@clockStyle": {
     "description": "Clock style settings section title"
   },
-  "clockStyleDescription": "Change how the time is displayed",
-  "@clockStyleDescription": {
-    "description": "Clock style settings section description"
-  },
   "digitalClock": "Digital Clock",
   "@digitalClock": {
     "description": "Digital clock setting title"
@@ -186,10 +174,6 @@
   "digitalClockLeadingZeroDescription": "Pad the digital clock hour with a leading zero when needed",
   "@digitalClockLeadingZeroDescription": {
     "description": "Leading zero setting description"
-  },
-  "digitalClockDescription": "Use digital format instead of analog",
-  "@digitalClockDescription": {
-    "description": "Digital clock setting description"
   },
   "information": "Information",
   "@information": {

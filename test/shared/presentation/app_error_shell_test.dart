@@ -1,4 +1,3 @@
-import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +16,7 @@ void main() {
       ChangeNotifierProvider<AppErrorController>.value(
         value: controller,
         child: MaterialApp(
-          localizationsDelegates: const [
-            LibLocalizations.delegate,
-            ...AppLocalizations.localizationsDelegates,
-          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           builder: (context, child) {
             return AppErrorShell(child: child ?? const SizedBox.shrink());

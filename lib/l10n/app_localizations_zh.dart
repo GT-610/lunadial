@@ -18,13 +18,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appearance => '外观';
 
   @override
-  String get appearanceDescription => '自定义 LunaDial 的外观';
-
-  @override
   String get themeColor => '主题颜色';
 
   @override
   String get themeColorDescription => '选择时钟的主色调';
+
+  @override
+  String get useDynamicColor => '使用系统动态色';
+
+  @override
+  String get useDynamicColorDescription => '系统支持时使用 Material You 或系统强调色，否则回退到自选颜色';
 
   @override
   String get themeMode => '主题模式';
@@ -34,9 +37,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get screen => '屏幕';
-
-  @override
-  String get screenDescription => '配置屏幕行为';
 
   @override
   String get keepScreenOn => '保持屏幕常亮';
@@ -52,12 +52,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightDisplayModeDescription => '选择 LunaDial 何时切换到更克制、更低干扰的夜间展示风格';
-
-  @override
-  String get nightMode => '夜间模式';
-
-  @override
-  String get nightModeDescription => '启用更克制的暗色常驻展示风格，更适合横屏长期摆放';
 
   @override
   String get nightModeOff => '关闭';
@@ -105,9 +99,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clockStyle => '时钟样式';
 
   @override
-  String get clockStyleDescription => '更改时间的显示方式';
-
-  @override
   String get digitalClock => '数字时钟';
 
   @override
@@ -148,9 +139,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get digitalClockLeadingZeroDescription => '在需要时为数字时钟小时补前导零';
-
-  @override
-  String get digitalClockDescription => '使用数字格式而非模拟时钟';
 
   @override
   String get information => '关于';
@@ -212,12 +200,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSaveRetryFallback => '请稍后再试。';
 
   @override
-  String get appDescription =>
-      'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
+  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
 
   @override
-  String get contributorsDialogContent =>
-      'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
+  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
 
   @override
   String get language => '语言';

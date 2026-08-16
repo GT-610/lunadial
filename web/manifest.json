@@ -1,12 +1,11 @@
 {
-    "name": "lunadial",
-    "short_name": "lunadial",
+    "name": "LunaDial",
+    "short_name": "LunaDial",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#0F172A",
+    "theme_color": "#6EE7B7",
+    "description": "An elegant, customizable, open-source cross-platform clock.",
     "prefer_related_applications": false,
     "icons": [
         {

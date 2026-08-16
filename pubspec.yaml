@@ -28,12 +28,11 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  dynamic_color: ^1.9.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  fl_lib:
-    path: packages/fl_lib
   intl: ^0.20.2
   provider: ^6.1.5
   path_provider: ^2.1.5
@@ -50,6 +49,28 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/icon/lunadial_icon.png
+  min_sdk_android: 23
+  adaptive_icon_background: "#0F172A"
+  adaptive_icon_foreground: assets/icon/lunadial_icon_foreground.png
+  adaptive_icon_monochrome: assets/icon/lunadial_icon_monochrome.png
+  web:
+    generate: true
+    image_path: assets/icon/lunadial_icon.png
+    background_color: "#0F172A"
+    theme_color: "#6EE7B7"
+  windows:
+    generate: true
+    image_path: assets/icon/lunadial_icon.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/icon/lunadial_icon.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -15,6 +17,7 @@ class WakelockSync extends StatefulWidget {
 
 class _WakelockSyncState extends State<WakelockSync> {
   AppSettingsController? _controller;
+  bool? _keepScreenOn;
 
   @override
   void didChangeDependencies() {
@@ -26,24 +29,28 @@ class _WakelockSyncState extends State<WakelockSync> {
 
     _controller?.removeListener(_syncWakelock);
     _controller = nextController;
-    _controller?.addListener(_syncWakelock);
+    _keepScreenOn = null;
+    nextController.addListener(_syncWakelock);
     _syncWakelock();
   }
 
   @override
   void dispose() {
     _controller?.removeListener(_syncWakelock);
-    WakelockPlus.disable();
+    if (_keepScreenOn == true) {
+      unawaited(WakelockPlus.disable());
+    }
     super.dispose();
   }
 
   void _syncWakelock() {
     final keepScreenOn = _controller?.settings.keepScreenOn ?? false;
-    if (keepScreenOn) {
-      WakelockPlus.enable();
-    } else {
-      WakelockPlus.disable();
+    if (_keepScreenOn == keepScreenOn) {
+      return;
     }
+
+    _keepScreenOn = keepScreenOn;
+    unawaited(keepScreenOn ? WakelockPlus.enable() : WakelockPlus.disable());
   }
 
   @override

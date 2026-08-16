@@ -13,7 +13,6 @@ class AppErrorController extends ChangeNotifier {
   AppErrorState? _state;
 
   AppErrorState? get state => _state;
-  bool get hasError => _state != null;
 
   void showError(Object error, [StackTrace? stackTrace]) {
     _state = AppErrorState(error: error, stackTrace: stackTrace);

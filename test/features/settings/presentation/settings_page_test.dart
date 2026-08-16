@@ -1,5 +1,3 @@
-import 'package:fl_lib/fl_lib.dart' as fl;
-import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,10 +33,7 @@ void main() {
       ChangeNotifierProvider<AppSettingsController>.value(
         value: controller,
         child: MaterialApp(
-          localizationsDelegates: const [
-            LibLocalizations.delegate,
-            ...AppLocalizations.localizationsDelegates,
-          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: const SettingsPage(),
         ),
@@ -48,11 +43,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Appearance'), findsOneWidget);
+    expect(find.text('Use System Colors'), findsOneWidget);
     expect(find.text('Screen'), findsOneWidget);
     expect(find.text('Keep Screen On'), findsOneWidget);
     expect(find.text('Time Display'), findsOneWidget);
     expect(find.text('Night & Burn-In'), findsOneWidget);
-    expect(find.byType(fl.CardX), findsWidgets);
+    expect(find.byType(Card), findsWidgets);
+
+    await tester.tap(
+      find.descendant(
+        of: find.widgetWithText(ListTile, 'Use System Colors'),
+        matching: find.byType(Switch),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(controller.settings.useDynamicColor, isFalse);
 
     await tester.scrollUntilVisible(find.text('Time Format'), 200);
     await tester.tap(find.text('Time Format'));
@@ -111,6 +116,57 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(controller.settings.localeOption, AppLocaleOption.en);
+  });
+
+  testWidgets('selection dialog scrolls on short viewports', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(400, 320));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    PackageInfo.setMockInitialValues(
+      appName: 'LunaDial',
+      packageName: 'dev.lunadial.app',
+      version: '0.4.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+
+    final controller = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await controller.initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AppSettingsController>.value(
+        value: controller,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const SettingsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Night Display Mode'), 200);
+    await tester.tap(find.text('Night Display Mode'));
+    await tester.pumpAndSettle();
+
+    final dialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
+    final scrollView = dialog.content! as SingleChildScrollView;
+    final column = scrollView.child! as Column;
+    expect(column.mainAxisSize, MainAxisSize.min);
+    final scrollable = find.descendant(
+      of: find.byWidget(scrollView),
+      matching: find.byType(Scrollable),
+    );
+    final scrollableState = tester.state<ScrollableState>(scrollable);
+    expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+    scrollableState.position.jumpTo(scrollableState.position.maxScrollExtent);
+    await tester.pump();
+    expect(
+      scrollableState.position.pixels,
+      scrollableState.position.maxScrollExtent,
+    );
+    expect(tester.takeException(), isNull);
   });
 }
 
