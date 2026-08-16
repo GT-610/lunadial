@@ -1,5 +1,3 @@
-import 'package:fl_lib/fl_lib.dart' as fl;
-import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +9,8 @@ import 'package:lunadial/l10n/app_localizations.dart';
 import 'package:lunadial/shared/presentation/app_error_shell.dart';
 import 'package:lunadial/shared/presentation/app_theme_utils.dart';
 
-final RouteObserver<ModalRoute<void>> appRouteObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> appRouteObserver =
+    RouteObserver<ModalRoute<void>>();
 
 class LunaDialApp extends StatelessWidget {
   const LunaDialApp({super.key});
@@ -29,10 +28,7 @@ class LunaDialApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               onGenerateTitle: (context) =>
                   AppLocalizations.of(context)!.appTitle,
-              localizationsDelegates: const [
-                LibLocalizations.delegate,
-                ...AppLocalizations.localizationsDelegates,
-              ],
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               locale: settings.localeOption.locale,
               localeListResolutionCallback: _resolveLocale,
@@ -40,16 +36,14 @@ class LunaDialApp extends StatelessWidget {
               theme: _buildTheme(
                 brightness: Brightness.light,
                 seedColor: settings.themeColor,
-              ).fixWindowsFont,
+              ),
               darkTheme: _buildTheme(
                 brightness: Brightness.dark,
                 seedColor: settings.themeColor,
-              ).fixWindowsFont,
+              ),
               navigatorObservers: [appRouteObserver],
               builder: (context, child) {
-                return _LibL10nScope(
-                  child: AppErrorShell(child: child ?? const SizedBox.shrink()),
-                );
+                return AppErrorShell(child: child ?? const SizedBox.shrink());
               },
               home: const ClockHomePage(),
             ),
@@ -63,7 +57,7 @@ class LunaDialApp extends StatelessWidget {
     required Brightness brightness,
     required Color seedColor,
   }) {
-    return ThemeData(
+    final theme = ThemeData(
       useMaterial3: true,
       colorSchemeSeed: seedColor,
       brightness: brightness,
@@ -79,6 +73,7 @@ class LunaDialApp extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
+    return applyPlatformFontFallback(theme);
   }
 
   Locale _resolveLocale(
@@ -100,24 +95,4 @@ class LunaDialApp extends StatelessWidget {
 
     return supportedLocales.first;
   }
-}
-
-class _LibL10nScope extends StatefulWidget {
-  const _LibL10nScope({required this.child});
-
-  final Widget child;
-
-  @override
-  State<_LibL10nScope> createState() => _LibL10nScopeState();
-}
-
-class _LibL10nScopeState extends State<_LibL10nScope> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.setLibL10n();
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }

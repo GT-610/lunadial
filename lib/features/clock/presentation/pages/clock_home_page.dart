@@ -1,4 +1,3 @@
-import 'package:fl_lib/fl_lib.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -163,7 +162,13 @@ class _TickingClockContent extends StatelessWidget {
                     : Colors.transparent,
                 child: BurnInProtectionLayer(
                   enabled: displayConfig.shouldUseBurnInProtection,
-                  child: FadeIn(child: clockContent),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: KeyedSubtree(
+                      key: ValueKey(displayMode),
+                      child: clockContent,
+                    ),
+                  ),
                 ),
               ),
             );

@@ -1,4 +1,3 @@
-import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,10 +58,7 @@ void main() {
         ChangeNotifierProvider<AppSettingsController>.value(
           value: settingsController,
           child: MaterialApp(
-            localizationsDelegates: const [
-              LibLocalizations.delegate,
-              ...AppLocalizations.localizationsDelegates,
-            ],
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: const DeviceDisplaySync(
               debugPlatformOverride: TargetPlatform.android,

@@ -1,5 +1,5 @@
-import 'package:fl_lib/fl_lib.dart' as fl;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -49,17 +49,11 @@ class _SettingsPageState extends State<SettingsPage> {
     final settingsSections = <Widget>[
       _SettingsSection(
         title: translations.appearance,
-        children: const [
-          _ThemeColorTile(),
-          _ThemeModeTile(),
-          _LocaleTile(),
-        ],
+        children: const [_ThemeColorTile(), _ThemeModeTile(), _LocaleTile()],
       ),
       _SettingsSection(
         title: translations.screen,
-        children: const [
-          _KeepScreenOnTile(),
-        ],
+        children: const [_KeepScreenOnTile()],
       ),
       _SettingsSection(
         title: translations.nightAndBurnIn,
@@ -72,9 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       _SettingsSection(
         title: translations.clockStyle,
-        children: const [
-          _ClockDisplayModeTile(),
-        ],
+        children: const [_ClockDisplayModeTile()],
       ),
       _SettingsSection(
         title: translations.timeDisplay,
@@ -92,7 +84,9 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: translations.versionDescription,
             trailing: Text(
               _appVersion ?? translations.loading,
-              style: fl.UIs.textGrey,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           _ActionTile(
@@ -173,10 +167,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     runSpacing: gap,
                     children: settingsSections
                         .map(
-                          (section) => SizedBox(
-                            width: sectionWidth,
-                            child: section,
-                          ),
+                          (section) =>
+                              SizedBox(width: sectionWidth, child: section),
                         )
                         .toList(growable: false),
                   ),
@@ -200,7 +192,17 @@ class _SettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        fl.CenterGreyTitle(title),
+        Padding(
+          padding: const EdgeInsets.only(top: 23, bottom: 17),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ),
         Column(children: children),
       ],
     );
@@ -222,12 +224,20 @@ class _ActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return fl.CardX(
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
       child: ListTile(
         title: Text(title),
         subtitle: subtitle == null
             ? null
-            : Text(subtitle!, style: fl.UIs.textGrey),
+            : Text(
+                subtitle!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
         trailing: trailing,
         onTap: onTap,
       ),
@@ -250,18 +260,183 @@ class _SwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return fl.CardX(
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
       child: ListTile(
         title: Text(title),
         subtitle: subtitle == null
             ? null
-            : Text(subtitle!, style: fl.UIs.textGrey),
-        trailing: Switch.adaptive(
-          value: value,
-          onChanged: onChanged,
-        ),
+            : Text(
+                subtitle!,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+        trailing: Switch.adaptive(value: value, onChanged: onChanged),
       ),
     );
+  }
+}
+
+class _ThemeColorPicker extends StatefulWidget {
+  const _ThemeColorPicker({required this.color, required this.onColorChanged});
+
+  final Color color;
+  final ValueChanged<Color> onColorChanged;
+
+  @override
+  State<_ThemeColorPicker> createState() => _ThemeColorPickerState();
+}
+
+class _ThemeColorPickerState extends State<_ThemeColorPicker> {
+  late int _red = _channel(widget.color, 16);
+  late int _green = _channel(widget.color, 8);
+  late int _blue = _channel(widget.color, 0);
+  late final TextEditingController _hexController = TextEditingController(
+    text: _hexValue(widget.color),
+  );
+
+  Color get _color => Color.fromARGB(255, _red, _green, _blue);
+
+  @override
+  void didUpdateWidget(covariant _ThemeColorPicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.color != widget.color && widget.color != _color) {
+      _red = _channel(widget.color, 16);
+      _green = _channel(widget.color, 8);
+      _blue = _channel(widget.color, 0);
+      _hexController.text = _hexValue(widget.color);
+    }
+  }
+
+  @override
+  void dispose() {
+    _hexController.dispose();
+    super.dispose();
+  }
+
+  void _setColor({int? red, int? green, int? blue}) {
+    setState(() {
+      _red = red ?? _red;
+      _green = green ?? _green;
+      _blue = blue ?? _blue;
+      _hexController.text = _hexValue(_color);
+    });
+    widget.onColorChanged(_color);
+  }
+
+  void _parseHexColor(String value) {
+    final normalized = value.replaceFirst('#', '');
+    if (normalized.length != 6) {
+      return;
+    }
+    final parsed = int.tryParse(normalized, radix: 16);
+    if (parsed == null) {
+      return;
+    }
+
+    final color = Color(0xff000000 | parsed);
+    setState(() {
+      _red = _channel(color, 16);
+      _green = _channel(color, 8);
+      _blue = _channel(color, 0);
+    });
+    widget.onColorChanged(color);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 360),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            key: const Key('theme-color-preview'),
+            height: 48,
+            width: 96,
+            decoration: BoxDecoration(
+              color: _color,
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            key: const Key('theme-color-hex-field'),
+            controller: _hexController,
+            textCapitalization: TextCapitalization.characters,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[#0-9a-fA-F]')),
+              LengthLimitingTextInputFormatter(7),
+            ],
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.colorize),
+              labelText: 'RGB',
+              hintText: '#4CAF50',
+            ),
+            onChanged: _parseHexColor,
+          ),
+          const SizedBox(height: 8),
+          _buildChannelSlider(
+            label: 'R',
+            value: _red,
+            onChanged: (value) => _setColor(red: value),
+          ),
+          _buildChannelSlider(
+            label: 'G',
+            value: _green,
+            onChanged: (value) => _setColor(green: value),
+          ),
+          _buildChannelSlider(
+            label: 'B',
+            value: _blue,
+            onChanged: (value) => _setColor(blue: value),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChannelSlider({
+    required String label,
+    required int value,
+    required ValueChanged<int> onChanged,
+  }) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 24,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: Slider(
+            value: value.toDouble(),
+            min: 0,
+            max: 255,
+            divisions: 255,
+            label: value.toString(),
+            onChanged: (nextValue) => onChanged(nextValue.round()),
+          ),
+        ),
+        SizedBox(width: 32, child: Text(value.toString())),
+      ],
+    );
+  }
+
+  static int _channel(Color color, int shift) {
+    return (color.toARGB32() >> shift) & 0xff;
+  }
+
+  static String _hexValue(Color color) {
+    final rgb = color.toARGB32() & 0x00ffffff;
+    return '#${rgb.toRadixString(16).padLeft(6, '0').toUpperCase()}';
   }
 }
 
@@ -412,9 +587,7 @@ class _NightModeStartTimeTile extends StatelessWidget {
         return _ActionTile(
           title: translations.nightModeStartTime,
           subtitle: translations.nightModeStartTimeDescription,
-          trailing: _buildChevronValue(
-            _timeOfDayLabel(context, startTime),
-          ),
+          trailing: _buildChevronValue(_timeOfDayLabel(context, startTime)),
           onTap: () => _pickNightModeTime(
             context,
             title: translations.nightModeStartTime,
@@ -447,9 +620,7 @@ class _NightModeEndTimeTile extends StatelessWidget {
         return _ActionTile(
           title: translations.nightModeEndTime,
           subtitle: translations.nightModeEndTimeDescription,
-          trailing: _buildChevronValue(
-            _timeOfDayLabel(context, endTime),
-          ),
+          trailing: _buildChevronValue(_timeOfDayLabel(context, endTime)),
           onTap: () => _pickNightModeTime(
             context,
             title: translations.nightModeEndTime,
@@ -496,9 +667,7 @@ class _ClockDisplayModeTile extends StatelessWidget {
         return _ActionTile(
           title: translations.clockDisplayMode,
           subtitle: translations.clockDisplayModeDescription,
-          trailing: _buildChevronValue(
-            _clockModeLabel(mode, translations),
-          ),
+          trailing: _buildChevronValue(_clockModeLabel(mode, translations)),
           onTap: () => _showClockModeDialog(context, controller),
         );
       },
@@ -604,35 +773,29 @@ Future<void> _showThemeColorDialog(
   await showDialog<void>(
     context: context,
     builder: (dialogContext) {
-      return StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(translations.selectThemeColor),
-          content: fl.ColorPicker(
-            color: draftColor,
-            onColorChanged: (color) {
-              setState(() {
-                draftColor = color;
-              });
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                MaterialLocalizations.of(context).cancelButtonLabel,
-              ),
-            ),
-            FilledButton(
-              onPressed: () async {
-                await settingsController.setThemeColor(draftColor);
-                if (dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
-                }
-              },
-              child: Text(MaterialLocalizations.of(context).okButtonLabel),
-            ),
-          ],
+      return AlertDialog(
+        title: Text(translations.selectThemeColor),
+        content: _ThemeColorPicker(
+          color: draftColor,
+          onColorChanged: (color) {
+            draftColor = color;
+          },
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await settingsController.setThemeColor(draftColor);
+              if (dialogContext.mounted) {
+                Navigator.of(dialogContext).pop();
+              }
+            },
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+          ),
+        ],
       );
     },
   );
@@ -655,9 +818,7 @@ Future<void> _showThemeModeDialog(
             .map((mode) {
               return ListTile(
                 title: Text(_themeModeLabel(mode, translations)),
-                trailing: mode == currentValue
-                    ? const Icon(Icons.check)
-                    : null,
+                trailing: mode == currentValue ? const Icon(Icons.check) : null,
                 onTap: () async {
                   await settingsController.setThemeMode(mode);
                   if (dialogContext.mounted) {
@@ -723,9 +884,7 @@ Future<void> _showClockModeDialog(
             .map((mode) {
               return ListTile(
                 title: Text(_clockModeLabel(mode, translations)),
-                trailing: mode == currentValue
-                    ? const Icon(Icons.check)
-                    : null,
+                trailing: mode == currentValue ? const Icon(Icons.check) : null,
                 onTap: () async {
                   await settingsController.setClockDisplayMode(mode);
                   if (dialogContext.mounted) {
@@ -782,9 +941,7 @@ Future<void> _showTimeFormatDialog(
                     ? const Icon(Icons.check)
                     : null,
                 onTap: () async {
-                  await settingsController.setTimeFormatPreference(
-                    preference,
-                  );
+                  await settingsController.setTimeFormatPreference(preference);
                   if (dialogContext.mounted) {
                     Navigator.of(dialogContext).pop();
                   }
@@ -816,7 +973,9 @@ Future<void> _showNightModeBehaviorDialog(
                 title: Text(_nightModeBehaviorLabel(behavior, translations)),
                 subtitle: Text(
                   _nightModeBehaviorDescription(behavior, translations),
-                  style: fl.UIs.textGrey,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 trailing: behavior == currentValue
                     ? const Icon(Icons.check)

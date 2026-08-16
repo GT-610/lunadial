@@ -1,5 +1,3 @@
-import 'package:fl_lib/fl_lib.dart' as fl;
-import 'package:fl_lib/generated/l10n/lib_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,10 +33,7 @@ void main() {
       ChangeNotifierProvider<AppSettingsController>.value(
         value: controller,
         child: MaterialApp(
-          localizationsDelegates: const [
-            LibLocalizations.delegate,
-            ...AppLocalizations.localizationsDelegates,
-          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: const SettingsPage(),
         ),
@@ -52,7 +47,7 @@ void main() {
     expect(find.text('Keep Screen On'), findsOneWidget);
     expect(find.text('Time Display'), findsOneWidget);
     expect(find.text('Night & Burn-In'), findsOneWidget);
-    expect(find.byType(fl.CardX), findsWidgets);
+    expect(find.byType(Card), findsWidgets);
 
     await tester.scrollUntilVisible(find.text('Time Format'), 200);
     await tester.tap(find.text('Time Format'));
