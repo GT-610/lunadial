@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +22,17 @@ ThemeData applyPlatformFontFallback(ThemeData theme) {
   );
 }
 
+ColorScheme resolveAppColorScheme({
+  required Brightness brightness,
+  required Color seedColor,
+  required bool useDynamicColor,
+  ColorScheme? dynamicColorScheme,
+}) {
+  if (useDynamicColor && dynamicColorScheme != null) {
+    return dynamicColorScheme.harmonized();
+  }
+
+  return ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
+}
+
 bool usesPureBlackSurface(Color seedColor) => seedColor == Colors.black;
-
-Color? pureBlackScaffoldBackground(Color seedColor) {
-  return usesPureBlackSurface(seedColor) ? Colors.black : null;
-}
-
-Color? pureBlackAppBarBackground(Color seedColor) {
-  return usesPureBlackSurface(seedColor) ? Colors.grey.shade900 : null;
-}

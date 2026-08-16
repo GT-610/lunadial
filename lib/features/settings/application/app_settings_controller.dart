@@ -35,6 +35,9 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setThemeColor(Color color) =>
       _update(_settings.copyWith(themeColor: color));
 
+  Future<void> setUseDynamicColor(bool value) =>
+      _update(_settings.copyWith(useDynamicColor: value));
+
   Future<void> setThemeMode(ThemeMode mode) =>
       _update(_settings.copyWith(themeMode: mode));
 

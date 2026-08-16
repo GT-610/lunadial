@@ -23,6 +23,14 @@
   "@themeColorDescription": {
     "description": "Theme color setting description"
   },
+  "useDynamicColor": "使用系统动态色",
+  "@useDynamicColor": {
+    "description": "Dynamic system color setting title"
+  },
+  "useDynamicColorDescription": "系统支持时使用 Material You 或系统强调色，否则回退到自选颜色",
+  "@useDynamicColorDescription": {
+    "description": "Dynamic system color setting description"
+  },
   "themeMode": "主题模式",
   "@themeMode": {
     "description": "Theme mode setting title"

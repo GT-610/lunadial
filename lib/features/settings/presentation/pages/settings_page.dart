@@ -49,7 +49,12 @@ class _SettingsPageState extends State<SettingsPage> {
     final settingsSections = <Widget>[
       _SettingsSection(
         title: translations.appearance,
-        children: const [_ThemeColorTile(), _ThemeModeTile(), _LocaleTile()],
+        children: const [
+          _DynamicColorTile(),
+          _ThemeColorTile(),
+          _ThemeModeTile(),
+          _LocaleTile(),
+        ],
       ),
       _SettingsSection(
         title: translations.screen,
@@ -471,6 +476,27 @@ class _ThemeColorTile extends StatelessWidget {
             ],
           ),
           onTap: () => _showThemeColorDialog(context, controller),
+        );
+      },
+    );
+  }
+}
+
+class _DynamicColorTile extends StatelessWidget {
+  const _DynamicColorTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<AppSettingsController, bool>(
+      selector: (_, controller) => controller.settings.useDynamicColor,
+      builder: (context, useDynamicColor, _) {
+        final controller = context.read<AppSettingsController>();
+        final translations = AppLocalizations.of(context)!;
+        return _SwitchTile(
+          title: translations.useDynamicColor,
+          subtitle: translations.useDynamicColorDescription,
+          value: useDynamicColor,
+          onChanged: controller.setUseDynamicColor,
         );
       },
     );

@@ -23,6 +23,14 @@
   "@themeColorDescription": {
     "description": "Theme color setting description"
   },
+  "useDynamicColor": "Use System Colors",
+  "@useDynamicColor": {
+    "description": "Dynamic system color setting title"
+  },
+  "useDynamicColorDescription": "Use Material You or the system accent color when available; otherwise use your custom color",
+  "@useDynamicColorDescription": {
+    "description": "Dynamic system color setting description"
+  },
   "themeMode": "Theme Mode",
   "@themeMode": {
     "description": "Theme mode setting title"

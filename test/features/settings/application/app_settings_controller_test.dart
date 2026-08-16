@@ -35,6 +35,7 @@ void main() {
     await controller.initialize();
 
     await controller.setTimeFormatPreference(TimeFormatPreference.twelveHour);
+    await controller.setUseDynamicColor(false);
     await controller.setShowSeconds(false);
     await controller.setDigitalClockLeadingZero(false);
 
@@ -42,6 +43,7 @@ void main() {
       controller.settings.timeFormatPreference,
       TimeFormatPreference.twelveHour,
     );
+    expect(controller.settings.useDynamicColor, isFalse);
     expect(controller.settings.showSeconds, isFalse);
     expect(controller.settings.digitalClockLeadingZero, isFalse);
   });

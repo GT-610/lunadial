@@ -43,11 +43,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Appearance'), findsOneWidget);
+    expect(find.text('Use System Colors'), findsOneWidget);
     expect(find.text('Screen'), findsOneWidget);
     expect(find.text('Keep Screen On'), findsOneWidget);
     expect(find.text('Time Display'), findsOneWidget);
     expect(find.text('Night & Burn-In'), findsOneWidget);
     expect(find.byType(Card), findsWidgets);
+
+    await tester.tap(
+      find.descendant(
+        of: find.widgetWithText(ListTile, 'Use System Colors'),
+        matching: find.byType(Switch),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(controller.settings.useDynamicColor, isFalse);
 
     await tester.scrollUntilVisible(find.text('Time Format'), 200);
     await tester.tap(find.text('Time Format'));

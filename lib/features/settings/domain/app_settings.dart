@@ -7,9 +7,10 @@ import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
 @immutable
 class AppSettings {
-  static const int configVersion = 1;
+  static const int configVersion = 2;
 
   final Color themeColor;
+  final bool useDynamicColor;
   final ThemeMode themeMode;
   final bool keepScreenOn;
   final ClockDisplayMode clockDisplayMode;
@@ -24,6 +25,7 @@ class AppSettings {
 
   const AppSettings({
     required this.themeColor,
+    this.useDynamicColor = true,
     required this.themeMode,
     required this.keepScreenOn,
     required this.clockDisplayMode,
@@ -40,6 +42,7 @@ class AppSettings {
   factory AppSettings.defaults() {
     return const AppSettings(
       themeColor: Colors.green,
+      useDynamicColor: true,
       themeMode: ThemeMode.system,
       keepScreenOn: false,
       clockDisplayMode: ClockDisplayMode.digital,
@@ -63,6 +66,9 @@ class AppSettings {
     return AppSettings(
       themeColor:
           _parseColor(normalizedMap['themeColor']) ?? defaults.themeColor,
+      useDynamicColor: normalizedMap['useDynamicColor'] is bool
+          ? normalizedMap['useDynamicColor'] as bool
+          : defaults.useDynamicColor,
       themeMode:
           _parseThemeMode(normalizedMap['themeMode']) ?? defaults.themeMode,
       keepScreenOn: normalizedMap['keepScreenOn'] is bool
@@ -101,6 +107,7 @@ class AppSettings {
 
   AppSettings copyWith({
     Color? themeColor,
+    bool? useDynamicColor,
     ThemeMode? themeMode,
     bool? keepScreenOn,
     ClockDisplayMode? clockDisplayMode,
@@ -115,6 +122,7 @@ class AppSettings {
   }) {
     return AppSettings(
       themeColor: themeColor ?? this.themeColor,
+      useDynamicColor: useDynamicColor ?? this.useDynamicColor,
       themeMode: themeMode ?? this.themeMode,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
       clockDisplayMode: clockDisplayMode ?? this.clockDisplayMode,
@@ -136,6 +144,7 @@ class AppSettings {
       'configVersion': configVersion,
       'themeColor':
           '#${themeColor.toARGB32().toRadixString(16).padLeft(8, '0')}',
+      'useDynamicColor': useDynamicColor,
       'themeMode': themeMode.name,
       'keepScreenOn': keepScreenOn,
       'clockDisplayMode': clockDisplayMode.name,
@@ -154,6 +163,7 @@ class AppSettings {
   bool operator ==(Object other) {
     return other is AppSettings &&
         other.themeColor == themeColor &&
+        other.useDynamicColor == useDynamicColor &&
         other.themeMode == themeMode &&
         other.keepScreenOn == keepScreenOn &&
         other.clockDisplayMode == clockDisplayMode &&
@@ -170,6 +180,7 @@ class AppSettings {
   @override
   int get hashCode => Object.hash(
     themeColor,
+    useDynamicColor,
     themeMode,
     keepScreenOn,
     clockDisplayMode,

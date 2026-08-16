@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,57 +18,75 @@ class LunaDialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppSettingsController>(
-      builder: (context, settingsController, _) {
-        final settings = settingsController.settings;
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        return Consumer<AppSettingsController>(
+          builder: (context, settingsController, _) {
+            final settings = settingsController.settings;
+            final lightColorScheme = resolveAppColorScheme(
+              brightness: Brightness.light,
+              seedColor: settings.themeColor,
+              useDynamicColor: settings.useDynamicColor,
+              dynamicColorScheme: lightDynamic,
+            );
+            final darkColorScheme = resolveAppColorScheme(
+              brightness: Brightness.dark,
+              seedColor: settings.themeColor,
+              useDynamicColor: settings.useDynamicColor,
+              dynamicColorScheme: darkDynamic,
+            );
+            final usesDynamicDarkScheme =
+                settings.useDynamicColor && darkDynamic != null;
 
-        return WakelockSync(
-          child: DeviceDisplaySync(
-            child: MaterialApp(
-              key: ValueKey(settings.localeOption.storageValue),
-              debugShowCheckedModeBanner: false,
-              onGenerateTitle: (context) =>
-                  AppLocalizations.of(context)!.appTitle,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: settings.localeOption.locale,
-              localeListResolutionCallback: _resolveLocale,
-              themeMode: settings.themeMode,
-              theme: _buildTheme(
-                brightness: Brightness.light,
-                seedColor: settings.themeColor,
+            return WakelockSync(
+              child: DeviceDisplaySync(
+                child: MaterialApp(
+                  key: ValueKey(settings.localeOption.storageValue),
+                  debugShowCheckedModeBanner: false,
+                  onGenerateTitle: (context) =>
+                      AppLocalizations.of(context)!.appTitle,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: settings.localeOption.locale,
+                  localeListResolutionCallback: _resolveLocale,
+                  themeMode: settings.themeMode,
+                  theme: _buildTheme(
+                    colorScheme: lightColorScheme,
+                    usePureBlack: false,
+                  ),
+                  darkTheme: _buildTheme(
+                    colorScheme: darkColorScheme,
+                    usePureBlack:
+                        !usesDynamicDarkScheme &&
+                        usesPureBlackSurface(settings.themeColor),
+                  ),
+                  navigatorObservers: [appRouteObserver],
+                  builder: (context, child) {
+                    return AppErrorShell(
+                      child: child ?? const SizedBox.shrink(),
+                    );
+                  },
+                  home: const ClockHomePage(),
+                ),
               ),
-              darkTheme: _buildTheme(
-                brightness: Brightness.dark,
-                seedColor: settings.themeColor,
-              ),
-              navigatorObservers: [appRouteObserver],
-              builder: (context, child) {
-                return AppErrorShell(child: child ?? const SizedBox.shrink());
-              },
-              home: const ClockHomePage(),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
 
   ThemeData _buildTheme({
-    required Brightness brightness,
-    required Color seedColor,
+    required ColorScheme colorScheme,
+    required bool usePureBlack,
   }) {
     final theme = ThemeData(
       useMaterial3: true,
-      colorSchemeSeed: seedColor,
-      brightness: brightness,
-      scaffoldBackgroundColor: brightness == Brightness.dark
-          ? pureBlackScaffoldBackground(seedColor)
-          : null,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: usePureBlack ? Colors.black : null,
       appBarTheme: AppBarTheme(
-        backgroundColor: brightness == Brightness.dark
-            ? pureBlackAppBarBackground(seedColor)
-            : null,
+        backgroundColor: usePureBlack ? Colors.grey.shade900 : null,
       ),
       dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
