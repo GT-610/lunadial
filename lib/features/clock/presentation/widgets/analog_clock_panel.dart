@@ -38,12 +38,12 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
   DateTime? _today;
 
   bool _calendarDepsChanged(AnalogClockPanel oldWidget) {
-    return !identical(oldWidget.focusedDay, widget.focusedDay) ||
-        !identical(oldWidget.selectedDay, widget.selectedDay) ||
+    return oldWidget.focusedDay != widget.focusedDay ||
+        oldWidget.selectedDay != widget.selectedDay ||
         !identical(oldWidget.layout, widget.layout) ||
         oldWidget.nightModeEnabled != widget.nightModeEnabled ||
-        !identical(oldWidget.onDaySelected, widget.onDaySelected) ||
-        !identical(oldWidget.onPageChanged, widget.onPageChanged);
+        oldWidget.onDaySelected != widget.onDaySelected ||
+        oldWidget.onPageChanged != widget.onPageChanged;
   }
 
   bool _isSameDay(DateTime a, DateTime b) {
@@ -52,7 +52,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
 
   void _rebuildCalendar() {
     if (_lastConstraints == null) return;
-    _today = DateTime.now();
+    _today = DateUtils.dateOnly(widget.currentTime);
     _effectiveLayout = _resolveEffectiveLayout(
       constraints: _lastConstraints!,
       baseLayout: widget.layout,
@@ -77,8 +77,7 @@ class _AnalogClockPanelState extends State<AnalogClockPanel> {
   @override
   void didUpdateWidget(covariant AnalogClockPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final now = DateTime.now();
-    if (_today == null || !_isSameDay(_today!, now)) {
+    if (_today == null || !_isSameDay(_today!, widget.currentTime)) {
       _rebuildCalendar();
     } else if (_calendarDepsChanged(oldWidget)) {
       _rebuildCalendar();
@@ -400,7 +399,7 @@ double _estimateCalendarHeight({
   final headerHeight = cellSize * (showWeekdayHeader ? 1.2 : 0.95);
   final weekRowHeight = showWeekdayHeader ? cellSize * 0.9 : 0.0;
   final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
-  final firstDayOfWeek = firstDayOfMonth.weekday - 1;
+  final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
   final daysInMonth = DateUtils.getDaysInMonth(
     focusedDay.year,
     focusedDay.month,

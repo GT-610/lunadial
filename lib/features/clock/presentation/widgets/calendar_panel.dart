@@ -37,7 +37,7 @@ class CalendarPanel extends StatelessWidget {
       translations.saturday,
     ];
     final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
-    final firstDayOfWeek = firstDayOfMonth.weekday - 1;
+    final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
     final daysInMonth = DateUtils.getDaysInMonth(
       focusedDay.year,
       focusedDay.month,
@@ -165,6 +165,7 @@ class CalendarPanel extends StatelessWidget {
                   final isToday = ClockController.isSameDay(day, today);
 
                   return GestureDetector(
+                    key: Key('calendar-day-$dayNumber'),
                     onTap: () => onDaySelected(day),
                     child: Container(
                       alignment: Alignment.center,

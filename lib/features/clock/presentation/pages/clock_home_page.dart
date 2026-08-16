@@ -26,13 +26,22 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
   late final ClockController _clockController = ClockController();
   late final SettingsButtonController _settingsButtonController =
       SettingsButtonController();
+  ModalRoute<void>? _route;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
-    if (route != null) {
-      appRouteObserver.subscribe(this, route);
+    if (_route == route) {
+      return;
+    }
+    final previousRoute = _route;
+    if (previousRoute != null) {
+      appRouteObserver.unsubscribe(this);
+    }
+    _route = route;
+    if (_route != null) {
+      appRouteObserver.subscribe(this, _route!);
     }
   }
 

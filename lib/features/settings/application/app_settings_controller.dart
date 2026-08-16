@@ -19,7 +19,8 @@ class AppSettingsController extends ChangeNotifier {
   AppSettings _settings = AppSettings.defaults();
   AppSettingsSaveState _saveState = AppSettingsSaveState.idle;
   Object? _saveError;
-  int _saveOperationId = 0;
+  AppSettings? _pendingSettings;
+  Future<void>? _saveLoop;
 
   AppSettings get settings => _settings;
   AppSettingsSaveState get saveState => _saveState;
@@ -67,7 +68,7 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setBurnInProtectionEnabled(bool value) =>
       _update(_settings.copyWith(burnInProtectionEnabled: value));
 
-  Future<void> retrySave() => _persist(_settings);
+  Future<void> retrySave() => _enqueueSave(_settings);
 
   Future<void> _update(AppSettings nextSettings) async {
     if (_settings == nextSettings) {
@@ -75,35 +76,38 @@ class AppSettingsController extends ChangeNotifier {
     }
 
     _settings = nextSettings;
-    _saveState = AppSettingsSaveState.saving;
-    _saveError = null;
-    notifyListeners();
-    unawaited(_persist(nextSettings));
+    await _enqueueSave(nextSettings);
   }
 
-  Future<void> _persist(AppSettings settingsToPersist) async {
-    final operationId = ++_saveOperationId;
+  Future<void> _enqueueSave(AppSettings settingsToPersist) {
+    _pendingSettings = settingsToPersist;
     if (_saveState != AppSettingsSaveState.saving || _saveError != null) {
       _saveState = AppSettingsSaveState.saving;
       _saveError = null;
       notifyListeners();
     }
 
+    return _saveLoop ??= _drainSaveQueue();
+  }
+
+  Future<void> _drainSaveQueue() async {
     try {
-      await repository.save(settingsToPersist);
-      if (operationId != _saveOperationId) {
-        return;
+      while (_pendingSettings != null) {
+        final settingsToPersist = _pendingSettings!;
+        _pendingSettings = null;
+        await repository.save(settingsToPersist);
       }
+
       _saveState = AppSettingsSaveState.idle;
       _saveError = null;
       notifyListeners();
     } catch (error) {
-      if (operationId != _saveOperationId) {
-        return;
-      }
+      _pendingSettings = null;
       _saveState = AppSettingsSaveState.error;
       _saveError = error;
       notifyListeners();
+    } finally {
+      _saveLoop = null;
     }
   }
 }
