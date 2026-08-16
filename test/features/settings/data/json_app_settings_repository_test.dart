@@ -59,4 +59,26 @@ void main() {
       expect((await repository.load()).toMap(), settings.toMap());
     },
   );
+
+  test(
+    'load recovers temporary settings when the primary object is invalid',
+    () async {
+      final settings = AppSettings.defaults().copyWith(
+        themeMode: ThemeMode.dark,
+        keepScreenOn: true,
+      );
+      await settingsFile.writeAsString('{}', flush: true);
+      final temporaryFile = File('${settingsFile.path}.tmp');
+      await temporaryFile.writeAsString(
+        json.encode(settings.toMap()),
+        flush: true,
+      );
+
+      final loaded = await repository.load();
+
+      expect(loaded.toMap(), settings.toMap());
+      expect(await temporaryFile.exists(), isFalse);
+      expect((await repository.load()).toMap(), settings.toMap());
+    },
+  );
 }

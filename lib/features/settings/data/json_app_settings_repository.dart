@@ -7,6 +7,25 @@ import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
 
 class JsonAppSettingsRepository implements AppSettingsRepository {
+  static const _recognizedSettingsKeys = <String>{
+    'themeColor',
+    'useDynamicColor',
+    'themeMode',
+    'keepScreenOn',
+    'clockDisplayMode',
+    'selectedLocale',
+    'timeFormatPreference',
+    'showSeconds',
+    'digitalClockLeadingZero',
+    'nightModeBehavior',
+    'nightModeStartTime',
+    'nightModeEndTime',
+    'burnInProtectionEnabled',
+    'selectedColor',
+    'isDigitalClock',
+    'nightModeEnabled',
+  };
+
   const JsonAppSettingsRepository({Future<File> Function()? fileProvider})
     : _fileProvider = fileProvider;
 
@@ -80,6 +99,9 @@ class JsonAppSettingsRepository implements AppSettingsRepository {
       final contents = await file.readAsString(encoding: utf8);
       final decoded = json.decode(contents);
       if (decoded is! Map<String, dynamic>) {
+        return null;
+      }
+      if (!decoded.keys.any(_recognizedSettingsKeys.contains)) {
         return null;
       }
       return AppSettings.fromMap(decoded);

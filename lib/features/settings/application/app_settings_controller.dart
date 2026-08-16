@@ -87,8 +87,8 @@ class AppSettingsController extends ChangeNotifier {
     if (_saveState != AppSettingsSaveState.saving || _saveError != null) {
       _saveState = AppSettingsSaveState.saving;
       _saveError = null;
-      notifyListeners();
     }
+    notifyListeners();
 
     return _saveLoop ??= _drainSaveQueue();
   }

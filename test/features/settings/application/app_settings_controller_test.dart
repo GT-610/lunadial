@@ -99,6 +99,31 @@ void main() {
       expect(controller.saveState, AppSettingsSaveState.idle);
     },
   );
+
+  test('queued updates notify listeners while a save is in progress', () async {
+    final repository = _ControllableSettingsRepository();
+    final controller = AppSettingsController(repository: repository);
+    await controller.initialize();
+    final observedShowSeconds = <bool>[];
+    controller.addListener(() {
+      observedShowSeconds.add(controller.settings.showSeconds);
+    });
+
+    final firstUpdate = controller.setThemeMode(ThemeMode.dark);
+    await repository.waitForSaveCount(1);
+
+    final secondUpdate = controller.setShowSeconds(false);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(repository.saveCount, 1);
+    expect(controller.saveState, AppSettingsSaveState.saving);
+    expect(observedShowSeconds.last, isFalse);
+
+    repository.completeSave(0);
+    await repository.waitForSaveCount(2);
+    repository.completeSave(1);
+    await Future.wait([firstUpdate, secondUpdate]);
+  });
 }
 
 class _FailingSettingsRepository implements AppSettingsRepository {
