@@ -34,4 +34,25 @@ void main() {
     expect(find.text('Something went wrong'), findsOneWidget);
     expect(find.textContaining('boom'), findsOneWidget);
   });
+
+  testWidgets('app error view hides diagnostic details when disabled', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AppErrorView(
+          error: StateError('sensitive error'),
+          stackTrace: StackTrace.fromString('sensitive stack trace'),
+          showErrorDetails: false,
+          onRetry: () {},
+        ),
+      ),
+    );
+
+    expect(find.text('Something went wrong'), findsOneWidget);
+    expect(find.textContaining('sensitive error'), findsNothing);
+    expect(find.textContaining('sensitive stack trace'), findsNothing);
+  });
 }
