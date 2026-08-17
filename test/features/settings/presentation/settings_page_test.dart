@@ -229,6 +229,18 @@ void main() {
 
     final dialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
     expect(dialog.scrollable, isTrue);
+    final scrollable = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.byType(Scrollable),
+    );
+    final scrollableState = tester.state<ScrollableState>(scrollable.first);
+    expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+    scrollableState.position.jumpTo(scrollableState.position.maxScrollExtent);
+    await tester.pump();
+    expect(
+      scrollableState.position.pixels,
+      scrollableState.position.maxScrollExtent,
+    );
     expect(tester.takeException(), isNull);
   });
 }
