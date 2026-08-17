@@ -21,10 +21,6 @@ class AppErrorController extends ChangeNotifier {
     _notifyListenersWhenSafe();
   }
 
-  void reportFlutterError(FlutterErrorDetails details) {
-    showError(details.exception, details.stack);
-  }
-
   void clear() {
     if (_state == null) {
       return;
