@@ -34,3 +34,16 @@ ColorScheme resolveAppColorScheme({
 
   return ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
 }
+
+ColorScheme applyOledSurfaces(ColorScheme colorScheme) {
+  return colorScheme.copyWith(
+    surface: Colors.black,
+    surfaceDim: Colors.black,
+    surfaceBright: Colors.black,
+    surfaceContainerLowest: Colors.black,
+    surfaceContainerLow: Colors.black,
+    surfaceContainer: Colors.black,
+    surfaceContainerHigh: Colors.black,
+    surfaceContainerHighest: Colors.black,
+  );
+}

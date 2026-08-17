@@ -80,7 +80,7 @@ class LunaDialApp extends StatelessWidget {
     required bool usePureBlack,
   }) {
     final resolvedColorScheme = usePureBlack
-        ? colorScheme.copyWith(surface: Colors.black)
+        ? applyOledSurfaces(colorScheme)
         : colorScheme;
     final theme = ThemeData(
       useMaterial3: true,
@@ -88,9 +88,15 @@ class LunaDialApp extends StatelessWidget {
       scaffoldBackgroundColor: usePureBlack ? Colors.black : null,
       appBarTheme: AppBarTheme(
         backgroundColor: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
+      ),
+      cardTheme: CardThemeData(
+        color: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
