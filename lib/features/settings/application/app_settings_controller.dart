@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -34,7 +35,7 @@ class AppSettingsController extends ChangeNotifier {
   Future<void> setUseDynamicColor(bool value) =>
       _update(_settings.copyWith(useDynamicColor: value));
 
-  Future<void> setThemeMode(ThemeMode mode) =>
+  Future<void> setThemeMode(AppThemeMode mode) =>
       _update(_settings.copyWith(themeMode: mode));
 
   Future<void> setKeepScreenOn(bool value) =>

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/clock/domain/night_clock_display_config.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -11,7 +12,7 @@ import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 void main() {
   const baseSettings = AppSettings(
     themeColor: Colors.green,
-    themeMode: ThemeMode.system,
+    themeMode: AppThemeMode.system,
     keepScreenOn: false,
     clockDisplayMode: ClockDisplayMode.digital,
     localeOption: AppLocaleOption.system,

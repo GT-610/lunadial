@@ -34,5 +34,3 @@ ColorScheme resolveAppColorScheme({
 
   return ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
 }
-
-bool usesPureBlackSurface(Color seedColor) => seedColor == Colors.black;

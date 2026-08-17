@@ -7,6 +7,7 @@ import 'package:lunadial/app/view/wakelock_sync.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 
 void main() {
   final originalPlatform = wakelockPlusPlatformInstance;
@@ -42,7 +43,7 @@ void main() {
     await controller.setKeepScreenOn(true);
     expect(fakePlatform.toggles, [false, true]);
 
-    await controller.setThemeMode(ThemeMode.dark);
+    await controller.setThemeMode(AppThemeMode.dark);
     expect(fakePlatform.toggles, [false, true]);
 
     await tester.pumpWidget(const SizedBox.shrink());

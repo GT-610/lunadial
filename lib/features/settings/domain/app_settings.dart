@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -11,7 +12,7 @@ class AppSettings {
 
   final Color themeColor;
   final bool useDynamicColor;
-  final ThemeMode themeMode;
+  final AppThemeMode themeMode;
   final bool keepScreenOn;
   final ClockDisplayMode clockDisplayMode;
   final AppLocaleOption localeOption;
@@ -43,7 +44,7 @@ class AppSettings {
     return const AppSettings(
       themeColor: Colors.green,
       useDynamicColor: true,
-      themeMode: ThemeMode.system,
+      themeMode: AppThemeMode.system,
       keepScreenOn: false,
       clockDisplayMode: ClockDisplayMode.digital,
       localeOption: AppLocaleOption.system,
@@ -69,8 +70,9 @@ class AppSettings {
       useDynamicColor: normalizedMap['useDynamicColor'] is bool
           ? normalizedMap['useDynamicColor'] as bool
           : defaults.useDynamicColor,
-      themeMode:
-          _parseThemeMode(normalizedMap['themeMode']) ?? defaults.themeMode,
+      themeMode: AppThemeModeStorage.fromStorageValue(
+        normalizedMap['themeMode'],
+      ),
       keepScreenOn: normalizedMap['keepScreenOn'] is bool
           ? normalizedMap['keepScreenOn'] as bool
           : defaults.keepScreenOn,
@@ -108,7 +110,7 @@ class AppSettings {
   AppSettings copyWith({
     Color? themeColor,
     bool? useDynamicColor,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
     bool? keepScreenOn,
     ClockDisplayMode? clockDisplayMode,
     AppLocaleOption? localeOption,
@@ -228,21 +230,6 @@ class AppSettings {
       if (parsed != null) {
         return Color(parsed);
       }
-    }
-
-    return null;
-  }
-
-  static ThemeMode? _parseThemeMode(Object? value) {
-    if (value is int && value >= 0 && value < ThemeMode.values.length) {
-      return ThemeMode.values[value];
-    }
-
-    if (value is String) {
-      return ThemeMode.values.cast<ThemeMode?>().firstWhere(
-        (mode) => mode?.name == value,
-        orElse: () => ThemeMode.system,
-      );
     }
 
     return null;

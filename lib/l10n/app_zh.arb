@@ -15,10 +15,6 @@
   "@themeColor": {
     "description": "Theme color setting title"
   },
-  "themeColorDescription": "选择时钟的主色调",
-  "@themeColorDescription": {
-    "description": "Theme color setting description"
-  },
   "useDynamicColor": "使用系统动态色",
   "@useDynamicColor": {
     "description": "Dynamic system color setting title"
@@ -31,21 +27,13 @@
   "@themeMode": {
     "description": "Theme mode setting title"
   },
-  "themeModeDescription": "选择浅色、深色或跟随系统主题",
-  "@themeModeDescription": {
-    "description": "Theme mode setting description"
-  },
-  "screen": "屏幕",
-  "@screen": {
-    "description": "Screen settings section title"
+  "display": "显示",
+  "@display": {
+    "description": "Display settings section title"
   },
   "keepScreenOn": "保持屏幕常亮",
   "@keepScreenOn": {
     "description": "Keep screen on setting title"
-  },
-  "keepScreenOnDescription": "防止屏幕关闭",
-  "@keepScreenOnDescription": {
-    "description": "Keep screen on setting description"
   },
   "nightAndBurnIn": "夜间与防烧屏",
   "@nightAndBurnIn": {
@@ -115,10 +103,6 @@
   "@burnInProtectionDescription": {
     "description": "Burn-in protection setting description"
   },
-  "clockStyle": "时钟样式",
-  "@clockStyle": {
-    "description": "Clock style settings section title"
-  },
   "digitalClock": "数字时钟",
   "@digitalClock": {
     "description": "Digital clock setting title"
@@ -131,21 +115,9 @@
   "@clockDisplayMode": {
     "description": "Clock display mode setting title"
   },
-  "clockDisplayModeDescription": "在数字时钟和模拟时钟之间切换",
-  "@clockDisplayModeDescription": {
-    "description": "Clock display mode setting description"
-  },
-  "timeDisplay": "时间显示",
-  "@timeDisplay": {
-    "description": "Time display settings section title"
-  },
   "timeFormat": "时间格式",
   "@timeFormat": {
     "description": "Time format setting title"
-  },
-  "timeFormatDescription": "选择小时的显示方式",
-  "@timeFormatDescription": {
-    "description": "Time format setting description"
   },
   "systemTimeFormat": "跟随系统",
   "@systemTimeFormat": {
@@ -163,10 +135,6 @@
   "@showSeconds": {
     "description": "Show seconds setting title"
   },
-  "showSecondsDescription": "控制数字时钟秒显示和模拟时钟秒针显示",
-  "@showSecondsDescription": {
-    "description": "Show seconds setting description"
-  },
   "digitalClockLeadingZero": "小时补零",
   "@digitalClockLeadingZero": {
     "description": "Leading zero setting title for the digital clock hour"
@@ -183,17 +151,9 @@
   "@version": {
     "description": "Version setting title"
   },
-  "versionDescription": "LunaDial 当前版本",
-  "@versionDescription": {
-    "description": "Version setting description"
-  },
   "license": "许可证",
   "@license": {
     "description": "License setting title"
-  },
-  "licenseDescription": "查看许可证信息",
-  "@licenseDescription": {
-    "description": "License setting description"
   },
   "system": "跟随系统",
   "@system": {
@@ -206,6 +166,10 @@
   "dark": "深色",
   "@dark": {
     "description": "Dark theme mode option"
+  },
+  "oled": "纯黑（OLED）",
+  "@oled": {
+    "description": "Pure black theme mode option for OLED displays"
   },
   "selectThemeColor": "选择主题颜色",
   "@selectThemeColor": {
@@ -243,10 +207,6 @@
   "language": "语言",
   "@language": {
     "description": "Language setting title"
-  },
-  "languageDescription": "选择应用语言",
-  "@languageDescription": {
-    "description": "Language setting description"
   },
   "openSettings": "打开设置",
   "@openSettings": {

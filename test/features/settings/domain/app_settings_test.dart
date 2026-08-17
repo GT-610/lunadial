@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -13,7 +14,7 @@ void main() {
       const settings = AppSettings(
         themeColor: Colors.black,
         useDynamicColor: false,
-        themeMode: ThemeMode.dark,
+        themeMode: AppThemeMode.oled,
         keepScreenOn: true,
         clockDisplayMode: ClockDisplayMode.analog,
         localeOption: AppLocaleOption.zhCn,
@@ -31,6 +32,7 @@ void main() {
       expect(decoded.themeColor, settings.themeColor);
       expect(decoded.useDynamicColor, settings.useDynamicColor);
       expect(decoded.themeMode, settings.themeMode);
+      expect(decoded.themeMode.materialThemeMode, ThemeMode.dark);
       expect(decoded.keepScreenOn, settings.keepScreenOn);
       expect(decoded.clockDisplayMode, settings.clockDisplayMode);
       expect(decoded.localeOption, settings.localeOption);
@@ -85,7 +87,7 @@ void main() {
       });
 
       expect(settings.clockDisplayMode, ClockDisplayMode.analog);
-      expect(settings.themeMode, ThemeMode.dark);
+      expect(settings.themeMode, AppThemeMode.dark);
       expect(settings.localeOption, AppLocaleOption.en);
     });
 

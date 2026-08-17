@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 
@@ -15,10 +16,10 @@ void main() {
     final controller = AppSettingsController(repository: repository);
     await controller.initialize();
 
-    await controller.setThemeMode(ThemeMode.dark);
+    await controller.setThemeMode(AppThemeMode.dark);
     await Future<void>.delayed(Duration.zero);
 
-    expect(controller.settings.themeMode, ThemeMode.dark);
+    expect(controller.settings.themeMode, AppThemeMode.dark);
     expect(controller.hasSaveError, isTrue);
     expect(controller.saveError, isA<StateError>());
 
@@ -79,7 +80,7 @@ void main() {
       final controller = AppSettingsController(repository: repository);
       await controller.initialize();
 
-      final firstUpdate = controller.setThemeMode(ThemeMode.dark);
+      final firstUpdate = controller.setThemeMode(AppThemeMode.dark);
       await repository.waitForSaveCount(1);
 
       final secondUpdate = controller.setShowSeconds(false);
@@ -94,7 +95,7 @@ void main() {
       await Future.wait([firstUpdate, secondUpdate]);
 
       expect(repository.maxConcurrentSaves, 1);
-      expect(repository.settings.themeMode, ThemeMode.dark);
+      expect(repository.settings.themeMode, AppThemeMode.dark);
       expect(repository.settings.showSeconds, isFalse);
       expect(controller.hasSaveError, isFalse);
     },
@@ -109,7 +110,7 @@ void main() {
       observedShowSeconds.add(controller.settings.showSeconds);
     });
 
-    final firstUpdate = controller.setThemeMode(ThemeMode.dark);
+    final firstUpdate = controller.setThemeMode(AppThemeMode.dark);
     await repository.waitForSaveCount(1);
 
     final secondUpdate = controller.setShowSeconds(false);

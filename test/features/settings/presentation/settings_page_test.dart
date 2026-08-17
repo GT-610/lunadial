@@ -7,6 +7,7 @@ import 'package:lunadial/features/settings/application/app_settings_controller.d
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/pages/settings_page.dart';
@@ -44,13 +45,30 @@ void main() {
 
     expect(find.text('Appearance'), findsOneWidget);
     expect(find.text('Use System Colors'), findsOneWidget);
-    expect(find.text('Screen'), findsOneWidget);
+    expect(find.text('Display'), findsOneWidget);
     expect(find.text('Keep Screen On'), findsOneWidget);
-    expect(find.text('Time Display'), findsOneWidget);
     expect(find.text('Night & Burn-In'), findsOneWidget);
     expect(find.byType(Card), findsWidgets);
     expect(find.text('Contributors'), findsNothing);
     expect(find.text('Learn more about LunaDial'), findsNothing);
+    expect(find.text('Choose the primary color for the clock'), findsNothing);
+    expect(
+      find.text('Choose between light, dark, or system theme'),
+      findsNothing,
+    );
+    expect(find.text('Choose the app language'), findsNothing);
+    expect(find.text('Prevent the screen from turning off'), findsNothing);
+    expect(
+      find.text('Choose between digital and analog clock styles'),
+      findsNothing,
+    );
+    expect(find.text('Choose how the clock formats hours'), findsNothing);
+    expect(
+      find.text('Show seconds in the digital clock and analog second hand'),
+      findsNothing,
+    );
+    expect(find.text('Current version of LunaDial'), findsNothing);
+    expect(find.text('View license information'), findsNothing);
 
     await tester.tap(
       find.descendant(
@@ -60,6 +78,12 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(controller.settings.useDynamicColor, isFalse);
+
+    await tester.tap(find.text('Theme Mode'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Pure Black (OLED)'));
+    await tester.pumpAndSettle();
+    expect(controller.settings.themeMode, AppThemeMode.oled);
 
     await tester.scrollUntilVisible(find.text('Time Format'), 200);
     await tester.tap(find.text('Time Format'));
