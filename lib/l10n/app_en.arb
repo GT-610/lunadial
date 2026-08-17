@@ -179,10 +179,6 @@
   "@information": {
     "description": "Information settings section title"
   },
-  "informationDescription": "Learn more about LunaDial",
-  "@informationDescription": {
-    "description": "Information settings section description"
-  },
   "version": "Version",
   "@version": {
     "description": "Version setting title"
@@ -199,14 +195,6 @@
   "@licenseDescription": {
     "description": "License setting description"
   },
-  "contributors": "Contributors",
-  "@contributors": {
-    "description": "Contributors setting title"
-  },
-  "contributorsDescription": "List of contributors to this project",
-  "@contributorsDescription": {
-    "description": "Contributors setting description"
-  },
   "system": "System",
   "@system": {
     "description": "System theme mode option"
@@ -222,10 +210,6 @@
   "selectThemeColor": "Select Theme Color",
   "@selectThemeColor": {
     "description": "Dialog title for selecting theme color"
-  },
-  "close": "Close",
-  "@close": {
-    "description": "Close button text"
   },
   "loading": "Loading...",
   "@loading": {
@@ -255,14 +239,6 @@
   "settingsSaveRetryFallback": "Please try again.",
   "@settingsSaveRetryFallback": {
     "description": "Fallback details for settings save error"
-  },
-  "appDescription": "LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.",
-  "@appDescription": {
-    "description": "About dialog content for the app"
-  },
-  "contributorsDialogContent": "LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.",
-  "@contributorsDialogContent": {
-    "description": "Contributors dialog content"
   },
   "language": "Language",
   "@language": {

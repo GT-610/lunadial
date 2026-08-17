@@ -102,26 +102,6 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: _buildChevronValue(null),
             onTap: () => showLicensePage(context: context),
           ),
-          _ActionTile(
-            title: translations.contributors,
-            subtitle: translations.contributorsDescription,
-            trailing: _buildChevronValue(null),
-            onTap: () => _showInfoDialog(
-              context,
-              title: translations.contributors,
-              content: translations.contributorsDialogContent,
-            ),
-          ),
-          _ActionTile(
-            title: translations.appTitle,
-            subtitle: translations.informationDescription,
-            trailing: _buildChevronValue(null),
-            onTap: () => _showInfoDialog(
-              context,
-              title: translations.appTitle,
-              content: translations.appDescription,
-            ),
-          ),
         ],
       ),
     ];
@@ -843,27 +823,6 @@ Future<void> _showClockModeDialog(
     currentValue: settingsController.settings.clockDisplayMode,
     labelFor: (mode) => _clockModeLabel(mode, translations),
     onSelected: settingsController.setClockDisplayMode,
-  );
-}
-
-Future<void> _showInfoDialog(
-  BuildContext context, {
-  required String title,
-  required String content,
-}) {
-  final translations = AppLocalizations.of(context)!;
-  return showDialog<void>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(title),
-      content: SingleChildScrollView(child: Text(content)),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(translations.close),
-        ),
-      ],
-    ),
   );
 }
 

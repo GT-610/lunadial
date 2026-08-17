@@ -144,9 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get information => 'Information';
 
   @override
-  String get informationDescription => 'Learn more about LunaDial';
-
-  @override
   String get version => 'Version';
 
   @override
@@ -159,12 +156,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get licenseDescription => 'View license information';
 
   @override
-  String get contributors => 'Contributors';
-
-  @override
-  String get contributorsDescription => 'List of contributors to this project';
-
-  @override
   String get system => 'System';
 
   @override
@@ -175,9 +166,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectThemeColor => 'Select Theme Color';
-
-  @override
-  String get close => 'Close';
 
   @override
   String get loading => 'Loading...';
@@ -198,12 +186,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSaveRetryFallback => 'Please try again.';
-
-  @override
-  String get appDescription => 'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.';
-
-  @override
-  String get contributorsDialogContent => 'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.';
 
   @override
   String get language => 'Language';

@@ -365,12 +365,6 @@ abstract class AppLocalizations {
   /// **'Information'**
   String get information;
 
-  /// Information settings section description
-  ///
-  /// In en, this message translates to:
-  /// **'Learn more about LunaDial'**
-  String get informationDescription;
-
   /// Version setting title
   ///
   /// In en, this message translates to:
@@ -395,18 +389,6 @@ abstract class AppLocalizations {
   /// **'View license information'**
   String get licenseDescription;
 
-  /// Contributors setting title
-  ///
-  /// In en, this message translates to:
-  /// **'Contributors'**
-  String get contributors;
-
-  /// Contributors setting description
-  ///
-  /// In en, this message translates to:
-  /// **'List of contributors to this project'**
-  String get contributorsDescription;
-
   /// System theme mode option
   ///
   /// In en, this message translates to:
@@ -430,12 +412,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Theme Color'**
   String get selectThemeColor;
-
-  /// Close button text
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get close;
 
   /// Loading placeholder text
   ///
@@ -472,18 +448,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please try again.'**
   String get settingsSaveRetryFallback;
-
-  /// About dialog content for the app
-  ///
-  /// In en, this message translates to:
-  /// **'LunaDial is a cross-platform clock app focused on turning spare screens into elegant full-time clocks.\n\nThis stage emphasizes structure, reuse, and a clean base for future features.'**
-  String get appDescription;
-
-  /// Contributors dialog content
-  ///
-  /// In en, this message translates to:
-  /// **'LunaDial is being organized for long-term development.\n\nContributor credits will continue to be expanded as the project evolves. Please refer to the repository history and merged pull requests for the latest record.'**
-  String get contributorsDialogContent;
 
   /// Language setting title
   ///

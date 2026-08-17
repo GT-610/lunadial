@@ -144,9 +144,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get information => '关于';
 
   @override
-  String get informationDescription => '了解更多关于 LunaDial 的信息';
-
-  @override
   String get version => '版本';
 
   @override
@@ -159,12 +156,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get licenseDescription => '查看许可证信息';
 
   @override
-  String get contributors => '贡献者';
-
-  @override
-  String get contributorsDescription => '项目贡献者列表';
-
-  @override
   String get system => '跟随系统';
 
   @override
@@ -175,9 +166,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get selectThemeColor => '选择主题颜色';
-
-  @override
-  String get close => '关闭';
 
   @override
   String get loading => '加载中...';
@@ -198,12 +186,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsSaveRetryFallback => '请稍后再试。';
-
-  @override
-  String get appDescription => 'LunaDial 是一个跨平台时钟应用，目标是把闲置屏幕变成优雅的常驻时钟。\n\n当前阶段重点在于整理结构、复用能力，并为后续功能打下干净基础。';
-
-  @override
-  String get contributorsDialogContent => 'LunaDial 正在为长期开发持续整理中。\n\n贡献者名单会随着项目演进逐步补充完善。当前请以仓库历史记录和已合并的拉取请求为准。';
 
   @override
   String get language => '语言';

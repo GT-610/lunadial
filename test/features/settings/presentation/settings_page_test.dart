@@ -49,6 +49,8 @@ void main() {
     expect(find.text('Time Display'), findsOneWidget);
     expect(find.text('Night & Burn-In'), findsOneWidget);
     expect(find.byType(Card), findsWidgets);
+    expect(find.text('Contributors'), findsNothing);
+    expect(find.text('Learn more about LunaDial'), findsNothing);
 
     await tester.tap(
       find.descendant(
