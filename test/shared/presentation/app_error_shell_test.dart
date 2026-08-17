@@ -55,4 +55,62 @@ void main() {
     expect(find.textContaining('sensitive error'), findsNothing);
     expect(find.textContaining('sensitive stack trace'), findsNothing);
   });
+
+  testWidgets('app error notifications are deferred during build', (
+    tester,
+  ) async {
+    final controller = AppErrorController();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AppErrorController>.value(
+        value: controller,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) {
+            return AppErrorShell(child: child ?? const SizedBox.shrink());
+          },
+          home: _ReportErrorDuringBuild(controller: controller),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    await tester.pump();
+    expect(find.text('Something went wrong'), findsOneWidget);
+  });
+
+  testWidgets('app error view scrolls on short viewports', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(640, 320));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AppErrorView(
+          error: StateError('layout failure'),
+          stackTrace: StackTrace.fromString(
+            List.filled(20, 'long diagnostic stack frame').join('\n'),
+          ),
+          onRetry: () {},
+        ),
+      ),
+    );
+
+    expect(find.byType(SingleChildScrollView), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class _ReportErrorDuringBuild extends StatelessWidget {
+  const _ReportErrorDuringBuild({required this.controller});
+
+  final AppErrorController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    controller.showError(StateError('reported during build'));
+    return const Scaffold(body: Text('Building'));
+  }
 }

@@ -754,6 +754,7 @@ Future<void> _showThemeColorDialog(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
+        scrollable: true,
         title: Text(translations.selectThemeColor),
         content: _ThemeColorPicker(
           color: draftColor,

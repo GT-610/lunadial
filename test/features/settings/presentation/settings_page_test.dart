@@ -170,6 +170,43 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('theme color dialog scrolls on short viewports', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(400, 320));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    PackageInfo.setMockInitialValues(
+      appName: 'LunaDial',
+      packageName: 'dev.lunadial.app',
+      version: '0.4.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+
+    final controller = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await controller.initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AppSettingsController>.value(
+        value: controller,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const SettingsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Theme Color'), 100);
+    await tester.tap(find.text('Theme Color'));
+    await tester.pumpAndSettle();
+
+    final dialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
+    expect(dialog.scrollable, isTrue);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 class _MemorySettingsRepository implements AppSettingsRepository {
