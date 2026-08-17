@@ -21,9 +21,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeColor => '主题颜色';
 
   @override
-  String get themeColorDescription => '选择时钟的主色调';
-
-  @override
   String get useDynamicColor => '使用系统动态色';
 
   @override
@@ -33,16 +30,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get themeMode => '主题模式';
 
   @override
-  String get themeModeDescription => '选择浅色、深色或跟随系统主题';
-
-  @override
-  String get screen => '屏幕';
+  String get display => '显示';
 
   @override
   String get keepScreenOn => '保持屏幕常亮';
-
-  @override
-  String get keepScreenOnDescription => '防止屏幕关闭';
 
   @override
   String get nightAndBurnIn => '夜间与防烧屏';
@@ -96,9 +87,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get burnInProtectionDescription => '在夜间展示实际生效时进行轻微周期位移，降低静态画面长期停留的风险';
 
   @override
-  String get clockStyle => '时钟样式';
-
-  @override
   String get digitalClock => '数字时钟';
 
   @override
@@ -108,16 +96,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clockDisplayMode => '时钟显示模式';
 
   @override
-  String get clockDisplayModeDescription => '在数字时钟和模拟时钟之间切换';
-
-  @override
-  String get timeDisplay => '时间显示';
-
-  @override
   String get timeFormat => '时间格式';
-
-  @override
-  String get timeFormatDescription => '选择小时的显示方式';
 
   @override
   String get systemTimeFormat => '跟随系统';
@@ -132,9 +111,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showSeconds => '显示秒';
 
   @override
-  String get showSecondsDescription => '控制数字时钟秒显示和模拟时钟秒针显示';
-
-  @override
   String get digitalClockLeadingZero => '小时补零';
 
   @override
@@ -147,13 +123,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get version => '版本';
 
   @override
-  String get versionDescription => 'LunaDial 当前版本';
-
-  @override
   String get license => '许可证';
-
-  @override
-  String get licenseDescription => '查看许可证信息';
 
   @override
   String get system => '跟随系统';
@@ -163,6 +133,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dark => '深色';
+
+  @override
+  String get oled => '纯黑（OLED）';
 
   @override
   String get selectThemeColor => '选择主题颜色';
@@ -189,9 +162,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get language => '语言';
-
-  @override
-  String get languageDescription => '选择应用语言';
 
   @override
   String get openSettings => '打开设置';

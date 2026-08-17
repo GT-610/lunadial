@@ -36,4 +36,24 @@ void main() {
       ),
     );
   });
+
+  test('OLED surfaces are black across all Material 3 surface roles', () {
+    final resolved = applyOledSurfaces(
+      ColorScheme.fromSeed(
+        seedColor: Colors.green,
+        brightness: Brightness.dark,
+      ),
+    );
+
+    expect([
+      resolved.surface,
+      resolved.surfaceDim,
+      resolved.surfaceBright,
+      resolved.surfaceContainerLowest,
+      resolved.surfaceContainerLow,
+      resolved.surfaceContainer,
+      resolved.surfaceContainerHigh,
+      resolved.surfaceContainerHighest,
+    ], everyElement(Colors.black));
+  });
 }

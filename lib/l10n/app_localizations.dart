@@ -119,12 +119,6 @@ abstract class AppLocalizations {
   /// **'Theme Color'**
   String get themeColor;
 
-  /// Theme color setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the primary color for the clock'**
-  String get themeColorDescription;
-
   /// Dynamic system color setting title
   ///
   /// In en, this message translates to:
@@ -143,29 +137,17 @@ abstract class AppLocalizations {
   /// **'Theme Mode'**
   String get themeMode;
 
-  /// Theme mode setting description
+  /// Display settings section title
   ///
   /// In en, this message translates to:
-  /// **'Choose between light, dark, or system theme'**
-  String get themeModeDescription;
-
-  /// Screen settings section title
-  ///
-  /// In en, this message translates to:
-  /// **'Screen'**
-  String get screen;
+  /// **'Display'**
+  String get display;
 
   /// Keep screen on setting title
   ///
   /// In en, this message translates to:
   /// **'Keep Screen On'**
   String get keepScreenOn;
-
-  /// Keep screen on setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Prevent the screen from turning off'**
-  String get keepScreenOnDescription;
 
   /// Night mode and burn-in settings section title
   ///
@@ -269,12 +251,6 @@ abstract class AppLocalizations {
   /// **'Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention'**
   String get burnInProtectionDescription;
 
-  /// Clock style settings section title
-  ///
-  /// In en, this message translates to:
-  /// **'Clock Style'**
-  String get clockStyle;
-
   /// Digital clock setting title
   ///
   /// In en, this message translates to:
@@ -293,29 +269,11 @@ abstract class AppLocalizations {
   /// **'Clock Display Mode'**
   String get clockDisplayMode;
 
-  /// Clock display mode setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Choose between digital and analog clock styles'**
-  String get clockDisplayModeDescription;
-
-  /// Time display settings section title
-  ///
-  /// In en, this message translates to:
-  /// **'Time Display'**
-  String get timeDisplay;
-
   /// Time format setting title
   ///
   /// In en, this message translates to:
   /// **'Time Format'**
   String get timeFormat;
-
-  /// Time format setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Choose how the clock formats hours'**
-  String get timeFormatDescription;
 
   /// Time format option that follows the system preference
   ///
@@ -341,12 +299,6 @@ abstract class AppLocalizations {
   /// **'Show Seconds'**
   String get showSeconds;
 
-  /// Show seconds setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Show seconds in the digital clock and analog second hand'**
-  String get showSecondsDescription;
-
   /// Leading zero setting title for the digital clock hour
   ///
   /// In en, this message translates to:
@@ -371,23 +323,11 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
-  /// Version setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Current version of LunaDial'**
-  String get versionDescription;
-
   /// License setting title
   ///
   /// In en, this message translates to:
   /// **'License'**
   String get license;
-
-  /// License setting description
-  ///
-  /// In en, this message translates to:
-  /// **'View license information'**
-  String get licenseDescription;
 
   /// System theme mode option
   ///
@@ -406,6 +346,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get dark;
+
+  /// Pure black theme mode option for OLED displays
+  ///
+  /// In en, this message translates to:
+  /// **'Pure Black (OLED)'**
+  String get oled;
 
   /// Dialog title for selecting theme color
   ///
@@ -454,12 +400,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
-
-  /// Language setting description
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the app language'**
-  String get languageDescription;
 
   /// Accessibility label for opening settings
   ///

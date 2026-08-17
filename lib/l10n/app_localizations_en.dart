@@ -21,9 +21,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeColor => 'Theme Color';
 
   @override
-  String get themeColorDescription => 'Choose the primary color for the clock';
-
-  @override
   String get useDynamicColor => 'Use System Colors';
 
   @override
@@ -33,16 +30,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeMode => 'Theme Mode';
 
   @override
-  String get themeModeDescription => 'Choose between light, dark, or system theme';
-
-  @override
-  String get screen => 'Screen';
+  String get display => 'Display';
 
   @override
   String get keepScreenOn => 'Keep Screen On';
-
-  @override
-  String get keepScreenOnDescription => 'Prevent the screen from turning off';
 
   @override
   String get nightAndBurnIn => 'Night & Burn-In';
@@ -96,9 +87,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get burnInProtectionDescription => 'Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention';
 
   @override
-  String get clockStyle => 'Clock Style';
-
-  @override
   String get digitalClock => 'Digital Clock';
 
   @override
@@ -108,16 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clockDisplayMode => 'Clock Display Mode';
 
   @override
-  String get clockDisplayModeDescription => 'Choose between digital and analog clock styles';
-
-  @override
-  String get timeDisplay => 'Time Display';
-
-  @override
   String get timeFormat => 'Time Format';
-
-  @override
-  String get timeFormatDescription => 'Choose how the clock formats hours';
 
   @override
   String get systemTimeFormat => 'Follow System';
@@ -132,9 +111,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showSeconds => 'Show Seconds';
 
   @override
-  String get showSecondsDescription => 'Show seconds in the digital clock and analog second hand';
-
-  @override
   String get digitalClockLeadingZero => 'Leading Zero for Hour';
 
   @override
@@ -147,13 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get version => 'Version';
 
   @override
-  String get versionDescription => 'Current version of LunaDial';
-
-  @override
   String get license => 'License';
-
-  @override
-  String get licenseDescription => 'View license information';
 
   @override
   String get system => 'System';
@@ -163,6 +133,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dark => 'Dark';
+
+  @override
+  String get oled => 'Pure Black (OLED)';
 
   @override
   String get selectThemeColor => 'Select Theme Color';
@@ -189,9 +162,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get language => 'Language';
-
-  @override
-  String get languageDescription => 'Choose the app language';
 
   @override
   String get openSettings => 'Open settings';

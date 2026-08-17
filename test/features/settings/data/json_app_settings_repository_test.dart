@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:lunadial/features/settings/data/json_app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 
 void main() {
   late Directory temporaryDirectory;
@@ -30,7 +30,7 @@ void main() {
     'save replaces the settings file and leaves no temporary file',
     () async {
       final settings = AppSettings.defaults().copyWith(
-        themeMode: ThemeMode.dark,
+        themeMode: AppThemeMode.dark,
         showSeconds: false,
       );
 
@@ -64,7 +64,7 @@ void main() {
     'load recovers temporary settings when the primary object is invalid',
     () async {
       final settings = AppSettings.defaults().copyWith(
-        themeMode: ThemeMode.dark,
+        themeMode: AppThemeMode.dark,
         keepScreenOn: true,
       );
       await settingsFile.writeAsString('{}', flush: true);

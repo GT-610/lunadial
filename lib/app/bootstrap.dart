@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -17,14 +16,7 @@ Future<void> bootstrapApp() async {
   );
   await settingsController.initialize();
 
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    errorController.reportFlutterError(details);
-  };
-  PlatformDispatcher.instance.onError = (error, stackTrace) {
-    errorController.showError(error, stackTrace);
-    return true;
-  };
+  configureErrorHandlers(errorController: errorController);
 
   runApp(
     MultiProvider(
@@ -39,4 +31,19 @@ Future<void> bootstrapApp() async {
       child: const LunaDialApp(),
     ),
   );
+}
+
+@visibleForTesting
+void configureErrorHandlers({
+  required AppErrorController errorController,
+  FlutterExceptionHandler? frameworkErrorHandler,
+}) {
+  // Framework errors are already rendered or reported by Flutter. Promoting
+  // every layout/build error to the global error page can replace an otherwise
+  // usable screen during a transient rebuild.
+  FlutterError.onError = frameworkErrorHandler ?? FlutterError.presentError;
+  PlatformDispatcher.instance.onError = (error, stackTrace) {
+    errorController.showError(error, stackTrace);
+    return true;
+  };
 }

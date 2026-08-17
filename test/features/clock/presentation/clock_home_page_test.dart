@@ -10,6 +10,7 @@ import 'package:lunadial/features/settings/application/app_settings_controller.d
 import 'package:lunadial/features/settings/data/app_settings_repository.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/app_settings.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
@@ -187,7 +188,7 @@ void main() {
         repository: _MemorySettingsRepository(
           initialSettings: const AppSettings(
             themeColor: Colors.green,
-            themeMode: ThemeMode.system,
+            themeMode: AppThemeMode.system,
             keepScreenOn: false,
             clockDisplayMode: ClockDisplayMode.digital,
             localeOption: AppLocaleOption.system,

@@ -6,6 +6,7 @@ import 'package:lunadial/app/view/device_display_sync.dart';
 import 'package:lunadial/app/view/wakelock_sync.dart';
 import 'package:lunadial/features/clock/presentation/pages/clock_home_page.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 import 'package:lunadial/shared/presentation/app_error_shell.dart';
 import 'package:lunadial/shared/presentation/app_theme_utils.dart';
@@ -35,8 +36,7 @@ class LunaDialApp extends StatelessWidget {
               useDynamicColor: settings.useDynamicColor,
               dynamicColorScheme: darkDynamic,
             );
-            final usesDynamicDarkScheme =
-                settings.useDynamicColor && darkDynamic != null;
+            final usePureBlack = settings.themeMode == AppThemeMode.oled;
 
             return WakelockSync(
               child: DeviceDisplaySync(
@@ -50,16 +50,14 @@ class LunaDialApp extends StatelessWidget {
                   supportedLocales: AppLocalizations.supportedLocales,
                   locale: settings.localeOption.locale,
                   localeListResolutionCallback: _resolveLocale,
-                  themeMode: settings.themeMode,
+                  themeMode: settings.themeMode.materialThemeMode,
                   theme: _buildTheme(
                     colorScheme: lightColorScheme,
                     usePureBlack: false,
                   ),
                   darkTheme: _buildTheme(
                     colorScheme: darkColorScheme,
-                    usePureBlack:
-                        !usesDynamicDarkScheme &&
-                        usesPureBlackSurface(settings.themeColor),
+                    usePureBlack: usePureBlack,
                   ),
                   navigatorObservers: [appRouteObserver],
                   builder: (context, child) {
@@ -81,14 +79,24 @@ class LunaDialApp extends StatelessWidget {
     required ColorScheme colorScheme,
     required bool usePureBlack,
   }) {
+    final resolvedColorScheme = usePureBlack
+        ? applyOledSurfaces(colorScheme)
+        : colorScheme;
     final theme = ThemeData(
       useMaterial3: true,
-      colorScheme: colorScheme,
+      colorScheme: resolvedColorScheme,
       scaffoldBackgroundColor: usePureBlack ? Colors.black : null,
       appBarTheme: AppBarTheme(
-        backgroundColor: usePureBlack ? Colors.grey.shade900 : null,
+        backgroundColor: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
+      ),
+      cardTheme: CardThemeData(
+        color: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
       ),
       dialogTheme: DialogThemeData(
+        backgroundColor: usePureBlack ? Colors.black : null,
+        surfaceTintColor: usePureBlack ? Colors.transparent : null,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:lunadial/features/settings/application/app_settings_controller.dart';
 import 'package:lunadial/features/settings/domain/app_locale_option.dart';
 import 'package:lunadial/features/settings/domain/clock_display_mode.dart';
+import 'package:lunadial/features/settings/domain/app_theme_mode.dart';
 import 'package:lunadial/features/settings/domain/night_mode_behavior.dart';
 import 'package:lunadial/features/settings/domain/time_format_preference.dart';
 import 'package:lunadial/features/settings/presentation/widgets/settings_save_error_banner.dart';
@@ -59,8 +60,14 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       _SettingsSection(
-        title: translations.screen,
-        children: const [_KeepScreenOnTile()],
+        title: translations.display,
+        children: const [
+          _KeepScreenOnTile(),
+          _ClockDisplayModeTile(),
+          _TimeFormatTile(),
+          _ShowSecondsTile(),
+          _DigitalClockLeadingZeroTile(),
+        ],
       ),
       _SettingsSection(
         title: translations.nightAndBurnIn,
@@ -72,23 +79,10 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       _SettingsSection(
-        title: translations.clockStyle,
-        children: const [_ClockDisplayModeTile()],
-      ),
-      _SettingsSection(
-        title: translations.timeDisplay,
-        children: const [
-          _TimeFormatTile(),
-          _ShowSecondsTile(),
-          _DigitalClockLeadingZeroTile(),
-        ],
-      ),
-      _SettingsSection(
         title: translations.information,
         children: [
           _ActionTile(
             title: translations.version,
-            subtitle: translations.versionDescription,
             trailing: Text(
               _appVersion ?? translations.loading,
               style: TextStyle(
@@ -98,7 +92,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           _ActionTile(
             title: translations.license,
-            subtitle: translations.licenseDescription,
             trailing: _buildChevronValue(null),
             onTap: () => showLicensePage(context: context),
           ),
@@ -427,7 +420,6 @@ class _ThemeColorTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _ActionTile(
           title: translations.themeColor,
-          subtitle: translations.themeColorDescription,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -479,14 +471,13 @@ class _ThemeModeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<AppSettingsController, ThemeMode>(
+    return Selector<AppSettingsController, AppThemeMode>(
       selector: (_, controller) => controller.settings.themeMode,
       builder: (context, themeMode, _) {
         final controller = context.read<AppSettingsController>();
         final translations = AppLocalizations.of(context)!;
         return _ActionTile(
           title: translations.themeMode,
-          subtitle: translations.themeModeDescription,
           trailing: _buildChevronValue(
             _themeModeLabel(themeMode, translations),
           ),
@@ -509,7 +500,6 @@ class _LocaleTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _ActionTile(
           title: translations.language,
-          subtitle: translations.languageDescription,
           trailing: _buildChevronValue(
             _localeLabel(localeOption, translations),
           ),
@@ -532,7 +522,6 @@ class _KeepScreenOnTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _SwitchTile(
           title: translations.keepScreenOn,
-          subtitle: translations.keepScreenOnDescription,
           value: keepScreenOn,
           onChanged: controller.setKeepScreenOn,
         );
@@ -649,7 +638,6 @@ class _ClockDisplayModeTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _ActionTile(
           title: translations.clockDisplayMode,
-          subtitle: translations.clockDisplayModeDescription,
           trailing: _buildChevronValue(_clockModeLabel(mode, translations)),
           onTap: () => _showClockModeDialog(context, controller),
         );
@@ -670,7 +658,6 @@ class _TimeFormatTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _ActionTile(
           title: translations.timeFormat,
-          subtitle: translations.timeFormatDescription,
           trailing: _buildChevronValue(
             _timeFormatLabel(preference, translations),
           ),
@@ -693,7 +680,6 @@ class _ShowSecondsTile extends StatelessWidget {
         final translations = AppLocalizations.of(context)!;
         return _SwitchTile(
           title: translations.showSeconds,
-          subtitle: translations.showSecondsDescription,
           value: showSeconds,
           onChanged: controller.setShowSeconds,
         );
@@ -754,6 +740,7 @@ Future<void> _showThemeColorDialog(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
+        scrollable: true,
         title: Text(translations.selectThemeColor),
         content: _ThemeColorPicker(
           color: draftColor,
@@ -786,10 +773,10 @@ Future<void> _showThemeModeDialog(
   AppSettingsController settingsController,
 ) {
   final translations = AppLocalizations.of(context)!;
-  return _showSelectionDialog<ThemeMode>(
+  return _showSelectionDialog<AppThemeMode>(
     context: context,
     title: translations.themeMode,
-    values: ThemeMode.values,
+    values: AppThemeMode.values,
     currentValue: settingsController.settings.themeMode,
     labelFor: (mode) => _themeModeLabel(mode, translations),
     onSelected: settingsController.setThemeMode,
@@ -818,7 +805,7 @@ Future<void> _showClockModeDialog(
   final translations = AppLocalizations.of(context)!;
   return _showSelectionDialog<ClockDisplayMode>(
     context: context,
-    title: translations.clockStyle,
+    title: translations.clockDisplayMode,
     values: ClockDisplayMode.values,
     currentValue: settingsController.settings.clockDisplayMode,
     labelFor: (mode) => _clockModeLabel(mode, translations),
@@ -925,14 +912,16 @@ Future<void> _pickNightModeTime(
   await onSelected(selected);
 }
 
-String _themeModeLabel(ThemeMode mode, AppLocalizations translations) {
+String _themeModeLabel(AppThemeMode mode, AppLocalizations translations) {
   switch (mode) {
-    case ThemeMode.system:
+    case AppThemeMode.system:
       return translations.system;
-    case ThemeMode.light:
+    case AppThemeMode.light:
       return translations.light;
-    case ThemeMode.dark:
+    case AppThemeMode.dark:
       return translations.dark;
+    case AppThemeMode.oled:
+      return translations.oled;
   }
 }
 
