@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,12 +32,14 @@ class AppErrorShell extends StatelessWidget {
 class AppErrorView extends StatelessWidget {
   final Object? error;
   final StackTrace? stackTrace;
+  final bool showErrorDetails;
   final VoidCallback onRetry;
 
   const AppErrorView({
     super.key,
     required this.error,
     required this.stackTrace,
+    this.showErrorDetails = kDebugMode,
     required this.onRetry,
   });
 
@@ -68,7 +71,7 @@ class AppErrorView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (error != null) ...[
+                if (showErrorDetails && error != null) ...[
                   const SizedBox(height: 16),
                   Text(
                     '$error',
@@ -76,7 +79,7 @@ class AppErrorView extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ],
-                if (stackTrace != null) ...[
+                if (showErrorDetails && stackTrace != null) ...[
                   const SizedBox(height: 12),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 160),
