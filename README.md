@@ -26,9 +26,9 @@ The app is intended to remain smooth on modern low-end hardware and has been tes
 | Platform | Status |
 |---|---|
 | Android | Primary target, Android 6.0 / API 23 or newer |
-| Windows | Supported and release-built in development |
-| Linux | Supported through CI builds |
-| macOS | Best-effort support through CI builds |
+| Windows | Supported; official packages are published with GitHub releases |
+| Linux | Supported through CI and source builds; official binary packages are planned |
+| macOS | Best-effort support through CI builds; no official binary package yet |
 | Web | Buildable, but not a primary release target |
 | iOS | Not currently supported |
 
@@ -69,6 +69,16 @@ flutter test
 flutter build windows --release
 ```
 
+### Build Linux
+
+```bash
+flutter build linux --release
+```
+
+The runnable Linux bundle is created in `build/linux/x64/release/bundle/`.
+Copy the entire directory when moving it to another machine; do not copy only
+the executable. Official Linux binary packaging is planned for a later release.
+
 ### Sign Android releases
 
 Copy `android/key.properties.example` to `android/key.properties` and replace the placeholder values with the path and credentials for your release keystore. The real properties file and keystore files are ignored by Git.
@@ -89,7 +99,11 @@ dart run flutter_launcher_icons
 
 ## Continuous Integration
 
-GitHub Actions runs analysis and tests, then verifies Android, Linux, Windows, and macOS release builds. Platform-specific failures should be fixed before publishing a release.
+GitHub Actions runs analysis and tests, then verifies Android, Linux, Windows,
+and macOS release builds. GitHub tag releases currently publish Android and
+Windows artifacts; Linux remains available through source builds while its
+portable binary distribution is evaluated. Platform-specific failures should
+be fixed before publishing a release.
 
 ## Roadmap
 
