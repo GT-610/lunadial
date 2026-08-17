@@ -1,0 +1,33 @@
+Categories:
+  - Time
+License: GPL-3.0-only
+
+# Fill in the project and author details before submitting to F-Droid.
+AuthorName: 'GT610'
+AuthorEmail: 'myddz1005@outlook.com'
+AuthorWebSite: 'https://gt610.dpdns.org'
+# WebSite: ''
+Donate: 'https://gt610.dpdns.org/sponsor'
+# Liberapay: ''
+# OpenCollective: ''
+
+SourceCode: https://github.com/GT-610/lunadial
+IssueTracker: https://github.com/GT-610/lunadial/issues
+
+RepoType: git
+Repo: https://github.com/GT-610/lunadial.git
+
+Builds:
+  - versionName: 0.4.0
+    versionCode: 1
+    commit: ba54a188d06866203b64c528157b696f18344242
+    subdir: .
+    build:
+      - flutter build apk --release
+    output: build/app/outputs/flutter-apk/app-release.apk
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+UpdateCheckData: 'pubspec.yaml|version:\\s.+\\+(\\d+)|.|version:\\s(.+)\\+'
+CurrentVersion: 0.4.0
+CurrentVersionCode: 1
