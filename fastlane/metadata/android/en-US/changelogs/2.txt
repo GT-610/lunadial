@@ -1,0 +1,1 @@
+Improve app stability and error handling. Refine settings layout and OLED-compatible theme behavior.
