@@ -1,5 +1,5 @@
 Categories:
-  - Time
+  - System
 License: GPL-3.0-only
 
 # Fill in the project and author details before submitting to F-Droid.
@@ -22,8 +22,10 @@ Builds:
     versionCode: 1
     commit: ba54a188d06866203b64c528157b696f18344242
     subdir: .
+    init:
+      - git clone --depth 1 --branch 3.47.0 https://github.com/flutter/flutter.git ../flutter
     build:
-      - flutter build apk --release
+      - ../flutter/bin/flutter build apk --release
     output: build/app/outputs/flutter-apk/app-release.apk
 
 AutoUpdateMode: Version v%v
