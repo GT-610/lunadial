@@ -1,117 +1,52 @@
 # LunaDial
 
-[![CI](https://github.com/GT-610/lunadial/actions/workflows/ci.yml/badge.svg)](https://github.com/GT-610/lunadial/actions/workflows/ci.yml)
+LunaDial is a free and open-source clock for phones, tablets, spare displays, and desktop computers. It is made to be easy to read, gentle on resources, and comfortable to leave running.
 
-**LunaDial** is a free and open-source cross-platform clock built with Flutter. It is designed to turn older phones, spare displays, and desktop windows into friendly, dependable clocks without requiring high-end hardware.
+<table>
+  <tr>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="Digital clock with calendar" /></td>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" alt="Analog clock" /></td>
+  </tr>
+  <tr>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Clock customization settings" /></td>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Night display settings" /></td>
+  </tr>
+</table>
 
-Android is the primary target. Windows and Linux are first-class desktop targets, while macOS is supported on a best-effort basis. iOS is not currently a supported release target.
+## Get LunaDial
+
+- **Android:** Download the APK for your device from the [latest release](https://github.com/GT-610/lunadial/releases/latest). Most current phones use the `arm64-v8a` build.
+- **Windows:** Download and extract `lunadial-windows-x64.zip` from the [latest release](https://github.com/GT-610/lunadial/releases/latest), then run `lunadial.exe`.
+- **Linux and macOS:** LunaDial can be built from source. Prebuilt packages are not currently published for these platforms.
 
 ## Features
 
-- Digital and analog clock modes with a calendar
-- Responsive layouts for phones, tablets, and desktop windows
-- 12-hour, 24-hour, seconds, second-hand, and leading-zero options
-- Material You and system accent colors with a custom-color fallback
-- Light, dark, and system theme modes
-- Always-on display support and Android immersive mode
-- Manual, scheduled, and system-following night display modes
-- OLED burn-in protection through subtle periodic movement
-- English and Simplified Chinese localization
-- Durable local settings with serialized, replace-on-write persistence
+- Choose a digital or analog clock, with an optional calendar
+- Tune the display with 12- or 24-hour time, seconds, a second hand, and leading zeros
+- Use light, dark, or system appearance with system, Material You, or custom accent colors
+- Switch to a dimmer night display manually, on a schedule, or with the system theme
+- Keep the screen awake and hide Android system controls for a distraction-free clock
+- Reduce OLED burn-in risk with subtle periodic movement during extended night display
+- Use the app in English or Simplified Chinese
 
-The app is intended to remain smooth on modern low-end hardware and has been tested on devices around the Snapdragon 625 performance class.
+## Your privacy
+
+LunaDial does not need network access and does not collect usage data. Your preferences stay on your device.
 
 ## Supported Targets
 
 | Platform | Status |
 |---|---|
 | Android | Primary target, Android 6.0 / API 23 or newer |
-| Windows | Supported; official packages are published with GitHub releases |
-| Linux | Supported through CI and source builds; official binary packages are planned |
-| macOS | Best-effort support through CI builds; no official binary package yet |
-| Web | Buildable, but not a primary release target |
+| Windows | Supported; packages are published with GitHub releases |
+| Linux | Supported through source builds; a packaged release is planned |
+| macOS | Supported on a best-effort basis through source builds |
+| Web | Available to build, but not a primary target |
 | iOS | Not currently supported |
 
-## Project Structure
+## Help and contributing
 
-- `lib/app`: bootstrap, application shell, theming, and app-wide effects
-- `lib/features/clock`: clock domain logic, controllers, and presentation
-- `lib/features/settings`: settings models, persistence, and UI
-- `lib/shared`: app-specific shared helpers and error presentation
-- `test`: unit and widget coverage for clock, settings, and platform behavior
-
-LunaDial intentionally keeps its UI inside the main project and avoids depending on a general-purpose component library.
-
-## Getting Started
-
-### Prerequisites
-
-- A current stable Flutter SDK
-- Platform-specific Flutter tooling for the target you want to build
-- Java 17 and the Android SDK for Android builds
-
-### Install dependencies
-
-```bash
-flutter pub get
-```
-
-### Run checks
-
-```bash
-flutter analyze
-flutter test
-```
-
-### Build Windows
-
-```bash
-flutter build windows --release
-```
-
-### Build Linux
-
-```bash
-flutter build linux --release
-```
-
-The runnable Linux bundle is created in `build/linux/x64/release/bundle/`.
-Copy the entire directory when moving it to another machine; do not copy only
-the executable. Official Linux binary packaging is planned for a later release.
-
-### Sign Android releases
-
-Copy `android/key.properties.example` to `android/key.properties` and replace the placeholder values with the path and credentials for your release keystore. The real properties file and keystore files are ignored by Git.
-
-```bash
-flutter build appbundle --release
-```
-
-Without `android/key.properties`, Gradle can still compile an unsigned release artifact for verification, but it is not suitable for publishing.
-
-### Regenerate launcher icons
-
-The editable icon sources and 1024 px raster inputs are stored under `assets/icon`.
-
-```bash
-dart run flutter_launcher_icons
-```
-
-## Continuous Integration
-
-GitHub Actions runs analysis and tests, then verifies Android, Linux, Windows,
-and macOS release builds. GitHub tag releases currently publish Android and
-Windows artifacts; Linux remains available through source builds while its
-portable binary distribution is evaluated. Platform-specific failures should
-be fixed before publishing a release.
-
-## Roadmap
-
-A standardized clock-face and theme extension model is planned, but the format will be designed only after more built-in themes provide real implementation experience.
-
-## Contributing
-
-Contributions are welcome. Prefer focused, reviewable pull requests, add tests for behavior changes, and keep platform-specific dependencies limited to features LunaDial actually uses.
+Found a problem or have an idea? Please [open an issue](https://github.com/GT-610/lunadial/issues). Contributions are welcome.
 
 ## License
 
