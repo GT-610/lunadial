@@ -17,9 +17,9 @@ jobs:
           persist-credentials: false
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.47.0
           cache: true
-      - run: flutter pub get
+      - run: flutter pub get --enforce-lockfile
       - run: flutter analyze
       - run: flutter test
 
@@ -52,9 +52,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.47.0
           cache: true
-      - run: flutter pub get
+      - run: flutter pub get --enforce-lockfile
       - name: Build Android app bundle
         if: matrix.target == 'android'
         run: flutter build appbundle --release
@@ -67,3 +67,93 @@ jobs:
       - name: Build macOS application
         if: matrix.target == 'macos'
         run: flutter build macos --release
+
+  reproducibility:
+    name: Reproducibility check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.0
+          cache: true
+      - name: Build split APKs twice from isolated source paths
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # This is a preflight check. F-Droid's final verification compares
+          # the published developer-signed APK using signature copying.
+          flutter config --no-analytics
+
+          first_dir="$RUNNER_TEMP/lunadial-reproducibility-one"
+          second_dir="$RUNNER_TEMP/lunadial-reproducibility-two"
+          abis=(armeabi-v7a arm64-v8a x86_64)
+
+          cleanup() {
+            git worktree remove --force "$first_dir" || true
+            git worktree remove --force "$second_dir" || true
+          }
+          trap cleanup EXIT
+
+          git worktree add --detach "$first_dir" "$GITHUB_SHA"
+          git worktree add --detach "$second_dir" "$GITHUB_SHA"
+
+          build_apks() {
+            local source_dir="$1"
+            local build_name="$2"
+
+            (
+              cd "$source_dir"
+              export PUB_CACHE="$source_dir/.pub-cache"
+              export GRADLE_USER_HOME="$source_dir/.gradle-user-home"
+              flutter pub get --enforce-lockfile
+              flutter build apk --release --split-per-abi
+              for abi in "${abis[@]}"; do
+                cp "build/app/outputs/flutter-apk/app-$abi-release.apk" \
+                  "$RUNNER_TEMP/lunadial-reproducibility-$build_name-$abi.apk"
+              done
+            )
+          }
+
+          build_apks "$first_dir" one
+          build_apks "$second_dir" two
+
+          different=0
+          for abi in "${abis[@]}"; do
+            first_apk="$RUNNER_TEMP/lunadial-reproducibility-one-$abi.apk"
+            second_apk="$RUNNER_TEMP/lunadial-reproducibility-two-$abi.apk"
+
+            if cmp --silent "$first_apk" "$second_apk"; then
+              echo "Reproducible $abi APK: $(sha256sum "$first_apk" | cut -d ' ' -f 1)"
+              continue
+            fi
+
+            different=1
+            echo "$abi APK files differ. SHA-256 checksums:"
+            sha256sum "$first_apk" "$second_apk"
+            unzip -l "$first_apk" > "$RUNNER_TEMP/lunadial-reproducibility-one-$abi.list"
+            unzip -l "$second_apk" > "$RUNNER_TEMP/lunadial-reproducibility-two-$abi.list"
+            echo "$abi APK archive listings diff:"
+            diff -u \
+              "$RUNNER_TEMP/lunadial-reproducibility-one-$abi.list" \
+              "$RUNNER_TEMP/lunadial-reproducibility-two-$abi.list" || true
+          done
+
+          exit "$different"
+      - name: Upload reproducibility diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunadial-reproducibility-diagnostics
+          path: |
+            ${{ runner.temp }}/lunadial-reproducibility-*.apk
+            ${{ runner.temp }}/lunadial-reproducibility-*.list
+          if-no-files-found: warn
+          retention-days: 14
