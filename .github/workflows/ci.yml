@@ -71,6 +71,8 @@ jobs:
   reproducibility:
     name: Reproducibility check
     runs-on: ubuntu-latest
+    env:
+      PUB_CACHE: ${{ github.workspace }}/.pub-cache
     steps:
       - uses: actions/checkout@v4
         with:
@@ -92,28 +94,17 @@ jobs:
           # the published developer-signed APK using signature copying.
           flutter config --no-analytics
 
-          first_dir="$RUNNER_TEMP/lunadial-reproducibility-one"
-          second_dir="$RUNNER_TEMP/lunadial-reproducibility-two"
           abis=(armeabi-v7a arm64-v8a x86_64)
 
-          cleanup() {
-            git worktree remove --force "$first_dir" || true
-            git worktree remove --force "$second_dir" || true
-          }
-          trap cleanup EXIT
-
-          git worktree add --detach "$first_dir" "$GITHUB_SHA"
-          git worktree add --detach "$second_dir" "$GITHUB_SHA"
-
           build_apks() {
-            local source_dir="$1"
-            local build_name="$2"
+            local build_name="$1"
 
             (
-              cd "$source_dir"
-              export PUB_CACHE="$source_dir/.pub-cache"
-              export GRADLE_USER_HOME="$source_dir/.gradle-user-home"
+              cd "$GITHUB_WORKSPACE"
+              export GRADLE_USER_HOME="$RUNNER_TEMP/lunadial-gradle-$build_name"
+              flutter clean
               flutter pub get --enforce-lockfile
+              bash scripts/release/patch-jni-build-id.sh
               flutter build apk --release --split-per-abi
               for abi in "${abis[@]}"; do
                 cp "build/app/outputs/flutter-apk/app-$abi-release.apk" \
@@ -122,8 +113,8 @@ jobs:
             )
           }
 
-          build_apks "$first_dir" one
-          build_apks "$second_dir" two
+          build_apks one
+          build_apks two
 
           different=0
           for abi in "${abis[@]}"; do

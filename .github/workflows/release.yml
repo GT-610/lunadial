@@ -14,6 +14,8 @@ jobs:
     name: Build Android release
     runs-on: ubuntu-latest
     environment: Release
+    env:
+      PUB_CACHE: ${{ github.workspace }}/.pub-cache
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,7 +49,10 @@ jobs:
             printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
             printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
           } > android/key.properties
-      - run: flutter pub get --enforce-lockfile
+      - name: Install locked Android dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Disable non-deterministic JNI build ID
+        run: bash scripts/release/patch-jni-build-id.sh
       - name: Build split Android APKs
         run: flutter build apk --release --split-per-abi
       - name: Build Android App Bundle
