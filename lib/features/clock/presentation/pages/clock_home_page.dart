@@ -33,13 +33,14 @@ class ClockHomePage extends StatefulWidget {
 class _ClockHomePageState extends State<ClockHomePage>
     with RouteAware, WidgetsBindingObserver {
   late final ClockController _clockController =
-      widget._clockController ?? ClockController();
+      widget._clockController ?? ClockController(startTicker: false);
   late final bool _ownsClockController = widget._clockController == null;
   late final SettingsButtonController _settingsButtonController =
       SettingsButtonController();
   ModalRoute<void>? _route;
-  var _isAppInForeground = true;
-  var _isCurrentRoute = true;
+  late bool _isAppInForeground =
+      WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+  var _isCurrentRoute = false;
 
   @override
   void initState() {

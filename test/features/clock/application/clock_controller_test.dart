@@ -39,6 +39,16 @@ void main() {
       expect(notifications, 0);
       controller.dispose();
     });
+
+    test('dispose stops an active ticker', () {
+      final controller = ClockController(startTicker: false);
+
+      controller.resumeTicker();
+      expect(controller.isTicking, isTrue);
+
+      controller.dispose();
+      expect(controller.isTicking, isFalse);
+    });
   });
 
   group('clock layout', () {
@@ -61,6 +71,20 @@ void main() {
         CalendarLayoutMetrics.widthForHeight(
           height: sixRowMonth.totalHeight,
           density: CalendarDensity.regular,
+          focusedDay: DateTime(2026, 8, 1),
+        ),
+        closeTo(350, 0.001),
+      );
+
+      final compactSixRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.compact,
+        focusedDay: DateTime(2026, 8, 1),
+      );
+      expect(
+        CalendarLayoutMetrics.widthForHeight(
+          height: compactSixRowMonth.totalHeight,
+          density: CalendarDensity.compact,
           focusedDay: DateTime(2026, 8, 1),
         ),
         closeTo(350, 0.001),

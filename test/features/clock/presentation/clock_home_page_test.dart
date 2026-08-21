@@ -155,6 +155,7 @@ void main() {
         home: ClockHomePage.forTesting(clockController: clockController),
       ),
     );
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
     expect(clockController.isTicking, isTrue);
 

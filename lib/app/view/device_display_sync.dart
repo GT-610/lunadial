@@ -47,6 +47,11 @@ class _DeviceDisplaySyncState extends State<DeviceDisplaySync>
 
     try {
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } catch (_) {
+      // Display preferences are best-effort and must not prevent app startup.
+    }
+
+    try {
       await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     } catch (_) {
       // Display preferences are best-effort and must not prevent app startup.

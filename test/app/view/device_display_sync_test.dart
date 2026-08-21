@@ -57,8 +57,8 @@ void main() {
     ) async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-            if (call.method == 'SystemChrome.setEnabledSystemUIMode' ||
-                call.method == 'SystemChrome.setPreferredOrientations') {
+            methodCalls.add(call);
+            if (call.method == 'SystemChrome.setEnabledSystemUIMode') {
               throw PlatformException(code: 'unavailable');
             }
             return null;
@@ -77,6 +77,12 @@ void main() {
       await tester.pump();
 
       expect(tester.takeException(), isNull);
+      expect(
+        methodCalls.any(
+          (call) => call.method == 'SystemChrome.setPreferredOrientations',
+        ),
+        isTrue,
+      );
     });
   });
 }

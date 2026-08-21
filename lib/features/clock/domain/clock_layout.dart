@@ -8,6 +8,9 @@ enum CalendarDensity { compact, regular }
 class CalendarLayoutMetrics {
   const CalendarLayoutMetrics._({
     required this.cellSize,
+    required this.renderedCellSize,
+    required this.crossAxisSpacing,
+    required this.mainAxisSpacing,
     required this.headerHeight,
     required this.weekdayHeaderHeight,
     required this.dayFontSize,
@@ -23,11 +26,19 @@ class CalendarLayoutMetrics {
   }) {
     final cellSize = width / DateTime.daysPerWeek;
     final isRegularDensity = density == CalendarDensity.regular;
+    final crossAxisSpacing = isRegularDensity ? width * 0.01 : 2.0;
+    final mainAxisSpacing = isRegularDensity ? cellSize * 0.01 : 2.0;
+    final renderedCellSize =
+        (width - crossAxisSpacing * (DateTime.daysPerWeek - 1)) /
+        DateTime.daysPerWeek;
     final headerHeight = cellSize * (isRegularDensity ? 1.45 : 1.15);
     final weekdayHeaderHeight = cellSize * (isRegularDensity ? 0.75 : 0.62);
 
     return CalendarLayoutMetrics._(
       cellSize: cellSize,
+      renderedCellSize: renderedCellSize,
+      crossAxisSpacing: crossAxisSpacing,
+      mainAxisSpacing: mainAxisSpacing,
       headerHeight: headerHeight,
       weekdayHeaderHeight: weekdayHeaderHeight,
       dayFontSize: (cellSize * (isRegularDensity ? 0.35 : 0.3)).clamp(
@@ -41,6 +52,9 @@ class CalendarLayoutMetrics {
   }
 
   final double cellSize;
+  final double renderedCellSize;
+  final double crossAxisSpacing;
+  final double mainAxisSpacing;
   final double headerHeight;
   final double weekdayHeaderHeight;
   final double dayFontSize;
@@ -48,8 +62,10 @@ class CalendarLayoutMetrics {
   final double navigationIconSize;
   final int rowsNeeded;
 
-  double get totalHeight =>
-      headerHeight + weekdayHeaderHeight + cellSize * rowsNeeded;
+  double get gridHeight =>
+      renderedCellSize * rowsNeeded + mainAxisSpacing * (rowsNeeded - 1);
+
+  double get totalHeight => headerHeight + weekdayHeaderHeight + gridHeight;
 
   static double heightForWidth({
     required double width,
@@ -68,12 +84,26 @@ class CalendarLayoutMetrics {
     required CalendarDensity density,
     required DateTime focusedDay,
   }) {
-    final metrics = CalendarLayoutMetrics.forWidth(
-      width: DateTime.daysPerWeek.toDouble(),
-      density: density,
-      focusedDay: focusedDay,
-    );
-    return metrics.totalHeight > 0 ? height / metrics.totalHeight * 7 : 0;
+    final rowsNeeded = _rowsNeeded(focusedDay);
+    final isRegularDensity = density == CalendarDensity.regular;
+    final headerUnits = isRegularDensity ? 1.45 : 1.15;
+    final weekdayHeaderUnits = isRegularDensity ? 0.75 : 0.62;
+
+    if (isRegularDensity) {
+      final cellWidthFactor = 1 - 0.01 * (DateTime.daysPerWeek - 1);
+      final heightFactor =
+          (headerUnits + weekdayHeaderUnits) / DateTime.daysPerWeek +
+          cellWidthFactor * rowsNeeded / DateTime.daysPerWeek +
+          0.01 * (rowsNeeded - 1) / DateTime.daysPerWeek;
+      return heightFactor > 0 ? height / heightFactor : 0;
+    }
+
+    final heightFactor =
+        (headerUnits + weekdayHeaderUnits + rowsNeeded) / DateTime.daysPerWeek;
+    final fixedHeight =
+        -2 * (DateTime.daysPerWeek - 1) * rowsNeeded / DateTime.daysPerWeek +
+        2 * (rowsNeeded - 1);
+    return heightFactor > 0 ? (height - fixedHeight) / heightFactor : 0;
   }
 
   static int _rowsNeeded(DateTime focusedDay) {

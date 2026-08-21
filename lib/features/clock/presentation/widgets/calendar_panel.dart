@@ -141,17 +141,13 @@ class CalendarPanel extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: metrics.cellSize * metrics.rowsNeeded,
+              height: metrics.gridHeight,
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
-                  mainAxisSpacing: isRegularDensity
-                      ? metrics.cellSize * 0.01
-                      : 2,
-                  crossAxisSpacing: isRegularDensity
-                      ? availableWidth * 0.01
-                      : 2,
+                  mainAxisSpacing: metrics.mainAxisSpacing,
+                  crossAxisSpacing: metrics.crossAxisSpacing,
                   childAspectRatio: 1,
                 ),
                 itemCount: metrics.rowsNeeded * 7,
@@ -182,7 +178,7 @@ class CalendarPanel extends StatelessWidget {
                             ? theme.colorScheme.secondary
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(
-                          metrics.cellSize * 0.12,
+                          metrics.renderedCellSize * 0.12,
                         ),
                       ),
                       child: Text(

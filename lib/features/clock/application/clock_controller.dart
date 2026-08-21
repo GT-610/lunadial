@@ -93,6 +93,7 @@ class ClockController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
+    _timer = null;
     super.dispose();
   }
 }
