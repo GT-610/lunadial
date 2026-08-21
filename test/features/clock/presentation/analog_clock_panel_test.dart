@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:lunadial/features/clock/domain/clock_layout.dart';
+import 'package:lunadial/features/clock/presentation/widgets/analog_clock_face.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
+import 'package:lunadial/features/clock/presentation/widgets/calendar_panel.dart';
 import 'package:lunadial/l10n/app_localizations.dart';
 
 void main() {
@@ -47,6 +49,18 @@ void main() {
 
     expect(find.byKey(const Key('calendar-compact')), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('analog clock and calendar use matching widths in landscape', (
+    tester,
+  ) async {
+    await pumpAnalogClock(tester, surfaceSize: const Size(995, 574));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getSize(find.byType(CalendarPanel)).width,
+      closeTo(tester.getSize(find.byType(AnalogClockFace)).width, 0.1),
+    );
   });
 
   testWidgets('analog clock panel stays stable on phone and tablet layouts', (

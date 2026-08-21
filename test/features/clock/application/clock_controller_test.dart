@@ -84,6 +84,14 @@ void main() {
       );
     });
 
+    test('balances clock and calendar sizes on a wide landscape display', () {
+      final spec = resolveAnalogClockLayout(const Size(995, 574));
+
+      expect(spec.direction, Axis.horizontal);
+      expect(spec.calendarWidth, spec.clockSize);
+      expect(spec.padding.horizontal, 32);
+    });
+
     test('compactPhone and phone use horizontal layout in landscape', () {
       expect(
         resolveAnalogClockLayout(const Size(568, 320)).direction,
@@ -136,6 +144,8 @@ void main() {
         expect(compact.timeFontSize, lessThan(tablet.timeFontSize));
         expect(compact.dateFontSize, lessThan(compact.timeFontSize));
         expect(tablet.maxContentWidth, greaterThan(compact.maxContentWidth));
+        expect(tablet.padding.horizontal, 32);
+        expect(tablet.maxContentWidth, 992);
       },
     );
   });

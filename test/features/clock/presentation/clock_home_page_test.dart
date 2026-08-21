@@ -83,7 +83,7 @@ void main() {
   });
 
   testWidgets(
-    'settings button auto hides and tapping screen reveals it then opens settings',
+    'settings button is initially visible, then auto hides and can be revealed',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(1200, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -97,18 +97,6 @@ void main() {
         _buildApp(settingsController: settingsController),
       );
       await tester.pumpAndSettle();
-
-      expect(
-        tester
-            .widget<IgnorePointer>(
-              find.byKey(const Key('settings-ignore-pointer')),
-            )
-            .ignoring,
-        isTrue,
-      );
-
-      await tester.tap(find.byKey(const Key('clock-surface')));
-      await tester.pump();
 
       expect(
         tester

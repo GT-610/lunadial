@@ -29,6 +29,12 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
   ModalRoute<void>? _route;
 
   @override
+  void initState() {
+    super.initState();
+    _settingsButtonController.showTemporarily();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final route = ModalRoute.of(context);
