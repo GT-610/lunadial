@@ -1,6 +1,6 @@
 # LunaDial
 
-LunaDial is a free and open-source clock for phones, tablets, spare displays, and desktop computers. It is made to be easy to read, gentle on resources, and comfortable to leave running.
+LunaDial is a free, open-source clock app for phones, tablets, spare displays, and desktop computers. It is easy to read, uses few resources, and is comfortable to leave running.
 
 <table>
   <tr>
@@ -13,34 +13,34 @@ LunaDial is a free and open-source clock for phones, tablets, spare displays, an
   </tr>
 </table>
 
-## Get LunaDial
+## Download
 
-- **Android:** Download the APK for your device from the [latest release](https://github.com/GT-610/lunadial/releases/latest). Most current phones use the `arm64-v8a` build.
-- **Windows:** Download and extract `lunadial-windows-x64.zip` from the [latest release](https://github.com/GT-610/lunadial/releases/latest), then run `lunadial.exe`.
-- **Linux and macOS:** LunaDial can be built from source. Prebuilt packages are not currently published for these platforms.
+- Android: Download the APK for your device from the [latest release](https://github.com/GT-610/lunadial/releases/latest). Most current phones use the `arm64-v8a` build.
+- Windows: Download and extract `lunadial-windows-x64.zip` from the [latest release](https://github.com/GT-610/lunadial/releases/latest), then run `lunadial.exe`.
+- Linux and macOS: Build LunaDial from source. Prebuilt packages are not currently available for these platforms.
 
 ## Features
 
-- Choose a digital or analog clock, with an optional calendar
-- Tune the display with 12- or 24-hour time, seconds, a second hand, and leading zeros
-- Use light, dark, or system appearance with system, Material You, or custom accent colors
-- Switch to a dimmer night display manually, on a schedule, or with the system theme
-- Keep the screen awake and hide Android system controls for a distraction-free clock
-- Reduce OLED burn-in risk with subtle periodic movement during extended night display
-- Use the app in English or Simplified Chinese
+- Digital and analog clocks, with an optional calendar
+- 12- or 24-hour time, seconds, a second hand, and leading zeros
+- Light, dark, or system appearance, with system, Material You, or custom accent colors
+- A dimmer night display that you can enable manually, schedule, or follow the system theme
+- An option to keep the screen awake and hide Android system controls
+- Subtle periodic movement during extended night display to reduce OLED burn-in risk
+- English and Simplified Chinese
 
-## Your privacy
+## Privacy
 
 LunaDial does not need network access and does not collect usage data. Your preferences stay on your device.
 
-## Supported Targets
+## Supported platforms
 
 | Platform | Status |
 |---|---|
-| Android | Primary target, Android 6.0 / API 23 or newer |
-| Windows | Supported; packages are published with GitHub releases |
-| Linux | Supported through source builds; a packaged release is planned |
-| macOS | Supported on a best-effort basis through source builds |
+| Android | Primary target. Android 6.0 (API 23) or newer |
+| Windows | Supported. Packages are published with GitHub releases |
+| Linux | Supported through source builds. A packaged release is planned |
+| macOS | Best-effort support through source builds |
 | Web | Available to build, but not a primary target |
 | iOS | Not currently supported |
 

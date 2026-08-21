@@ -51,6 +51,28 @@ void main() {
 
     controller.dispose();
   });
+
+  testWidgets('ignores wakelock platform failures', (tester) async {
+    wakelockPlusPlatformInstance = _FailingWakelockPlatform();
+    final controller = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    await controller.initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<AppSettingsController>.value(
+        value: controller,
+        child: const WakelockSync(child: SizedBox.shrink()),
+      ),
+    );
+    await tester.pump();
+
+    await controller.setKeepScreenOn(true);
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    controller.dispose();
+  });
 }
 
 class _FakeWakelockPlatform extends WakelockPlusWindowsPlugin {
@@ -65,6 +87,16 @@ class _FakeWakelockPlatform extends WakelockPlusWindowsPlugin {
 
   @override
   Future<bool> get enabled async => _enabled;
+}
+
+class _FailingWakelockPlatform extends WakelockPlusWindowsPlugin {
+  @override
+  Future<void> toggle({required bool enable}) {
+    return Future<void>.error(StateError('Wakelock unavailable'));
+  }
+
+  @override
+  Future<bool> get enabled async => false;
 }
 
 class _MemorySettingsRepository implements AppSettingsRepository {

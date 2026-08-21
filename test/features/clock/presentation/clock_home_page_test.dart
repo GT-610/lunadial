@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+import 'package:lunadial/app/luna_dial_app.dart';
+import 'package:lunadial/features/clock/application/clock_controller.dart';
 import 'package:lunadial/features/clock/presentation/pages/clock_home_page.dart';
 import 'package:lunadial/features/clock/presentation/widgets/analog_clock_panel.dart';
 import 'package:lunadial/features/clock/presentation/widgets/burn_in_protection_layer.dart';
@@ -83,7 +85,7 @@ void main() {
   });
 
   testWidgets(
-    'settings button auto hides and tapping screen reveals it then opens settings',
+    'settings button is initially visible, then auto hides and can be revealed',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(1200, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -97,18 +99,6 @@ void main() {
         _buildApp(settingsController: settingsController),
       );
       await tester.pumpAndSettle();
-
-      expect(
-        tester
-            .widget<IgnorePointer>(
-              find.byKey(const Key('settings-ignore-pointer')),
-            )
-            .ignoring,
-        isTrue,
-      );
-
-      await tester.tap(find.byKey(const Key('clock-surface')));
-      await tester.pump();
 
       expect(
         tester
@@ -149,6 +139,50 @@ void main() {
       expect(find.byType(SettingsPage), findsOneWidget);
     },
   );
+
+  testWidgets('clock ticker only runs on the foreground home route', (
+    tester,
+  ) async {
+    final settingsController = AppSettingsController(
+      repository: _MemorySettingsRepository(),
+    );
+    final clockController = ClockController(startTicker: false);
+    await settingsController.initialize();
+
+    await tester.pumpWidget(
+      _buildApp(
+        settingsController: settingsController,
+        home: ClockHomePage.forTesting(clockController: clockController),
+      ),
+    );
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(clockController.isTicking, isTrue);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(clockController.isTicking, isFalse);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(clockController.isTicking, isTrue);
+
+    await tester.tap(find.byKey(const Key('settings-reveal-button')));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsPage), findsOneWidget);
+    expect(clockController.isTicking, isFalse);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(clockController.isTicking, isFalse);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(clockController.isTicking, isTrue);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    clockController.dispose();
+  });
 
   testWidgets('clock home page stays stable across responsive breakpoints', (
     tester,
@@ -216,13 +250,17 @@ void main() {
   );
 }
 
-Widget _buildApp({required AppSettingsController settingsController}) {
+Widget _buildApp({
+  required AppSettingsController settingsController,
+  Widget home = const ClockHomePage(),
+}) {
   return ChangeNotifierProvider<AppSettingsController>.value(
     value: settingsController,
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const ClockHomePage(),
+      navigatorObservers: [appRouteObserver],
+      home: home,
     ),
   );
 }

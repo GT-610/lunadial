@@ -4,6 +4,119 @@ enum ClockViewportClass { compactPhone, phone, largePhone, tablet, largeWindow }
 
 enum CalendarDensity { compact, regular }
 
+@immutable
+class CalendarLayoutMetrics {
+  const CalendarLayoutMetrics._({
+    required this.cellSize,
+    required this.renderedCellSize,
+    required this.crossAxisSpacing,
+    required this.mainAxisSpacing,
+    required this.headerHeight,
+    required this.weekdayHeaderHeight,
+    required this.dayFontSize,
+    required this.weekdayFontSize,
+    required this.navigationIconSize,
+    required this.rowsNeeded,
+  });
+
+  factory CalendarLayoutMetrics.forWidth({
+    required double width,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    final cellSize = width / DateTime.daysPerWeek;
+    final isRegularDensity = density == CalendarDensity.regular;
+    final crossAxisSpacing = isRegularDensity ? width * 0.01 : 2.0;
+    final mainAxisSpacing = isRegularDensity ? cellSize * 0.01 : 2.0;
+    final renderedCellSize =
+        (width - crossAxisSpacing * (DateTime.daysPerWeek - 1)) /
+        DateTime.daysPerWeek;
+    final headerHeight = cellSize * (isRegularDensity ? 1.45 : 1.15);
+    final weekdayHeaderHeight = cellSize * (isRegularDensity ? 0.75 : 0.62);
+
+    return CalendarLayoutMetrics._(
+      cellSize: cellSize,
+      renderedCellSize: renderedCellSize,
+      crossAxisSpacing: crossAxisSpacing,
+      mainAxisSpacing: mainAxisSpacing,
+      headerHeight: headerHeight,
+      weekdayHeaderHeight: weekdayHeaderHeight,
+      dayFontSize: (cellSize * (isRegularDensity ? 0.35 : 0.3)).clamp(
+        9.0,
+        16.0,
+      ),
+      weekdayFontSize: (cellSize * 0.3).clamp(10.0, 18.0),
+      navigationIconSize: (headerHeight * 0.54).clamp(22.0, 38.0),
+      rowsNeeded: _rowsNeeded(focusedDay),
+    );
+  }
+
+  final double cellSize;
+  final double renderedCellSize;
+  final double crossAxisSpacing;
+  final double mainAxisSpacing;
+  final double headerHeight;
+  final double weekdayHeaderHeight;
+  final double dayFontSize;
+  final double weekdayFontSize;
+  final double navigationIconSize;
+  final int rowsNeeded;
+
+  double get gridHeight =>
+      renderedCellSize * rowsNeeded + mainAxisSpacing * (rowsNeeded - 1);
+
+  double get totalHeight => headerHeight + weekdayHeaderHeight + gridHeight;
+
+  static double heightForWidth({
+    required double width,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    return CalendarLayoutMetrics.forWidth(
+      width: width,
+      density: density,
+      focusedDay: focusedDay,
+    ).totalHeight;
+  }
+
+  static double widthForHeight({
+    required double height,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    final rowsNeeded = _rowsNeeded(focusedDay);
+    final isRegularDensity = density == CalendarDensity.regular;
+    final headerUnits = isRegularDensity ? 1.45 : 1.15;
+    final weekdayHeaderUnits = isRegularDensity ? 0.75 : 0.62;
+
+    if (isRegularDensity) {
+      final cellWidthFactor = 1 - 0.01 * (DateTime.daysPerWeek - 1);
+      final heightFactor =
+          (headerUnits + weekdayHeaderUnits) / DateTime.daysPerWeek +
+          cellWidthFactor * rowsNeeded / DateTime.daysPerWeek +
+          0.01 * (rowsNeeded - 1) / DateTime.daysPerWeek;
+      return heightFactor > 0 ? height / heightFactor : 0;
+    }
+
+    final heightFactor =
+        (headerUnits + weekdayHeaderUnits + rowsNeeded) / DateTime.daysPerWeek;
+    final fixedHeight =
+        -2 * (DateTime.daysPerWeek - 1) * rowsNeeded / DateTime.daysPerWeek +
+        2 * (rowsNeeded - 1);
+    return heightFactor > 0 ? (height - fixedHeight) / heightFactor : 0;
+  }
+
+  static int _rowsNeeded(DateTime focusedDay) {
+    final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
+    final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
+    final daysInMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month + 1,
+    ).subtract(const Duration(days: 1)).day;
+    return ((firstDayOfWeek + daysInMonth) / DateTime.daysPerWeek).ceil();
+  }
+}
+
 double _safeClamp(double value, double min, double max) {
   final resolvedMin = min <= max ? min : max;
   final resolvedMax = max >= min ? max : min;
@@ -89,28 +202,28 @@ DigitalClockLayoutSpec resolveDigitalClockLayout(Size size) {
         verticalSpacing: 10,
       );
     case ClockViewportClass.largePhone:
-      final timeFontSize = _safeClamp(shortest * 0.37, 72.0, 140.0);
+      final timeFontSize = _safeClamp(shortest * 0.4, 72.0, 230.0);
       return DigitalClockLayoutSpec(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-        maxContentWidth: _safeClamp(width - 48, 260.0, 620.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+        maxContentWidth: _safeClamp(width - 32, 260.0, 1100.0),
         timeFontSize: timeFontSize,
-        dateFontSize: _safeClamp(timeFontSize * 0.28, 22.0, 40.0),
+        dateFontSize: _safeClamp(timeFontSize * 0.28, 22.0, 52.0),
         verticalSpacing: 12,
       );
     case ClockViewportClass.tablet:
-      final timeFontSize = _safeClamp(shortest * 0.34, 96.0, 190.0);
+      final timeFontSize = _safeClamp(shortest * 0.4, 112.0, 230.0);
       return DigitalClockLayoutSpec(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
-        maxContentWidth: _safeClamp(width * 0.8, 480.0, 900.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+        maxContentWidth: _safeClamp(width - 32, 480.0, 1100.0),
         timeFontSize: timeFontSize,
         dateFontSize: _safeClamp(timeFontSize * 0.26, 28.0, 52.0),
         verticalSpacing: 16,
       );
     case ClockViewportClass.largeWindow:
-      final timeFontSize = _safeClamp(height * 0.26, 120.0, 240.0);
+      final timeFontSize = _safeClamp(height * 0.3, 132.0, 260.0);
       return DigitalClockLayoutSpec(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-        maxContentWidth: _safeClamp(width * 0.7, 640.0, 1100.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        maxContentWidth: _safeClamp(width - 40, 640.0, 1300.0),
         timeFontSize: timeFontSize,
         dateFontSize: _safeClamp(timeFontSize * 0.25, 32.0, 60.0),
         verticalSpacing: 18,
@@ -157,47 +270,50 @@ AnalogClockLayoutSpec resolveAnalogClockLayout(Size size) {
       );
     case ClockViewportClass.largePhone:
       final useHorizontal = isLandscape && width > height * 1.15;
-      final padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 24);
+      final padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 20);
+      final clockSize = useHorizontal
+          ? _safeClamp(height * 0.78, 260.0, width * 0.5)
+          : _safeClamp(width - padding.horizontal, 280.0, height * 0.5);
       return AnalogClockLayoutSpec(
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: useHorizontal
-            ? _safeClamp(height * 0.78, 260.0, width * 0.5)
-            : _safeClamp(width - padding.horizontal, 280.0, height * 0.5),
+        clockSize: clockSize,
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.36, 220.0, 380.0)
+            ? clockSize
             : _safeClamp(width - padding.horizontal, 240.0, 360.0),
-        spacing: 20,
+        spacing: 16,
         calendarDensity: CalendarDensity.regular,
       );
     case ClockViewportClass.tablet:
       final useHorizontal = isLandscape;
-      final padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 28);
+      final padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 20);
+      final clockSize = useHorizontal
+          ? _safeClamp(height * 0.8, 320.0, width * 0.52)
+          : _safeClamp(width - padding.horizontal, 320.0, height * 0.5);
       return AnalogClockLayoutSpec(
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: useHorizontal
-            ? _safeClamp(height * 0.8, 320.0, width * 0.52)
-            : _safeClamp(width - padding.horizontal, 320.0, height * 0.5),
+        clockSize: clockSize,
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.38, 260.0, width * 0.44)
+            ? clockSize
             : _safeClamp(width - padding.horizontal, 280.0, 420.0),
-        spacing: 24,
+        spacing: 16,
         calendarDensity: CalendarDensity.regular,
       );
     case ClockViewportClass.largeWindow:
       final useHorizontal = isLandscape;
-      final padding = const EdgeInsets.symmetric(horizontal: 36, vertical: 32);
+      final padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 24);
+      final clockSize = useHorizontal
+          ? _safeClamp(height * 0.82, 360.0, width * 0.5)
+          : _safeClamp(width - padding.horizontal, 360.0, height * 0.5);
       return AnalogClockLayoutSpec(
         direction: useHorizontal ? Axis.horizontal : Axis.vertical,
         padding: padding,
-        clockSize: useHorizontal
-            ? _safeClamp(height * 0.82, 360.0, width * 0.5)
-            : _safeClamp(width - padding.horizontal, 360.0, height * 0.5),
+        clockSize: clockSize,
         calendarWidth: useHorizontal
-            ? _safeClamp(width * 0.38, 320.0, width * 0.44)
+            ? clockSize
             : _safeClamp(width - padding.horizontal, 320.0, 460.0),
-        spacing: 28,
+        spacing: 16,
         calendarDensity: CalendarDensity.regular,
       );
   }

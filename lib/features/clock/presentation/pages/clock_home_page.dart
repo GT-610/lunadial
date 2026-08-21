@@ -16,17 +16,39 @@ import 'package:lunadial/features/settings/presentation/pages/settings_page.dart
 import 'package:lunadial/l10n/app_localizations.dart';
 
 class ClockHomePage extends StatefulWidget {
-  const ClockHomePage({super.key});
+  const ClockHomePage({super.key}) : _clockController = null;
+
+  @visibleForTesting
+  const ClockHomePage.forTesting({
+    super.key,
+    required ClockController clockController,
+  }) : _clockController = clockController;
+
+  final ClockController? _clockController;
 
   @override
   State<ClockHomePage> createState() => _ClockHomePageState();
 }
 
-class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
-  late final ClockController _clockController = ClockController();
+class _ClockHomePageState extends State<ClockHomePage>
+    with RouteAware, WidgetsBindingObserver {
+  late final ClockController _clockController =
+      widget._clockController ?? ClockController(startTicker: false);
+  late final bool _ownsClockController = widget._clockController == null;
   late final SettingsButtonController _settingsButtonController =
       SettingsButtonController();
   ModalRoute<void>? _route;
+  late bool _isAppInForeground =
+      WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+  var _isCurrentRoute = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _settingsButtonController.showTemporarily();
+    _syncClockTicker();
+  }
 
   @override
   void didChangeDependencies() {
@@ -42,25 +64,52 @@ class _ClockHomePageState extends State<ClockHomePage> with RouteAware {
     _route = route;
     if (_route != null) {
       appRouteObserver.subscribe(this, _route!);
+      _isCurrentRoute = _route!.isCurrent;
+      _syncClockTicker();
     }
   }
 
   @override
   void dispose() {
     appRouteObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
     _settingsButtonController.dispose();
-    _clockController.dispose();
+    if (_ownsClockController) {
+      _clockController.dispose();
+    }
     super.dispose();
   }
 
   @override
+  void didPush() {
+    _isCurrentRoute = true;
+    _syncClockTicker();
+  }
+
+  @override
   void didPushNext() {
-    _clockController.stopTicker();
+    _isCurrentRoute = false;
+    _syncClockTicker();
   }
 
   @override
   void didPopNext() {
-    _clockController.resumeTicker();
+    _isCurrentRoute = true;
+    _syncClockTicker();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _isAppInForeground = state == AppLifecycleState.resumed;
+    _syncClockTicker();
+  }
+
+  void _syncClockTicker() {
+    if (_isAppInForeground && _isCurrentRoute) {
+      _clockController.resumeTicker();
+    } else {
+      _clockController.stopTicker();
+    }
   }
 
   void _onScreenTap() {

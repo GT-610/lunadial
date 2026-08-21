@@ -39,9 +39,58 @@ void main() {
       expect(notifications, 0);
       controller.dispose();
     });
+
+    test('dispose stops an active ticker', () {
+      final controller = ClockController(startTicker: false);
+
+      controller.resumeTicker();
+      expect(controller.isTicking, isTrue);
+
+      controller.dispose();
+      expect(controller.isTicking, isFalse);
+    });
   });
 
   group('clock layout', () {
+    test('calendar metrics account for five- and six-row months', () {
+      final fiveRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.regular,
+        focusedDay: DateTime(2026, 1, 1),
+      );
+      final sixRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.regular,
+        focusedDay: DateTime(2026, 8, 1),
+      );
+
+      expect(fiveRowMonth.rowsNeeded, 5);
+      expect(sixRowMonth.rowsNeeded, 6);
+      expect(sixRowMonth.totalHeight, greaterThan(fiveRowMonth.totalHeight));
+      expect(
+        CalendarLayoutMetrics.widthForHeight(
+          height: sixRowMonth.totalHeight,
+          density: CalendarDensity.regular,
+          focusedDay: DateTime(2026, 8, 1),
+        ),
+        closeTo(350, 0.001),
+      );
+
+      final compactSixRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.compact,
+        focusedDay: DateTime(2026, 8, 1),
+      );
+      expect(
+        CalendarLayoutMetrics.widthForHeight(
+          height: compactSixRowMonth.totalHeight,
+          density: CalendarDensity.compact,
+          focusedDay: DateTime(2026, 8, 1),
+        ),
+        closeTo(350, 0.001),
+      );
+    });
+
     test('resolves viewport classes across common device sizes', () {
       expect(
         resolveClockViewportClass(const Size(320, 568)),
@@ -82,6 +131,14 @@ void main() {
         resolveAnalogClockLayout(const Size(1440, 900)).direction,
         Axis.horizontal,
       );
+    });
+
+    test('balances clock and calendar sizes on a wide landscape display', () {
+      final spec = resolveAnalogClockLayout(const Size(995, 574));
+
+      expect(spec.direction, Axis.horizontal);
+      expect(spec.calendarWidth, spec.clockSize);
+      expect(spec.padding.horizontal, 32);
     });
 
     test('compactPhone and phone use horizontal layout in landscape', () {
@@ -136,6 +193,8 @@ void main() {
         expect(compact.timeFontSize, lessThan(tablet.timeFontSize));
         expect(compact.dateFontSize, lessThan(compact.timeFontSize));
         expect(tablet.maxContentWidth, greaterThan(compact.maxContentWidth));
+        expect(tablet.padding.horizontal, 32);
+        expect(tablet.maxContentWidth, 992);
       },
     );
   });
