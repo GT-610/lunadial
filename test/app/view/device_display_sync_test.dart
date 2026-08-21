@@ -51,5 +51,32 @@ void main() {
         isTrue,
       );
     });
+
+    testWidgets('ignores Android display-sync platform failures', (
+      tester,
+    ) async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+            if (call.method == 'SystemChrome.setEnabledSystemUIMode' ||
+                call.method == 'SystemChrome.setPreferredOrientations') {
+              throw PlatformException(code: 'unavailable');
+            }
+            return null;
+          });
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const DeviceDisplaySync(
+            debugPlatformOverride: TargetPlatform.android,
+            child: SizedBox.shrink(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+    });
   });
 }

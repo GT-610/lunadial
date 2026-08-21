@@ -45,8 +45,12 @@ class _DeviceDisplaySyncState extends State<DeviceDisplaySync>
       return;
     }
 
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    try {
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    } catch (_) {
+      // Display preferences are best-effort and must not prevent app startup.
+    }
   }
 
   bool get _isAndroidDevice =>

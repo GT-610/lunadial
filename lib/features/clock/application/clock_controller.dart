@@ -23,6 +23,9 @@ class ClockController extends ChangeNotifier {
   DateTime get focusedDay => _focusedDay;
   DateTime? get selectedDay => _selectedDay;
 
+  @visibleForTesting
+  bool get isTicking => _timer != null;
+
   static Duration delayUntilNextSecond(DateTime now) {
     final nextSecond = DateTime(
       now.year,

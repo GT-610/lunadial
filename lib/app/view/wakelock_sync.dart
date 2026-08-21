@@ -38,7 +38,7 @@ class _WakelockSyncState extends State<WakelockSync> {
   void dispose() {
     _controller?.removeListener(_syncWakelock);
     if (_keepScreenOn == true) {
-      unawaited(WakelockPlus.disable());
+      unawaited(_setWakelockEnabled(false));
     }
     super.dispose();
   }
@@ -50,7 +50,19 @@ class _WakelockSyncState extends State<WakelockSync> {
     }
 
     _keepScreenOn = keepScreenOn;
-    unawaited(keepScreenOn ? WakelockPlus.enable() : WakelockPlus.disable());
+    unawaited(_setWakelockEnabled(keepScreenOn));
+  }
+
+  Future<void> _setWakelockEnabled(bool enabled) async {
+    try {
+      if (enabled) {
+        await WakelockPlus.enable();
+      } else {
+        await WakelockPlus.disable();
+      }
+    } catch (_) {
+      // Wakelock is a best-effort platform feature and must not disrupt clocks.
+    }
   }
 
   @override
