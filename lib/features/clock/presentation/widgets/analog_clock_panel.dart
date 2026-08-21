@@ -174,31 +174,32 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     return baseLayout;
   }
 
+  if (baseLayout.direction == Axis.horizontal) {
+    return _buildHorizontalLayout(
+      availableWidth: availableWidth,
+      availableHeight: availableHeight,
+      spacing: baseLayout.spacing,
+      density: baseLayout.calendarDensity,
+      preferredClockSize: baseLayout.clockSize,
+      focusedDay: focusedDay,
+      padding: baseLayout.padding,
+    );
+  }
+
   if (_fitsLayout(baseLayout, availableWidth, availableHeight, focusedDay)) {
     return baseLayout;
   }
 
-  final sameDirectionFallback = baseLayout.direction == Axis.horizontal
-      ? _buildHorizontalLayout(
-          availableWidth: availableWidth,
-          availableHeight: availableHeight,
-          spacing: baseLayout.spacing,
-          density: baseLayout.calendarDensity,
-          preferredClockSize: baseLayout.clockSize,
-          preferredCalendarWidth: baseLayout.calendarWidth,
-          focusedDay: focusedDay,
-          padding: baseLayout.padding,
-        )
-      : _buildVerticalLayout(
-          availableWidth: availableWidth,
-          availableHeight: availableHeight,
-          spacing: baseLayout.spacing,
-          density: baseLayout.calendarDensity,
-          preferredClockSize: baseLayout.clockSize,
-          preferredCalendarWidth: baseLayout.calendarWidth,
-          focusedDay: focusedDay,
-          padding: baseLayout.padding,
-        );
+  final sameDirectionFallback = _buildVerticalLayout(
+    availableWidth: availableWidth,
+    availableHeight: availableHeight,
+    spacing: baseLayout.spacing,
+    density: baseLayout.calendarDensity,
+    preferredClockSize: baseLayout.clockSize,
+    preferredCalendarWidth: baseLayout.calendarWidth,
+    focusedDay: focusedDay,
+    padding: baseLayout.padding,
+  );
   if (_fitsLayout(
     sameDirectionFallback,
     availableWidth,
@@ -208,27 +209,15 @@ AnalogClockLayoutSpec _resolveEffectiveLayout({
     return sameDirectionFallback;
   }
 
-  final oppositeDirectionFallback = baseLayout.direction == Axis.horizontal
-      ? _buildVerticalLayout(
-          availableWidth: availableWidth,
-          availableHeight: availableHeight,
-          spacing: baseLayout.spacing,
-          density: baseLayout.calendarDensity,
-          preferredClockSize: baseLayout.clockSize,
-          preferredCalendarWidth: baseLayout.calendarWidth,
-          focusedDay: focusedDay,
-          padding: baseLayout.padding,
-        )
-      : _buildHorizontalLayout(
-          availableWidth: availableWidth,
-          availableHeight: availableHeight,
-          spacing: baseLayout.spacing,
-          density: baseLayout.calendarDensity,
-          preferredClockSize: baseLayout.clockSize,
-          preferredCalendarWidth: baseLayout.calendarWidth,
-          focusedDay: focusedDay,
-          padding: baseLayout.padding,
-        );
+  final oppositeDirectionFallback = _buildHorizontalLayout(
+    availableWidth: availableWidth,
+    availableHeight: availableHeight,
+    spacing: baseLayout.spacing,
+    density: baseLayout.calendarDensity,
+    preferredClockSize: baseLayout.clockSize,
+    focusedDay: focusedDay,
+    padding: baseLayout.padding,
+  );
   if (_fitsLayout(
     oppositeDirectionFallback,
     availableWidth,
@@ -302,14 +291,17 @@ AnalogClockLayoutSpec _buildHorizontalLayout({
   required double spacing,
   required CalendarDensity density,
   required double preferredClockSize,
-  required double preferredCalendarWidth,
   required DateTime focusedDay,
   required EdgeInsets padding,
 }) {
   final baseSpacing = spacing.clamp(8.0, 24.0);
   final baseClockSize = _boundedSize(preferredClockSize, availableHeight);
   final baseCalendarWidth = _boundedSize(
-    preferredCalendarWidth,
+    _calendarWidthForHeight(
+      height: baseClockSize,
+      density: density,
+      focusedDay: focusedDay,
+    ),
     availableWidth - baseClockSize - baseSpacing,
   );
   final calendarHeight = _estimateCalendarHeight(
@@ -381,10 +373,27 @@ double _estimateCalendarHeight({
   required CalendarDensity density,
   required DateTime focusedDay,
 }) {
-  final cellSize = width / 7;
+  return width *
+      _calendarHeightFactor(density: density, focusedDay: focusedDay);
+}
+
+double _calendarWidthForHeight({
+  required double height,
+  required CalendarDensity density,
+  required DateTime focusedDay,
+}) {
+  final heightFactor = _calendarHeightFactor(
+    density: density,
+    focusedDay: focusedDay,
+  );
+  return heightFactor > 0 ? height / heightFactor : 0;
+}
+
+double _calendarHeightFactor({
+  required CalendarDensity density,
+  required DateTime focusedDay,
+}) {
   final showWeekdayHeader = density == CalendarDensity.regular;
-  final headerHeight = cellSize * (showWeekdayHeader ? 1.2 : 0.95);
-  final weekRowHeight = showWeekdayHeader ? cellSize * 0.9 : 0.0;
   final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
   final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
   final daysInMonth = DateUtils.getDaysInMonth(
@@ -393,7 +402,9 @@ double _estimateCalendarHeight({
   );
   final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
 
-  return headerHeight + weekRowHeight + cellSize * rowsNeeded;
+  final headerUnits = showWeekdayHeader ? 1.2 : 0.95;
+  final weekHeaderUnits = showWeekdayHeader ? 0.9 : 0.0;
+  return (headerUnits + weekHeaderUnits + rowsNeeded) / 7;
 }
 
 double _boundedSize(double preferred, double available) {

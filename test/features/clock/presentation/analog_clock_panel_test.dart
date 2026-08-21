@@ -13,9 +13,11 @@ void main() {
     required Size surfaceSize,
     bool showSecondHand = true,
     bool nightModeEnabled = false,
+    DateTime? focusedDay,
   }) async {
     await tester.binding.setSurfaceSize(surfaceSize);
     addTearDown(() => tester.binding.setSurfaceSize(null));
+    final resolvedFocusedDay = focusedDay ?? DateTime(2026, 1, 1);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -26,8 +28,8 @@ void main() {
             builder: (context, constraints) {
               return AnalogClockPanel(
                 currentTime: DateTime(2026, 1, 1, 12, 34, 56),
-                focusedDay: DateTime(2026, 1, 1),
-                selectedDay: DateTime(2026, 1, 1),
+                focusedDay: resolvedFocusedDay,
+                selectedDay: resolvedFocusedDay,
                 onDaySelected: (_) {},
                 onPageChanged: (_) {},
                 layout: resolveAnalogClockLayout(constraints.biggest),
@@ -51,15 +53,19 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('analog clock and calendar use matching widths in landscape', (
+  testWidgets('analog clock and calendar use matching heights in landscape', (
     tester,
   ) async {
-    await pumpAnalogClock(tester, surfaceSize: const Size(995, 574));
+    await pumpAnalogClock(
+      tester,
+      surfaceSize: const Size(995, 574),
+      focusedDay: DateTime(2026, 8, 21),
+    );
     await tester.pumpAndSettle();
 
     expect(
-      tester.getSize(find.byType(CalendarPanel)).width,
-      closeTo(tester.getSize(find.byType(AnalogClockFace)).width, 0.1),
+      tester.getSize(find.byType(CalendarPanel)).height,
+      closeTo(tester.getSize(find.byType(AnalogClockFace)).height, 0.1),
     );
   });
 
