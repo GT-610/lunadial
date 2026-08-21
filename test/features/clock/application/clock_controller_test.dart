@@ -42,6 +42,31 @@ void main() {
   });
 
   group('clock layout', () {
+    test('calendar metrics account for five- and six-row months', () {
+      final fiveRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.regular,
+        focusedDay: DateTime(2026, 1, 1),
+      );
+      final sixRowMonth = CalendarLayoutMetrics.forWidth(
+        width: 350,
+        density: CalendarDensity.regular,
+        focusedDay: DateTime(2026, 8, 1),
+      );
+
+      expect(fiveRowMonth.rowsNeeded, 5);
+      expect(sixRowMonth.rowsNeeded, 6);
+      expect(sixRowMonth.totalHeight, greaterThan(fiveRowMonth.totalHeight));
+      expect(
+        CalendarLayoutMetrics.widthForHeight(
+          height: sixRowMonth.totalHeight,
+          density: CalendarDensity.regular,
+          focusedDay: DateTime(2026, 8, 1),
+        ),
+        closeTo(350, 0.001),
+      );
+    });
+
     test('resolves viewport classes across common device sizes', () {
       expect(
         resolveClockViewportClass(const Size(320, 568)),

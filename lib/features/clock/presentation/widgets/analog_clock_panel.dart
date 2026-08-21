@@ -373,8 +373,11 @@ double _estimateCalendarHeight({
   required CalendarDensity density,
   required DateTime focusedDay,
 }) {
-  return width *
-      _calendarHeightFactor(density: density, focusedDay: focusedDay);
+  return CalendarLayoutMetrics.heightForWidth(
+    width: width,
+    density: density,
+    focusedDay: focusedDay,
+  );
 }
 
 double _calendarWidthForHeight({
@@ -382,29 +385,11 @@ double _calendarWidthForHeight({
   required CalendarDensity density,
   required DateTime focusedDay,
 }) {
-  final heightFactor = _calendarHeightFactor(
+  return CalendarLayoutMetrics.widthForHeight(
+    height: height,
     density: density,
     focusedDay: focusedDay,
   );
-  return heightFactor > 0 ? height / heightFactor : 0;
-}
-
-double _calendarHeightFactor({
-  required CalendarDensity density,
-  required DateTime focusedDay,
-}) {
-  final isRegularDensity = density == CalendarDensity.regular;
-  final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
-  final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
-  final daysInMonth = DateUtils.getDaysInMonth(
-    focusedDay.year,
-    focusedDay.month,
-  );
-  final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
-
-  final headerUnits = isRegularDensity ? 1.45 : 1.15;
-  final weekHeaderUnits = isRegularDensity ? 0.75 : 0.62;
-  return (headerUnits + weekHeaderUnits + rowsNeeded) / 7;
 }
 
 double _boundedSize(double preferred, double available) {

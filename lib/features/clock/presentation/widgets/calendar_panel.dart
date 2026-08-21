@@ -26,7 +26,6 @@ class CalendarPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translations = AppLocalizations.of(context)!;
-    final isRegularDensity = density == CalendarDensity.regular;
     final dayLabels = [
       translations.sunday,
       translations.monday,
@@ -49,16 +48,12 @@ class CalendarPanel extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
-        final cellSize = availableWidth / 7;
-        final headerHeight = cellSize * (isRegularDensity ? 1.45 : 1.15);
-        final weekRowHeight = cellSize * (isRegularDensity ? 0.75 : 0.62);
-        final fontSize = (cellSize * (isRegularDensity ? 0.35 : 0.3)).clamp(
-          9.0,
-          16.0,
+        final metrics = CalendarLayoutMetrics.forWidth(
+          width: availableWidth,
+          density: density,
+          focusedDay: focusedDay,
         );
-        final weekdayFontSize = (cellSize * 0.3).clamp(10.0, 18.0);
-        final iconSize = (headerHeight * 0.54).clamp(22.0, 38.0);
-        final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
+        final isRegularDensity = density == CalendarDensity.regular;
         final locale = Localizations.localeOf(context);
         final headerFormat = DateFormat(
           translations.calendarHeaderFormat,
@@ -71,20 +66,20 @@ class CalendarPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: headerHeight,
+              height: metrics.headerHeight,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
                     constraints: BoxConstraints.tightFor(
-                      width: headerHeight,
-                      height: headerHeight,
+                      width: metrics.headerHeight,
+                      height: metrics.headerHeight,
                     ),
                     visualDensity: isRegularDensity
                         ? VisualDensity.standard
                         : VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    iconSize: iconSize,
+                    iconSize: metrics.navigationIconSize,
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       onPageChanged(
@@ -98,7 +93,7 @@ class CalendarPanel extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: headerHeight * 0.36,
+                        fontSize: metrics.headerHeight * 0.36,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -106,14 +101,14 @@ class CalendarPanel extends StatelessWidget {
                   ),
                   IconButton(
                     constraints: BoxConstraints.tightFor(
-                      width: headerHeight,
-                      height: headerHeight,
+                      width: metrics.headerHeight,
+                      height: metrics.headerHeight,
                     ),
                     visualDensity: isRegularDensity
                         ? VisualDensity.standard
                         : VisualDensity.compact,
                     padding: EdgeInsets.zero,
-                    iconSize: iconSize,
+                    iconSize: metrics.navigationIconSize,
                     icon: const Icon(Icons.arrow_forward),
                     onPressed: () {
                       onPageChanged(
@@ -125,7 +120,7 @@ class CalendarPanel extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: weekRowHeight,
+              height: metrics.weekdayHeaderHeight,
               child: Row(
                 children: List.generate(dayLabels.length, (index) {
                   return Expanded(
@@ -133,7 +128,7 @@ class CalendarPanel extends StatelessWidget {
                       child: Text(
                         dayLabels[index],
                         style: TextStyle(
-                          fontSize: weekdayFontSize,
+                          fontSize: metrics.weekdayFontSize,
                           fontWeight: FontWeight.bold,
                           color: index == 0 || index == 6
                               ? weekdayHeaderColor
@@ -146,18 +141,20 @@ class CalendarPanel extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: cellSize * rowsNeeded,
+              height: metrics.cellSize * metrics.rowsNeeded,
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
-                  mainAxisSpacing: isRegularDensity ? cellSize * 0.01 : 2,
+                  mainAxisSpacing: isRegularDensity
+                      ? metrics.cellSize * 0.01
+                      : 2,
                   crossAxisSpacing: isRegularDensity
                       ? availableWidth * 0.01
                       : 2,
                   childAspectRatio: 1,
                 ),
-                itemCount: rowsNeeded * 7,
+                itemCount: metrics.rowsNeeded * 7,
                 itemBuilder: (context, index) {
                   final dayNumber = index - firstDayOfWeek + 1;
                   if (dayNumber < 1 || dayNumber > daysInMonth) {
@@ -184,12 +181,14 @@ class CalendarPanel extends StatelessWidget {
                             : isSelected
                             ? theme.colorScheme.secondary
                             : Colors.transparent,
-                        borderRadius: BorderRadius.circular(cellSize * 0.12),
+                        borderRadius: BorderRadius.circular(
+                          metrics.cellSize * 0.12,
+                        ),
                       ),
                       child: Text(
                         dayFormat.format(day),
                         style: TextStyle(
-                          fontSize: fontSize,
+                          fontSize: metrics.dayFontSize,
                           color: isToday
                               ? theme.colorScheme.onPrimary
                               : isSelected

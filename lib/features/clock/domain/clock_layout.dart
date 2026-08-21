@@ -4,6 +4,89 @@ enum ClockViewportClass { compactPhone, phone, largePhone, tablet, largeWindow }
 
 enum CalendarDensity { compact, regular }
 
+@immutable
+class CalendarLayoutMetrics {
+  const CalendarLayoutMetrics._({
+    required this.cellSize,
+    required this.headerHeight,
+    required this.weekdayHeaderHeight,
+    required this.dayFontSize,
+    required this.weekdayFontSize,
+    required this.navigationIconSize,
+    required this.rowsNeeded,
+  });
+
+  factory CalendarLayoutMetrics.forWidth({
+    required double width,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    final cellSize = width / DateTime.daysPerWeek;
+    final isRegularDensity = density == CalendarDensity.regular;
+    final headerHeight = cellSize * (isRegularDensity ? 1.45 : 1.15);
+    final weekdayHeaderHeight = cellSize * (isRegularDensity ? 0.75 : 0.62);
+
+    return CalendarLayoutMetrics._(
+      cellSize: cellSize,
+      headerHeight: headerHeight,
+      weekdayHeaderHeight: weekdayHeaderHeight,
+      dayFontSize: (cellSize * (isRegularDensity ? 0.35 : 0.3)).clamp(
+        9.0,
+        16.0,
+      ),
+      weekdayFontSize: (cellSize * 0.3).clamp(10.0, 18.0),
+      navigationIconSize: (headerHeight * 0.54).clamp(22.0, 38.0),
+      rowsNeeded: _rowsNeeded(focusedDay),
+    );
+  }
+
+  final double cellSize;
+  final double headerHeight;
+  final double weekdayHeaderHeight;
+  final double dayFontSize;
+  final double weekdayFontSize;
+  final double navigationIconSize;
+  final int rowsNeeded;
+
+  double get totalHeight =>
+      headerHeight + weekdayHeaderHeight + cellSize * rowsNeeded;
+
+  static double heightForWidth({
+    required double width,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    return CalendarLayoutMetrics.forWidth(
+      width: width,
+      density: density,
+      focusedDay: focusedDay,
+    ).totalHeight;
+  }
+
+  static double widthForHeight({
+    required double height,
+    required CalendarDensity density,
+    required DateTime focusedDay,
+  }) {
+    final metrics = CalendarLayoutMetrics.forWidth(
+      width: DateTime.daysPerWeek.toDouble(),
+      density: density,
+      focusedDay: focusedDay,
+    );
+    return metrics.totalHeight > 0 ? height / metrics.totalHeight * 7 : 0;
+  }
+
+  static int _rowsNeeded(DateTime focusedDay) {
+    final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
+    final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
+    final daysInMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month + 1,
+    ).subtract(const Duration(days: 1)).day;
+    return ((firstDayOfWeek + daysInMonth) / DateTime.daysPerWeek).ceil();
+  }
+}
+
 double _safeClamp(double value, double min, double max) {
   final resolvedMin = min <= max ? min : max;
   final resolvedMax = max >= min ? max : min;
