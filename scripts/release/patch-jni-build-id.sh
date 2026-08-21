@@ -31,13 +31,13 @@ if (( ${#cmake_files[@]} == 0 )); then
 fi
 
 for cmake_file in "${cmake_files[@]}"; do
-  if grep -Fq -- '-Wl,--build-id=none' "$cmake_file"; then
-    continue
-  fi
-
-  if ! grep -Fq -- '"-Wl,-z,max-page-size=16384"' "$cmake_file"; then
+  if ! grep -Fq -- 'max-page-size=16384' "$cmake_file"; then
     echo "The expected Android linker option was not found in $cmake_file." >&2
     exit 1
+  fi
+
+  if grep -Fq -- '-Wl,--build-id=none' "$cmake_file"; then
+    continue
   fi
 
   sed -i \
