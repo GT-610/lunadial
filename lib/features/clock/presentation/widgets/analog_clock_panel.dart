@@ -393,7 +393,7 @@ double _calendarHeightFactor({
   required CalendarDensity density,
   required DateTime focusedDay,
 }) {
-  final showWeekdayHeader = density == CalendarDensity.regular;
+  final isRegularDensity = density == CalendarDensity.regular;
   final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
   final firstDayOfWeek = firstDayOfMonth.weekday % DateTime.daysPerWeek;
   final daysInMonth = DateUtils.getDaysInMonth(
@@ -402,8 +402,8 @@ double _calendarHeightFactor({
   );
   final rowsNeeded = ((firstDayOfWeek + daysInMonth) / 7).ceil();
 
-  final headerUnits = showWeekdayHeader ? 1.2 : 0.95;
-  final weekHeaderUnits = showWeekdayHeader ? 0.9 : 0.0;
+  final headerUnits = isRegularDensity ? 1.45 : 1.15;
+  final weekHeaderUnits = isRegularDensity ? 0.75 : 0.62;
   return (headerUnits + weekHeaderUnits + rowsNeeded) / 7;
 }
 
