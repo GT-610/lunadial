@@ -111,7 +111,6 @@ jobs:
               export GRADLE_USER_HOME="$RUNNER_TEMP/lunadial-gradle-$build_name"
               flutter clean
               flutter pub get --enforce-lockfile
-              bash scripts/release/patch-jni-build-id.sh
               flutter build apk --release --split-per-abi
               for abi in "${abis[@]}"; do
                 cp "build/app/outputs/flutter-apk/app-$abi-release.apk" \

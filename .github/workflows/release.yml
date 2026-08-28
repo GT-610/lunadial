@@ -26,7 +26,7 @@ jobs:
           java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.0
+          flutter-version: '3.47.0'
           cache: true
       - name: Restore Android signing files
         shell: bash
@@ -51,8 +51,6 @@ jobs:
           } > android/key.properties
       - name: Install locked Android dependencies
         run: flutter pub get --enforce-lockfile
-      - name: Disable non-deterministic JNI build ID
-        run: bash scripts/release/patch-jni-build-id.sh
       - name: Build split Android APKs
         run: flutter build apk --release --split-per-abi
       - name: Build Android App Bundle
@@ -82,7 +80,7 @@ jobs:
           persist-credentials: false
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.47.0
+          flutter-version: '3.47.0'
           cache: true
       - run: flutter pub get --enforce-lockfile
       - name: Build Windows application
