@@ -24,10 +24,19 @@ jobs:
           distribution: temurin
           java-version: '25'
 
-      - uses: android-actions/setup-android@v3
-
       - name: Install SDK components
-        run: sdkmanager "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
+        run: |
+          set -euo pipefail
+          # GitHub runners already ship an SDK; the setup-android action still
+          # tries to install the removed "tools" package, so call sdkmanager
+          # directly and only add what this project needs.
+          if command -v sdkmanager >/dev/null 2>&1; then
+            SM=sdkmanager
+          else
+            SM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          yes | "$SM" --licenses >/dev/null 2>&1 || true
+          "$SM" "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
 
       - uses: gradle/actions/setup-gradle@v4
 
