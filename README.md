@@ -17,7 +17,8 @@ LunaDial targets Android only and is written in Kotlin with Jetpack Compose, so 
 
 ## Download
 
-- Android: download `app-release.apk` from the [latest release](https://github.com/GT-610/lunadial/releases/latest). A single APK works on every supported device and architecture.
+- GitHub: download `app-release.apk` from the [latest release](https://github.com/GT-610/lunadial/releases/latest). A single APK works on every supported device and architecture.
+- F-Droid: the build recipe is prepared in [fdroiddata/](fdroiddata/), submission is in progress; it will appear as `com.gt610.lunadial` once reviewed.
 
 ## Features
 
@@ -38,6 +39,19 @@ LunaDial does not need network access and does not collect usage data. Your pref
 | Platform | Status |
 |---|---|
 | Android | Primary and only target. Android 7.0 (API 24) or newer |
+
+## Repository layout
+
+| Path | Purpose |
+|---|---|
+| `app/` | The only module: Kotlin sources under `src/main/kotlin`, resources under `src/main/res`, unit tests under `src/test` |
+| `gradle/libs.versions.toml` | Single source of truth for plugin and dependency versions |
+| `.github/workflows/` | CI (build + lint on pull requests) and release (signed APKs and App Bundle on tags) |
+| `fastlane/metadata/android/` | Store listing text, screenshots and per-version changelogs; F-Droid reads this directory |
+| `artwork/` | Icon sources. Not part of the build; the rendered densities live in `app/src/main/res/mipmap-*` |
+| `fdroiddata/` | Draft of the F-Droid build recipe, mirroring its path in the [fdroiddata](https://gitlab.com/fdroid/fdroiddata) repository |
+
+Nothing generated is committed: `build/`, `.gradle/`, `.kotlin/`, `local.properties` and signing material are ignored.
 
 ## Building from source
 

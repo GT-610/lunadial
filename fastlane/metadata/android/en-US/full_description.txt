@@ -1,13 +1,15 @@
-LunaDial is a free and open-source clock that turns spare devices into easy-to-read, customizable desk clocks.
+LunaDial is a free and open-source clock that turns a spare phone or tablet into an easy-to-read desk clock.
 
 Features:
 
-- Digital and analog clocks with an optional calendar
-- 12-hour or 24-hour time
-- Optional seconds, second hand, and leading zero
-- Light, dark, or system appearance, with system, Material You, or custom accent colors
-- Night display mode that can be enabled manually, scheduled, or matched to the system theme
-- Subtle periodic movement to help reduce OLED burn-in during long-running night display
-- Always-on display support and immersive mode on Android
+- Digital and analog faces, with a calendar beside the analog dial
+- 12-hour or 24-hour time, optional seconds, second hand and leading zero
+- Light, dark or system appearance, with system, Material You or custom accent colours
+- Night display that is always on, follows a schedule, or follows the system dark theme
+- Subtle periodic movement during night display to reduce OLED burn-in
+- Keeps the screen awake and hides the system bars for desk use
+- English and Simplified Chinese
 
-LunaDial needs no network access and collects no usage data. All settings are stored locally.
+LunaDial needs no network access, asks for no permissions and collects no usage data. All settings stay on the device.
+
+It is a native Android app written in Kotlin with Jetpack Compose, so a single APK of about 1.8 MB covers every device running Android 7.0 or newer.

@@ -1,0 +1,6 @@
+LunaDial is now a native Kotlin app, so the download drops from 18 MB to about 1.8 MB.
+
+- Analog face rebuilt after a standby-clock reference: tick ring, twelve numerals, accent second hand
+- Calendar shows the current month with today highlighted in the accent colour
+- Night display stays readable in dark themes
+- One APK for every device; Android 7.0 or newer
