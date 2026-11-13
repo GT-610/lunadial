@@ -16,10 +16,10 @@ Repo: https://github.com/GT-610/lunadial.git
 Builds:
   - versionName: 0.5.0
     versionCode: 4
-    commit: 906daead60a05ffad900f8e52d14480479f07c2d
+    commit: c367d3cee1dcced7484c2ca71bc8e7d61681e057
     gradle:
       - yes
-    output: app/build/outputs/apk/release/app-release.apk
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
 
 AllowedAPKSigningKeys: f0bb1f0c9c93188df103523dc936b0202d6a956d4de18c76bfde060dc1b415e0
 
