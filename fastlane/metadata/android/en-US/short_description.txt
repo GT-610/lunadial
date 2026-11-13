@@ -1,1 +1,1 @@
-A free, cross-platform, elegant, customizable clock
+A free, elegant and customizable clock for Android

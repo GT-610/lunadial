@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">LunaDial</string>
+  <string name="open_settings">打开设置</string>
+  <string name="settings">设置</string>
+  <string name="back">返回</string>
+  <string name="close">关闭</string>
+
+  <string name="appearance">外观</string>
+  <string name="theme_color">主题颜色</string>
+  <string name="select_theme_color">选择主题颜色</string>
+  <string name="use_dynamic_color">使用系统配色</string>
+  <string name="use_dynamic_color_description">系统支持 Material You 或强调色时使用系统配色，否则使用自定义颜色</string>
+  <string name="theme_mode">主题模式</string>
+  <string name="system">跟随系统</string>
+  <string name="light">浅色</string>
+  <string name="dark">深色</string>
+  <string name="oled">纯黑（OLED）</string>
+  <string name="language">语言</string>
+  <string name="english">English</string>
+  <string name="chinese">简体中文</string>
+
+  <string name="display">显示</string>
+  <string name="clock_display_mode">时钟显示方式</string>
+  <string name="digital_clock">数字时钟</string>
+  <string name="analog_clock">模拟时钟</string>
+  <string name="time_format">时间格式</string>
+  <string name="follow_system">跟随系统</string>
+  <string name="twelve_hour">12 小时制</string>
+  <string name="twenty_four_hour">24 小时制</string>
+  <string name="show_seconds">显示秒</string>
+  <string name="leading_zero">小时补零</string>
+  <string name="leading_zero_description">需要时在数字时钟的小时前补零</string>
+  <string name="keep_screen_on">保持屏幕常亮</string>
+
+  <string name="night_and_burn_in">夜间与防烧屏</string>
+  <string name="night_display_mode">夜间显示模式</string>
+  <string name="night_display_mode_description">选择 LunaDial 何时切换到更柔和、干扰更少的夜间显示</string>
+  <string name="night_mode_off">关闭</string>
+  <string name="night_mode_on">始终开启</string>
+  <string name="night_mode_scheduled">定时</string>
+  <string name="night_mode_follow_system">跟随系统深色模式</string>
+  <string name="night_mode_off_description">保持常规的显示样式</string>
+  <string name="night_mode_on_description">长时间显示时钟时始终使用更柔和的深色表现</string>
+  <string name="night_mode_scheduled_description">按你设定的时间段在日间与夜间显示之间自动切换</string>
+  <string name="night_mode_follow_system_description">跟随系统的浅色与深色外观</string>
+  <string name="night_mode_start_time">夜间模式开始时间</string>
+  <string name="night_mode_end_time">夜间模式结束时间</string>
+  <string name="burn_in_protection">防烧屏</string>
+  <string name="burn_in_protection_description">夜间显示期间进行细微的周期性位移，降低长期静态画面残留的风险</string>
+
+  <string name="information">信息</string>
+  <string name="version">版本</string>
+  <string name="license">许可证</string>
+  <string name="license_body">LunaDial 是自由软件：你可以依据自由软件基金会发布的 GNU 通用公共许可证（第 3 版或更新版本）条款重新发布或修改它。\n\nLunaDial 的分发是希望它有用，但不提供任何担保，包括适销性或特定用途适用性的默示担保。详情请参阅 GNU 通用公共许可证。</string>
+
+  <string name="digital_clock_semantics">显示当前时间的数字时钟</string>
+  <string name="analog_clock_semantics">带日历的模拟时钟</string>
+
+  <string name="date_format">yyyy年M月d日 EEEE</string>
+</resources>

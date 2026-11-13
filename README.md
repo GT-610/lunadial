@@ -1,6 +1,6 @@
 # LunaDial
 
-LunaDial is a free, open-source clock app for phones, tablets, spare displays, and desktop computers. It is easy to read, uses few resources, and is comfortable to leave running.
+LunaDial is a free, open-source clock app for Android phones and tablets. It is easy to read, uses few resources, and is comfortable to leave running — on a desk, a nightstand, or a spare display.
 
 <table>
   <tr>
@@ -9,15 +9,14 @@ LunaDial is a free, open-source clock app for phones, tablets, spare displays, a
   </tr>
   <tr>
     <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Clock customization settings" /></td>
-    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Night display settings" /></td>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Night display in pure black" /></td>
   </tr>
 </table>
 
 ## Download
 
-- Android: Download the APK for your device from the [latest release](https://github.com/GT-610/lunadial/releases/latest). Most current phones use the `arm64-v8a` build.
-- Windows: Download and extract `lunadial-windows-x64.zip` from the [latest release](https://github.com/GT-610/lunadial/releases/latest), then run `lunadial.exe`.
-- Linux and macOS: Build LunaDial from source. Prebuilt packages are not currently available for these platforms.
+- GitHub: Download `app-release.apk` from the [latest release](https://github.com/GT-610/lunadial/releases/latest) for your artitecture.
+- F-Droid: Submission is in progress.
 
 ## Features
 
@@ -25,7 +24,7 @@ LunaDial is a free, open-source clock app for phones, tablets, spare displays, a
 - 12- or 24-hour time, seconds, a second hand, and leading zeros
 - Light, dark, or system appearance, with system, Material You, or custom accent colors
 - A dimmer night display that you can enable manually, schedule, or follow the system theme
-- An option to keep the screen awake and hide Android system controls
+- An option to keep the screen awake
 - Subtle periodic movement during extended night display to reduce OLED burn-in risk
 - English and Simplified Chinese
 
@@ -33,16 +32,35 @@ LunaDial is a free, open-source clock app for phones, tablets, spare displays, a
 
 LunaDial does not need network access and does not collect usage data. Your preferences stay on your device.
 
-## Supported platforms
+## Building from source
+You can use Android Studio, or:
 
-| Platform | Status |
+| Component | Version |
 |---|---|
-| Android | Primary target. Android 6.0 (API 23) or newer |
-| Windows | Supported. Packages are published with GitHub releases |
-| Linux | Supported through source builds. A packaged release is planned |
-| macOS | Best-effort support through source builds |
-| Web | Available to build, but not a primary target |
-| iOS | Not currently supported |
+| JDK | Temurin 25 |
+| Gradle | 9.7.0 (via the wrapper) |
+| Android Gradle plugin | 9.3.1 |
+| Kotlin | 2.4.21 |
+| compileSdk / targetSdk / minSdk | 37 / 36 / 24 |
+
+```bash
+export JAVA_HOME=/path/to/java/home
+export ANDROID_HOME=/path/to/android-sdk            # needs platforms;android-37.0 and build-tools;37.0.0
+
+./gradlew :app:assembleDebug                        # debug APK
+./gradlew :app:assembleRelease :app:bundleRelease    # release APKs + App Bundle
+```
+
+Release builds are signed when `key.properties` exists in the repository root:
+
+```properties
+storeFile=lunadial-release.jks
+storePassword=…
+keyAlias=…
+keyPassword=…
+```
+
+Otherwise the release build produces unsigned APKs.
 
 ## Help and contributing
 
@@ -50,4 +68,4 @@ Found a problem or have an idea? Please [open an issue](https://github.com/GT-61
 
 ## License
 
-LunaDial is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+[GNU General Public License v3.0](LICENSE)

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">LunaDial</string>
+  <string name="open_settings">Open settings</string>
+  <string name="settings">Settings</string>
+  <string name="back">Back</string>
+  <string name="close">Close</string>
+
+  <string name="appearance">Appearance</string>
+  <string name="theme_color">Theme Color</string>
+  <string name="select_theme_color">Select Theme Color</string>
+  <string name="use_dynamic_color">Use System Colors</string>
+  <string name="use_dynamic_color_description">Use Material You or the system accent color when available; otherwise use your custom color</string>
+  <string name="theme_mode">Theme Mode</string>
+  <string name="system">System</string>
+  <string name="light">Light</string>
+  <string name="dark">Dark</string>
+  <string name="oled">Pure Black (OLED)</string>
+  <string name="language">Language</string>
+  <string name="english">English</string>
+  <string name="chinese">Simplified Chinese</string>
+
+  <string name="display">Display</string>
+  <string name="clock_display_mode">Clock Display Mode</string>
+  <string name="digital_clock">Digital Clock</string>
+  <string name="analog_clock">Analog Clock</string>
+  <string name="time_format">Time Format</string>
+  <string name="follow_system">Follow System</string>
+  <string name="twelve_hour">12-hour</string>
+  <string name="twenty_four_hour">24-hour</string>
+  <string name="show_seconds">Show Seconds</string>
+  <string name="leading_zero">Leading Zero for Hour</string>
+  <string name="leading_zero_description">Pad the digital clock hour with a leading zero when needed</string>
+  <string name="keep_screen_on">Keep Screen On</string>
+
+  <string name="night_and_burn_in">Night &amp; Burn-In</string>
+  <string name="night_display_mode">Night Display Mode</string>
+  <string name="night_display_mode_description">Choose when LunaDial switches to its calmer low-distraction night presentation</string>
+  <string name="night_mode_off">Off</string>
+  <string name="night_mode_on">Always On</string>
+  <string name="night_mode_scheduled">Scheduled</string>
+  <string name="night_mode_follow_system">Follow System Dark Mode</string>
+  <string name="night_mode_off_description">Keep LunaDial in its regular display style</string>
+  <string name="night_mode_on_description">Always use the calmer dark presentation for long-running clock display</string>
+  <string name="night_mode_scheduled_description">Switch automatically between day and night display using your chosen hours</string>
+  <string name="night_mode_follow_system_description">Match the system light and dark appearance when the platform provides it</string>
+  <string name="night_mode_start_time">Night Mode Start Time</string>
+  <string name="night_mode_end_time">Night Mode End Time</string>
+  <string name="burn_in_protection">Burn-In Protection</string>
+  <string name="burn_in_protection_description">Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention</string>
+
+  <string name="information">Information</string>
+  <string name="version">Version</string>
+  <string name="license">License</string>
+  <string name="license_body">LunaDial is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nLunaDial is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
+
+  <string name="digital_clock_semantics">Digital clock showing current time</string>
+  <string name="analog_clock_semantics">Analog clock with calendar</string>
+
+  <string name="date_format">EEEE, MMMM d, yyyy</string>
+</resources>
