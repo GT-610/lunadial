@@ -15,19 +15,26 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -42,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +70,8 @@ import kotlinx.coroutines.delay
 import java.util.Calendar
 
 private const val CONTROLS_VISIBLE_MILLIS = 5_000L
+private val CONTROLS_BAR_HEIGHT = 56.dp
+private val CONTENT_MARGIN = 16.dp
 
 /** The home screen: clock face, optional calendar, and auto-hiding controls. */
 @Composable
@@ -104,6 +114,17 @@ fun ClockScreen(
 
   val background = if (nightActive) Color.Black else MaterialTheme.colorScheme.background
 
+  // Respect display cutouts as well as the system bars: in landscape the punch
+  // hole sits on the short edge and would otherwise eat into the dial.
+  val layoutDirection = LocalLayoutDirection.current
+  val safeInsets = WindowInsets.safeDrawing.asPaddingValues()
+  val contentPadding = PaddingValues(
+    start = safeInsets.calculateStartPadding(layoutDirection) + CONTENT_MARGIN,
+    end = safeInsets.calculateEndPadding(layoutDirection) + CONTENT_MARGIN,
+    top = safeInsets.calculateTopPadding() + CONTROLS_BAR_HEIGHT + CONTENT_MARGIN,
+    bottom = safeInsets.calculateBottomPadding() + CONTENT_MARGIN,
+  )
+
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -121,15 +142,32 @@ fun ClockScreen(
         ) { controlsVisible = !controlsVisible },
     )
 
-    BurnInProtection(
-      enabled = nightActive && settings.burnInProtection,
-      modifier = Modifier.fillMaxSize(),
-    ) {
-      ClockContent(
-        now = now,
-        settings = settings,
-        nightActive = nightActive,
+    // The night presentation is a dark surface no matter what the app theme
+    // is, so the clock content gets its own dark scheme. Reusing the light
+    // scheme here would paint near-black text on a black background.
+    val clockScheme = if (nightActive) {
+      darkColorScheme(
+        primary = MaterialTheme.colorScheme.primary,
+        secondary = MaterialTheme.colorScheme.secondary,
+        tertiary = MaterialTheme.colorScheme.tertiary,
       )
+    } else {
+      MaterialTheme.colorScheme
+    }
+
+    MaterialTheme(colorScheme = clockScheme) {
+      BurnInProtection(
+        enabled = nightActive && settings.burnInProtection,
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(contentPadding),
+      ) {
+        ClockContent(
+          now = now,
+          settings = settings,
+          nightActive = nightActive,
+        )
+      }
     }
 
     AnimatedVisibility(
@@ -139,7 +177,7 @@ fun ClockScreen(
       modifier = Modifier
         .align(Alignment.TopCenter)
         .fillMaxWidth()
-        .padding(WindowInsets.systemBars.asPaddingValues())
+        .padding(safeInsets)
         .padding(horizontal = 20.dp, vertical = 12.dp),
     ) {
       Row(
@@ -211,9 +249,7 @@ private fun AnalogClockWithCalendar(
   BoxWithConstraints(
     Modifier
       .fillMaxSize()
-      .semantics { contentDescription = semanticsLabel }
-      // Leave the top strip free for the auto-hiding title bar.
-      .padding(start = 24.dp, end = 24.dp, top = 72.dp, bottom = 24.dp),
+      .semantics { contentDescription = semanticsLabel },
   ) {
     val availableWidth = maxWidth
     val availableHeight = maxHeight
@@ -226,35 +262,38 @@ private fun AnalogClockWithCalendar(
     }
 
     if (isLandscape) {
-      // The calendar is roughly 1.45x as tall as it is wide, so cap its width by
-      // the available height to keep every row on screen.
-      val calendarWidth = minOf(availableWidth * 0.46f, availableHeight * 0.68f)
+      // Clock and calendar are laid out as one centred pair, sized from the
+      // shorter side so neither runs into the cutout or the edges.
+      val gap = 32.dp
+      val usableWidth = availableWidth - gap
+      val clockSize = minOf(availableHeight * 0.92f, usableWidth * 0.62f)
+      val calendarWidth = minOf(usableWidth * 0.38f, availableHeight * 0.75f)
       Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalArrangement = Arrangement.Center,
       ) {
         AnalogClock(
           now = now,
           showSecondHand = settings.showSeconds,
           nightMode = nightActive,
-          modifier = Modifier.size(minOf(availableHeight, availableWidth * 0.45f)),
+          modifier = Modifier.size(clockSize),
         )
-        Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-          CalendarPanel(
-            focusedMonth = focusedMonth,
-            selectedDay = selectedDay,
-            today = now,
-            nightMode = nightActive,
-            onMonthChange = monthChanger,
-            onDaySelected = daySelector,
-            modifier = Modifier.width(calendarWidth),
-          )
-        }
+        Spacer(Modifier.width(gap))
+        CalendarPanel(
+          focusedMonth = focusedMonth,
+          selectedDay = selectedDay,
+          today = now,
+          nightMode = nightActive,
+          onMonthChange = monthChanger,
+          onDaySelected = daySelector,
+          modifier = Modifier.width(calendarWidth),
+        )
       }
     } else {
+      val gap = 20.dp
       val clockSize = minOf(availableWidth, availableHeight * 0.52f)
-      val calendarWidth = minOf(availableWidth, availableHeight * 0.33f)
+      val calendarWidth = minOf(availableWidth, availableHeight * 0.32f)
       Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -266,17 +305,16 @@ private fun AnalogClockWithCalendar(
           nightMode = nightActive,
           modifier = Modifier.size(clockSize),
         )
-        Column(Modifier.padding(top = 20.dp)) {
-          CalendarPanel(
-            focusedMonth = focusedMonth,
-            selectedDay = selectedDay,
-            today = now,
-            nightMode = nightActive,
-            onMonthChange = monthChanger,
-            onDaySelected = daySelector,
-            modifier = Modifier.width(calendarWidth),
-          )
-        }
+        Spacer(Modifier.height(gap))
+        CalendarPanel(
+          focusedMonth = focusedMonth,
+          selectedDay = selectedDay,
+          today = now,
+          nightMode = nightActive,
+          onMonthChange = monthChanger,
+          onDaySelected = daySelector,
+          modifier = Modifier.width(calendarWidth),
+        )
       }
     }
   }
