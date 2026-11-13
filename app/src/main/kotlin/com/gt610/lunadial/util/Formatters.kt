@@ -59,6 +59,18 @@ fun formatMinutesOfDay(minutesOfDay: Int, use24Hour: Boolean, locale: Locale): S
   return formatWithPattern(date, pattern, locale)
 }
 
+/** Single-letter weekday labels ordered Sunday first, for the compact grid. */
+fun weekdayNarrowLabels(locale: Locale): List<String> {
+  val format = SimpleDateFormat("EEEEE", locale)
+  val calendar = Calendar.getInstance()
+  calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+  return (0 until 7).map {
+    val label = format.format(calendar.time)
+    calendar.add(Calendar.DAY_OF_MONTH, 1)
+    label
+  }
+}
+
 /** Weekday abbreviations ordered Sunday first, matching the calendar grid. */
 fun weekdayLabels(locale: Locale): List<String> {
   val format = SimpleDateFormat("EEE", locale)

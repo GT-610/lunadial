@@ -54,11 +54,8 @@
   <string name="license">License</string>
   <string name="license_body">LunaDial is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nLunaDial is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
 
-  <string name="previous_month">Previous month</string>
-  <string name="next_month">Next month</string>
   <string name="digital_clock_semantics">Digital clock showing current time</string>
   <string name="analog_clock_semantics">Analog clock with calendar</string>
 
   <string name="date_format">EEEE, MMMM d, yyyy</string>
-  <string name="calendar_header_format">MMMM yyyy</string>
 </resources>

@@ -54,11 +54,8 @@
   <string name="license">许可证</string>
   <string name="license_body">LunaDial 是自由软件：你可以依据自由软件基金会发布的 GNU 通用公共许可证（第 3 版或更新版本）条款重新发布或修改它。\n\nLunaDial 的分发是希望它有用，但不提供任何担保，包括适销性或特定用途适用性的默示担保。详情请参阅 GNU 通用公共许可证。</string>
 
-  <string name="previous_month">上个月</string>
-  <string name="next_month">下个月</string>
   <string name="digital_clock_semantics">显示当前时间的数字时钟</string>
   <string name="analog_clock_semantics">带日历的模拟时钟</string>
 
   <string name="date_format">yyyy年M月d日 EEEE</string>
-  <string name="calendar_header_format">yyyy年M月</string>
 </resources>

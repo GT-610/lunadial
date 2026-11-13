@@ -73,6 +73,9 @@ private const val CONTROLS_VISIBLE_MILLIS = 5_000L
 private val CONTROLS_BAR_HEIGHT = 56.dp
 private val CONTENT_MARGIN = 16.dp
 
+/** Calendar height divided by its width, used to fit it into the free space. */
+private const val CALENDAR_ASPECT = 0.91f
+
 /** The home screen: clock face, optional calendar, and auto-hiding controls. */
 @Composable
 fun ClockScreen(
@@ -121,7 +124,7 @@ fun ClockScreen(
   val contentPadding = PaddingValues(
     start = safeInsets.calculateStartPadding(layoutDirection) + CONTENT_MARGIN,
     end = safeInsets.calculateEndPadding(layoutDirection) + CONTENT_MARGIN,
-    top = safeInsets.calculateTopPadding() + CONTROLS_BAR_HEIGHT + CONTENT_MARGIN,
+    top = safeInsets.calculateTopPadding() + CONTENT_MARGIN,
     bottom = safeInsets.calculateBottomPadding() + CONTENT_MARGIN,
   )
 
@@ -232,18 +235,6 @@ private fun AnalogClockWithCalendar(
   settings: AppSettings,
   nightActive: Boolean,
 ) {
-  var focusedMonth by remember {
-    mutableStateOf(
-      (now.clone() as Calendar).apply {
-        set(Calendar.DAY_OF_MONTH, 1)
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-      },
-    )
-  }
-  var selectedDay by remember { mutableStateOf<Calendar?>(null) }
   val semanticsLabel = stringResource(R.string.analog_clock_semantics)
 
   BoxWithConstraints(
@@ -254,20 +245,16 @@ private fun AnalogClockWithCalendar(
     val availableWidth = maxWidth
     val availableHeight = maxHeight
     val isLandscape = availableWidth >= availableHeight
-    val monthChanger: (Int) -> Unit = { delta ->
-      focusedMonth = (focusedMonth.clone() as Calendar).apply { add(Calendar.MONTH, delta) }
-    }
-    val daySelector: (Int) -> Unit = { day ->
-      selectedDay = (focusedMonth.clone() as Calendar).apply { set(Calendar.DAY_OF_MONTH, day) }
-    }
 
     if (isLandscape) {
-      // Clock and calendar are laid out as one centred pair, sized from the
-      // shorter side so neither runs into the cutout or the edges.
+      // Clock and calendar read as one centred pair, with the calendar taking
+      // whatever width is left once the dial fills the height.
       val gap = 32.dp
-      val usableWidth = availableWidth - gap
-      val clockSize = minOf(availableHeight * 0.92f, usableWidth * 0.62f)
-      val calendarWidth = minOf(usableWidth * 0.38f, availableHeight * 0.75f)
+      val clockSize = minOf(availableHeight * 0.90f, availableWidth * 0.50f)
+      val calendarWidth = minOf(
+        availableWidth - clockSize - gap,
+        availableHeight * 0.95f / CALENDAR_ASPECT,
+      )
       Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
@@ -281,19 +268,18 @@ private fun AnalogClockWithCalendar(
         )
         Spacer(Modifier.width(gap))
         CalendarPanel(
-          focusedMonth = focusedMonth,
-          selectedDay = selectedDay,
           today = now,
           nightMode = nightActive,
-          onMonthChange = monthChanger,
-          onDaySelected = daySelector,
           modifier = Modifier.width(calendarWidth),
         )
       }
     } else {
-      val gap = 20.dp
+      val gap = 24.dp
       val clockSize = minOf(availableWidth, availableHeight * 0.52f)
-      val calendarWidth = minOf(availableWidth, availableHeight * 0.32f)
+      val calendarWidth = minOf(
+        availableWidth,
+        (availableHeight - clockSize - gap) / CALENDAR_ASPECT,
+      )
       Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -307,12 +293,8 @@ private fun AnalogClockWithCalendar(
         )
         Spacer(Modifier.height(gap))
         CalendarPanel(
-          focusedMonth = focusedMonth,
-          selectedDay = selectedDay,
           today = now,
           nightMode = nightActive,
-          onMonthChange = monthChanger,
-          onDaySelected = daySelector,
           modifier = Modifier.width(calendarWidth),
         )
       }
