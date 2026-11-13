@@ -40,6 +40,10 @@
   <string name="night_mode_on">始终开启</string>
   <string name="night_mode_scheduled">定时</string>
   <string name="night_mode_follow_system">跟随系统深色模式</string>
+  <string name="night_mode_off_description">保持常规的显示样式</string>
+  <string name="night_mode_on_description">长时间显示时钟时始终使用更柔和的深色表现</string>
+  <string name="night_mode_scheduled_description">按你设定的时间段在日间与夜间显示之间自动切换</string>
+  <string name="night_mode_follow_system_description">跟随系统的浅色与深色外观</string>
   <string name="night_mode_start_time">夜间模式开始时间</string>
   <string name="night_mode_end_time">夜间模式结束时间</string>
   <string name="burn_in_protection">防烧屏</string>

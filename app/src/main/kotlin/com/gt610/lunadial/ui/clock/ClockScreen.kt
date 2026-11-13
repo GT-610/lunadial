@@ -7,8 +7,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
@@ -61,7 +61,7 @@ import com.gt610.lunadial.util.minutesOfDay
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
-private const val CONTROLS_VISIBLE_MILLIS = 3_000L
+private const val CONTROLS_VISIBLE_MILLIS = 5_000L
 
 /** The home screen: clock face, optional calendar, and auto-hiding controls. */
 @Composable
@@ -107,13 +107,20 @@ fun ClockScreen(
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(background)
-      .pointerInput(controlsVisible) {
-        detectTapGestures {
-          if (controlsVisible) onOpenSettings() else controlsVisible = true
-        }
-      },
+      .background(background),
   ) {
+    // Bottom-most layer: the clock itself is not interactive, so taps fall
+    // through to here. A tap only reveals or hides the controls; opening
+    // settings stays the gear button's job, as in any Android app.
+    Box(
+      modifier = Modifier
+        .matchParentSize()
+        .clickable(
+          interactionSource = remember { MutableInteractionSource() },
+          indication = null,
+        ) { controlsVisible = !controlsVisible },
+    )
+
     BurnInProtection(
       enabled = nightActive && settings.burnInProtection,
       modifier = Modifier.fillMaxSize(),

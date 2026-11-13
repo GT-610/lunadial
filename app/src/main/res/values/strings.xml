@@ -40,6 +40,10 @@
   <string name="night_mode_on">Always On</string>
   <string name="night_mode_scheduled">Scheduled</string>
   <string name="night_mode_follow_system">Follow System Dark Mode</string>
+  <string name="night_mode_off_description">Keep LunaDial in its regular display style</string>
+  <string name="night_mode_on_description">Always use the calmer dark presentation for long-running clock display</string>
+  <string name="night_mode_scheduled_description">Switch automatically between day and night display using your chosen hours</string>
+  <string name="night_mode_follow_system_description">Match the system light and dark appearance when the platform provides it</string>
   <string name="night_mode_start_time">Night Mode Start Time</string>
   <string name="night_mode_end_time">Night Mode End Time</string>
   <string name="burn_in_protection">Burn-In Protection</string>
