@@ -104,10 +104,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          assets=(
-            release-assets/app-release.apk
-            release-assets/app-release.aab
-          )
+          # upload-artifact keeps the paths relative to their common parent, so
+          # the files land under apk/release/ and bundle/release/ rather than at
+          # the top level. Collect them wherever they are.
+          assets=()
+          while IFS= read -r file; do
+            assets+=("$file")
+          done < <(find release-assets -type f \( -name '*.apk' -o -name '*.aab' \) | sort)
+
+          if [ "${#assets[@]}" -eq 0 ]; then
+            echo "No APK or AAB found under release-assets:" >&2
+            find release-assets -type f >&2 || true
+            exit 1
+          fi
+          printf 'Attaching %s\n' "${assets[@]}"
 
           gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
             --repo "$GITHUB_REPOSITORY" \
