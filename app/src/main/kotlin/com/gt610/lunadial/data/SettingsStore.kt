@@ -4,11 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.gt610.lunadial.model.AppSettings
-import com.gt610.lunadial.model.ClockDisplayMode
-import com.gt610.lunadial.model.LocaleOption
-import com.gt610.lunadial.model.NightModeBehavior
-import com.gt610.lunadial.model.ThemeModeOption
-import com.gt610.lunadial.model.TimeFormatOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,8 +20,6 @@ class SettingsStore(context: Context) {
 
   private val _settings = MutableStateFlow(read())
   val settings: StateFlow<AppSettings> = _settings.asStateFlow()
-
-  val current: AppSettings get() = _settings.value
 
   /** Applies [transform] and persists the result if anything changed. */
   fun update(transform: (AppSettings) -> AppSettings) {
@@ -101,19 +94,6 @@ class SettingsStore(context: Context) {
   }
 }
 
-/** Kept for readability at call sites that only need the display enums. */
-internal fun ClockDisplayMode.isDigital(): Boolean = this == ClockDisplayMode.DIGITAL
-
-internal fun NightModeBehavior.isActiveAt(
-  minutesOfDay: Int,
-  startMinutes: Int,
-  endMinutes: Int,
-): Boolean = when (this) {
-  NightModeBehavior.OFF -> false
-  NightModeBehavior.ON -> true
-  NightModeBehavior.FOLLOW_SYSTEM -> false
-  NightModeBehavior.SCHEDULED -> isWithinNightWindow(minutesOfDay, startMinutes, endMinutes)
-}
 
 /**
  * True when [minutesOfDay] falls inside the half-open window

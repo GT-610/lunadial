@@ -22,10 +22,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.safeDrawing
@@ -34,7 +31,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -65,12 +61,12 @@ import com.gt610.lunadial.data.isWithinNightWindow
 import com.gt610.lunadial.model.AppSettings
 import com.gt610.lunadial.model.ClockDisplayMode
 import com.gt610.lunadial.model.NightModeBehavior
+import com.gt610.lunadial.ui.theme.clockColorScheme
 import com.gt610.lunadial.util.minutesOfDay
 import kotlinx.coroutines.delay
 import java.util.Calendar
 
 private const val CONTROLS_VISIBLE_MILLIS = 5_000L
-private val CONTROLS_BAR_HEIGHT = 56.dp
 private val CONTENT_MARGIN = 16.dp
 
 /** Calendar height divided by its width, used to fit it into the free space. */
@@ -95,6 +91,9 @@ fun ClockScreen(
     when (settings.nightMode) {
       NightModeBehavior.OFF -> false
       NightModeBehavior.ON -> true
+      // Deliberately the system setting, not the app's own theme choice: a
+      // user who forced the app dark may still want night mode to start when
+      // the device itself dims.
       NightModeBehavior.FOLLOW_SYSTEM -> systemDark
       NightModeBehavior.SCHEDULED -> isWithinNightWindow(
         minutesOfDay = minutesOfDay(now),
@@ -145,20 +144,7 @@ fun ClockScreen(
         ) { controlsVisible = !controlsVisible },
     )
 
-    // The night presentation is a dark surface no matter what the app theme
-    // is, so the clock content gets its own dark scheme. Reusing the light
-    // scheme here would paint near-black text on a black background.
-    val clockScheme = if (nightActive) {
-      darkColorScheme(
-        primary = MaterialTheme.colorScheme.primary,
-        secondary = MaterialTheme.colorScheme.secondary,
-        tertiary = MaterialTheme.colorScheme.tertiary,
-      )
-    } else {
-      MaterialTheme.colorScheme
-    }
-
-    MaterialTheme(colorScheme = clockScheme) {
+    MaterialTheme(colorScheme = clockColorScheme(MaterialTheme.colorScheme, nightActive)) {
       BurnInProtection(
         enabled = nightActive && settings.burnInProtection,
         modifier = Modifier
@@ -246,57 +232,48 @@ private fun AnalogClockWithCalendar(
     val availableHeight = maxHeight
     val isLandscape = availableWidth >= availableHeight
 
-    if (isLandscape) {
-      // Clock and calendar read as one centred pair, with the calendar taking
-      // whatever width is left once the dial fills the height.
-      val gap = 32.dp
-      val clockSize = minOf(availableHeight * 0.90f, availableWidth * 0.50f)
-      val calendarWidth = minOf(
-        availableWidth - clockSize - gap,
-        availableHeight * 0.95f / CALENDAR_ASPECT,
+    // The dial fills the shorter side, the calendar takes whatever is left.
+    val gap = if (isLandscape) 32.dp else 24.dp
+    val clockSize = if (isLandscape) {
+      minOf(availableHeight * 0.90f, availableWidth * 0.50f)
+    } else {
+      minOf(availableWidth, availableHeight * 0.52f)
+    }
+    val calendarWidth = if (isLandscape) {
+      minOf(availableWidth - clockSize - gap, availableHeight * 0.95f / CALENDAR_ASPECT)
+    } else {
+      minOf(availableWidth, (availableHeight - clockSize - gap) / CALENDAR_ASPECT)
+    }
+
+    val clock: @Composable () -> Unit = {
+      AnalogClock(
+        now = now,
+        showSecondHand = settings.showSeconds,
+        nightMode = nightActive,
+        modifier = Modifier.size(clockSize),
       )
+    }
+    val calendar: @Composable () -> Unit = {
+      CalendarPanel(today = now, nightMode = nightActive, modifier = Modifier.width(calendarWidth))
+    }
+
+    if (isLandscape) {
       Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(gap, Alignment.CenterHorizontally),
       ) {
-        AnalogClock(
-          now = now,
-          showSecondHand = settings.showSeconds,
-          nightMode = nightActive,
-          modifier = Modifier.size(clockSize),
-        )
-        Spacer(Modifier.width(gap))
-        CalendarPanel(
-          today = now,
-          nightMode = nightActive,
-          modifier = Modifier.width(calendarWidth),
-        )
+        clock()
+        calendar()
       }
     } else {
-      val gap = 24.dp
-      val clockSize = minOf(availableWidth, availableHeight * 0.52f)
-      val calendarWidth = minOf(
-        availableWidth,
-        (availableHeight - clockSize - gap) / CALENDAR_ASPECT,
-      )
       Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(gap, Alignment.CenterVertically),
       ) {
-        AnalogClock(
-          now = now,
-          showSecondHand = settings.showSeconds,
-          nightMode = nightActive,
-          modifier = Modifier.size(clockSize),
-        )
-        Spacer(Modifier.height(gap))
-        CalendarPanel(
-          today = now,
-          nightMode = nightActive,
-          modifier = Modifier.width(calendarWidth),
-        )
+        clock()
+        calendar()
       }
     }
   }

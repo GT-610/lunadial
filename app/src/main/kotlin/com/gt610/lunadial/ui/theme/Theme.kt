@@ -2,6 +2,7 @@ package com.gt610.lunadial.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -41,7 +42,7 @@ fun LunaDialTheme(settings: AppSettings, content: @Composable () -> Unit) {
  * light or dark end of the scale so that it keeps enough contrast on the
  * neutral surfaces Material 3 provides by default.
  */
-private fun schemeFromSeed(seed: Color, dark: Boolean): androidx.compose.material3.ColorScheme {
+private fun schemeFromSeed(seed: Color, dark: Boolean): ColorScheme {
   val black = Color.Black
   val white = Color.White
   return if (dark) {
@@ -72,11 +73,10 @@ private fun schemeFromSeed(seed: Color, dark: Boolean): androidx.compose.materia
 }
 
 /** Pure-black surfaces for OLED panels; keeps the accent and on-colours. */
-private fun androidx.compose.material3.ColorScheme.asOled(): androidx.compose.material3.ColorScheme {
+private fun ColorScheme.asOled(): ColorScheme {
   val black = Color.Black
   return copy(
     background = black,
-    onBackground = onBackground,
     surface = black,
     surfaceVariant = lerp(surfaceVariant, black, 0.55f),
     surfaceContainerLowest = black,
@@ -88,3 +88,19 @@ private fun androidx.compose.material3.ColorScheme.asOled(): androidx.compose.ma
     surfaceBright = lerp(surfaceBright, black, 0.75f),
   )
 }
+
+/**
+ * Scheme for the clock content. The night presentation is always dark, even
+ * when the app itself is in a light theme, so it gets a dark scheme that keeps
+ * the accent.
+ */
+fun clockColorScheme(base: ColorScheme, night: Boolean): ColorScheme =
+  if (night) {
+    darkColorScheme(
+      primary = base.primary,
+      secondary = base.secondary,
+      tertiary = base.tertiary,
+    )
+  } else {
+    base
+  }

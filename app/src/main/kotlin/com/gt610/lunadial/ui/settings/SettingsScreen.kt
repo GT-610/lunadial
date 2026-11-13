@@ -117,9 +117,9 @@ fun SettingsScreen(
       item { SectionHeader(stringResource(R.string.appearance)) }
       item {
         SettingsGroup {
-          ListItem(
-            headlineContent = { Text(stringResource(R.string.theme_color)) },
-            leadingContent = {
+          SettingListItem(
+            headline = stringResource(R.string.theme_color),
+            leading = {
               Box(
                 Modifier
                   .size(24.dp)
@@ -127,9 +127,8 @@ fun SettingsScreen(
                   .background(Color(settings.themeColor)),
               )
             },
-            trailingContent = { TrailingChevron() },
-            modifier = Modifier.clickable { sheet = SettingsSheet.THEME_COLOR },
-            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+            onClick = { sheet = SettingsSheet.THEME_COLOR },
+            trailing = { TrailingChevron() },
           )
           RowDivider()
           SwitchRow(
@@ -156,12 +155,7 @@ fun SettingsScreen(
       item { SectionHeader(stringResource(R.string.display)) }
       item {
         SettingsGroup {
-          SegmentedRow(
-            title = stringResource(R.string.clock_display_mode),
-            options = listOf(
-              ClockDisplayMode.DIGITAL to stringResource(R.string.digital_clock),
-              ClockDisplayMode.ANALOG to stringResource(R.string.analog_clock),
-            ),
+          ClockDisplayModeRow(
             selected = settings.clockDisplayMode,
             onSelect = { mode -> onUpdate { it.copy(clockDisplayMode = mode) } },
           )
@@ -432,30 +426,47 @@ private fun TrailingChevron() {
 }
 
 @Composable
-private fun ValueRow(
-  title: String,
-  value: String? = null,
-  description: String? = null,
+private fun SettingListItem(
+  headline: String,
+  trailing: @Composable () -> Unit,
+  supporting: String? = null,
+  leading: (@Composable () -> Unit)? = null,
   onClick: (() -> Unit)? = null,
 ) {
   ListItem(
-    headlineContent = { Text(title) },
-    supportingContent = description?.let { { Text(it) } },
-    trailingContent = {
+    headlineContent = { Text(headline) },
+    supportingContent = supporting?.let { { Text(it) } },
+    leadingContent = leading,
+    trailingContent = trailing,
+    modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+  )
+}
+
+@Composable
+private fun ValueRow(
+  title: String,
+  value: String,
+  description: String? = null,
+  onClick: (() -> Unit)? = null,
+  leading: (@Composable () -> Unit)? = null,
+) {
+  SettingListItem(
+    headline = title,
+    supporting = description,
+    leading = leading,
+    onClick = onClick,
+    trailing = {
       Row(verticalAlignment = Alignment.CenterVertically) {
-        if (value != null) {
-          Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.End,
-          )
-        }
+        Text(
+          text = value,
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.End,
+        )
         if (onClick != null) TrailingChevron()
       }
     },
-    modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
-    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
   )
 }
 
@@ -466,39 +477,12 @@ private fun SwitchRow(
   onCheckedChange: (Boolean) -> Unit,
   description: String? = null,
 ) {
-  ListItem(
-    headlineContent = { Text(title) },
-    supportingContent = description?.let { { Text(it) } },
-    trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange) },
-    modifier = Modifier.clickable { onCheckedChange(!checked) },
-    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+  SettingListItem(
+    headline = title,
+    supporting = description,
+    onClick = { onCheckedChange(!checked) },
+    trailing = { Switch(checked = checked, onCheckedChange = onCheckedChange) },
   )
-}
-
-@Composable
-private fun <T> SegmentedRow(
-  title: String,
-  options: List<Pair<T, String>>,
-  selected: T,
-  onSelect: (T) -> Unit,
-) {
-  Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-    Text(
-      text = title,
-      style = MaterialTheme.typography.bodyLarge,
-      modifier = Modifier.padding(bottom = 10.dp),
-    )
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-      options.forEachIndexed { index, (value, label) ->
-        SegmentedButton(
-          selected = value == selected,
-          onClick = { onSelect(value) },
-          shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-          label = { Text(label) },
-        )
-      }
-    }
-  }
 }
 
 @Composable
@@ -508,13 +492,41 @@ private fun OptionRow(
   onClick: () -> Unit,
   description: String? = null,
 ) {
-  ListItem(
-    headlineContent = { Text(label) },
-    supportingContent = description?.let { { Text(it) } },
-    trailingContent = { RadioButton(selected = selected, onClick = null) },
-    modifier = Modifier.clickable(onClick = onClick),
-    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+  SettingListItem(
+    headline = label,
+    supporting = description,
+    onClick = onClick,
+    trailing = { RadioButton(selected = selected, onClick = null) },
   )
+}
+
+/** Clock face picker; the only segmented control in the screen. */
+@Composable
+private fun ClockDisplayModeRow(
+  selected: ClockDisplayMode,
+  onSelect: (ClockDisplayMode) -> Unit,
+) {
+  Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+    Text(
+      text = stringResource(R.string.clock_display_mode),
+      style = MaterialTheme.typography.bodyLarge,
+      modifier = Modifier.padding(bottom = 10.dp),
+    )
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+      SegmentedButton(
+        selected = selected == ClockDisplayMode.DIGITAL,
+        onClick = { onSelect(ClockDisplayMode.DIGITAL) },
+        shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+        label = { Text(stringResource(R.string.digital_clock)) },
+      )
+      SegmentedButton(
+        selected = selected == ClockDisplayMode.ANALOG,
+        onClick = { onSelect(ClockDisplayMode.ANALOG) },
+        shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+        label = { Text(stringResource(R.string.analog_clock)) },
+      )
+    }
+  }
 }
 
 @Composable

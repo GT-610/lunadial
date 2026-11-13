@@ -42,9 +42,7 @@ data class AppSettings(
   /** Minutes since midnight, so 07:00 is 420. */
   val nightEndMinutes: Int = 7 * 60,
   val burnInProtection: Boolean = true,
-) {
-  val nightWindowCrossesMidnight: Boolean get() = nightStartMinutes > nightEndMinutes
-}
+)
 
 /** Accent presets offered by the theme colour picker. */
 val ACCENT_PRESETS: List<Int> = listOf(

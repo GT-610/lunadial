@@ -72,8 +72,20 @@ fun DigitalClock(
   ) {
     val isLandscape = maxWidth >= maxHeight
     val metrics = digitalMetrics(maxWidth, maxHeight)
+    // The night presentation runs a touch larger and tighter to stay legible
+    // at a distance.
+    val timeScale = when {
+      !nightMode -> 1f
+      isLandscape -> 1.12f
+      else -> 1.04f
+    }
+    val spacingScale = when {
+      !nightMode -> 1f
+      isLandscape -> 0.78f
+      else -> 0.92f
+    }
     val timeStyle = TextStyle(
-      fontSize = (metrics.timeFontSize * nightTimeScale(nightMode, isLandscape)).sp,
+      fontSize = (metrics.timeFontSize * timeScale).sp,
       fontWeight = if (nightMode) FontWeight.Light else FontWeight.Normal,
       letterSpacing = if (nightMode && isLandscape) 2.4.sp else 0.sp,
       color = timeColor,
@@ -87,7 +99,7 @@ fun DigitalClock(
       fontWeight = FontWeight.Normal,
       color = dateColor,
     )
-    val spacing = metrics.spacing * nightSpacingScale(nightMode, isLandscape)
+    val spacing = metrics.spacing * spacingScale
     val contentWidth = maxWidth - metrics.paddingHorizontal * 2
 
     Column(
@@ -102,7 +114,6 @@ fun DigitalClock(
         text = dateText,
         style = dateStyle,
         maxWidth = contentWidth,
-        modifier = Modifier,
       )
       Column(Modifier.padding(top = spacing)) {
         ShrinkToFitText(
@@ -113,18 +124,6 @@ fun DigitalClock(
       }
     }
   }
-}
-
-private fun nightTimeScale(nightMode: Boolean, isLandscape: Boolean): Float = when {
-  !nightMode -> 1f
-  isLandscape -> 1.12f
-  else -> 1.04f
-}
-
-private fun nightSpacingScale(nightMode: Boolean, isLandscape: Boolean): Float = when {
-  !nightMode -> 1f
-  isLandscape -> 0.78f
-  else -> 0.92f
 }
 
 private data class DigitalMetrics(
@@ -186,7 +185,6 @@ private fun ShrinkToFitText(
   text: String,
   style: TextStyle,
   maxWidth: Dp,
-  modifier: Modifier = Modifier,
 ) {
   val measurer = rememberTextMeasurer()
   val density = LocalDensity.current
@@ -215,6 +213,5 @@ private fun ShrinkToFitText(
     maxLines = 1,
     softWrap = false,
     textAlign = TextAlign.Center,
-    modifier = modifier,
   )
 }

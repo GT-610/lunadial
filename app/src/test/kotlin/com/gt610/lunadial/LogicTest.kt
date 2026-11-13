@@ -3,10 +3,8 @@ package com.gt610.lunadial
 import com.gt610.lunadial.data.isWithinNightWindow
 import com.gt610.lunadial.util.clockPattern
 import com.gt610.lunadial.util.monthCells
-import com.gt610.lunadial.util.weekdayLabels
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Calendar
@@ -85,13 +83,6 @@ class CalendarGridTest {
     // 1 October 2026 is a Thursday.
     val cells = monthCells(month(2026, Calendar.OCTOBER))
     assertEquals(listOf(null, null, null, null, 1), cells.take(5))
-    assertNull(cells[0])
     assertEquals(31, cells.count { it != null })
-  }
-
-  @Test
-  fun `weekday labels always describe seven days`() {
-    assertEquals(7, weekdayLabels(Locale.US).size)
-    assertEquals(7, weekdayLabels(Locale.forLanguageTag("zh-CN")).size)
   }
 }

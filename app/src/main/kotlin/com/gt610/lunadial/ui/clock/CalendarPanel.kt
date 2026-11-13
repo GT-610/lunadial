@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gt610.lunadial.util.formatWithPattern
 import com.gt610.lunadial.util.monthCells
@@ -53,7 +52,7 @@ fun CalendarPanel(
   // numeral white, which is what a bedside clock wants.
   val todayCircle = if (nightMode) lerp(accent, Color.Black, 0.38f) else accent
   val onAccent = if (todayCircle.luminance() > 0.42f) Color.Black else Color.White
-  val dayColor = if (nightMode) androidx.compose.ui.graphics.Color.White else colors.onSurface
+  val dayColor = if (nightMode) Color.White else colors.onSurface
   val mutedColor = dayColor.copy(alpha = 0.45f)
 
   val monthName = remember(today.get(Calendar.YEAR), today.get(Calendar.MONTH), locale) {

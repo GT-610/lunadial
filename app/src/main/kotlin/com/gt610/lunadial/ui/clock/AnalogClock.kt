@@ -36,8 +36,7 @@ fun AnalogClock(
   val colors = MaterialTheme.colorScheme
   val handColor = if (nightMode) Color.White else colors.onSurface
   val tickColor = handColor.copy(alpha = if (nightMode) 0.45f else 0.38f)
-  val numeralColor = handColor
-  val accent = if (nightMode) colors.primary else colors.primary
+  val accent = colors.primary
   val measurer = rememberTextMeasurer()
 
   val hours = now.get(Calendar.HOUR)
@@ -52,7 +51,7 @@ fun AnalogClock(
     drawNumerals(
       center = center,
       radius = radius,
-      color = numeralColor,
+      color = handColor,
       measurer = measurer,
     )
 
