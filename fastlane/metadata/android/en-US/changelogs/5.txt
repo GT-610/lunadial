@@ -1,0 +1,1 @@
+Fixes the F-Droid build check: the APK no longer carries the encrypted dependency metadata block that Play uses. Nothing else changes.

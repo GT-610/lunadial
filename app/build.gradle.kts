@@ -23,8 +23,8 @@ android {
     applicationId = "com.gt610.lunadial"
     minSdk = 24
     targetSdk = 36
-    versionCode = 4
-    versionName = "0.5.0"
+    versionCode = 5
+    versionName = "0.5.1"
   }
 
   signingConfigs {
@@ -69,6 +69,14 @@ android {
 
   // A single universal APK: the only native libraries are a few tiny ABI
   // stubs, so per-ABI splits would save nothing worth the extra choice.
+
+  // The dependency metadata block AGP writes into the APK signing block is
+  // opaque, encrypted-by-Play data. F-Droid's scanner flags it, and nothing in
+  // this app needs Play to report its dependencies.
+  dependenciesInfo {
+    includeInApk = false
+    includeInBundle = false
+  }
 
   packaging {
     resources {
