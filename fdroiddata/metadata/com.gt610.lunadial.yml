@@ -14,45 +14,17 @@ RepoType: git
 Repo: https://github.com/GT-610/lunadial.git
 
 Builds:
-  - versionName: 0.4.2
-    versionCode: 3
-    commit: 91be848163c5f713c995e9c742982c9228d92d49
-    output: build/app/outputs/flutter-apk/app-release.apk
-    srclibs:
-      - flutter@stable
-    sudo:
-      - mkdir -p /home/runner/work/lunadial
-      - chown -R vagrant /home/runner/work/lunadial
-    prebuild:
-      - flutterVersion=$(sed -n -E "s/.*flutter-version:[[:space:]]*'?([^'[:space:]]+)'?/\1/p" .github/workflows/release.yml | head -n 1)
-      - '[[ $flutterVersion ]]'
-      - git -C $$flutter$$ checkout -f $flutterVersion
-      - export repo=/home/runner/work/lunadial/lunadial
-      - cd ..
-      - mv com.gt610.lunadial $repo
-      - pushd $repo
-      - export PUB_CACHE=$(pwd)/.pub-cache
-      - $$flutter$$/bin/flutter config --no-analytics
-      - $$flutter$$/bin/flutter pub get --enforce-lockfile
-      - bash scripts/release/patch-jni-build-id.sh
-      - popd
-      - mv $repo com.gt610.lunadial
-    scandelete:
-      - .pub-cache
-    build:
-      - export repo=/home/runner/work/lunadial/lunadial
-      - cd ..
-      - mv com.gt610.lunadial $repo
-      - pushd $repo
-      - export PUB_CACHE=$(pwd)/.pub-cache
-      - $$flutter$$/bin/flutter build apk --release
-      - popd
-      - mv $repo com.gt610.lunadial
+  - versionName: 0.5.0
+    versionCode: 4
+    commit: COMMIT_PLACEHOLDER
+    gradle:
+      - yes
+    output: app/build/outputs/apk/release/app-release.apk
 
 AllowedAPKSigningKeys: f0bb1f0c9c93188df103523dc936b0202d6a956d4de18c76bfde060dc1b415e0
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 0.4.2
-CurrentVersionCode: 3
+UpdateCheckData: app/build.gradle.kts|versionName = "([^"]+)"|app/build.gradle.kts|versionCode = (\d+)
+CurrentVersion: 0.5.0
+CurrentVersionCode: 4

@@ -1,6 +1,6 @@
 # LunaDial
 
-LunaDial is a free, open-source clock app for phones, tablets, spare displays, and desktop computers. It is easy to read, uses few resources, and is comfortable to leave running.
+LunaDial is a free, open-source clock app for phones and tablets. It is easy to read, uses few resources, and is comfortable to leave running — on a desk, a nightstand, or a spare display.
 
 <table>
   <tr>
@@ -9,15 +9,15 @@ LunaDial is a free, open-source clock app for phones, tablets, spare displays, a
   </tr>
   <tr>
     <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Clock customization settings" /></td>
-    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Night display settings" /></td>
+    <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Night display in pure black" /></td>
   </tr>
 </table>
 
+LunaDial targets Android only and is written in Kotlin with Jetpack Compose, so there is no cross-platform runtime layer inside the package: a release APK is about **1.8 MB**, and the download from a store is about **1.5 MB** — roughly 90% smaller than the equivalent Flutter build.
+
 ## Download
 
-- Android: Download the APK for your device from the [latest release](https://github.com/GT-610/lunadial/releases/latest). Most current phones use the `arm64-v8a` build.
-- Windows: Download and extract `lunadial-windows-x64.zip` from the [latest release](https://github.com/GT-610/lunadial/releases/latest), then run `lunadial.exe`.
-- Linux and macOS: Build LunaDial from source. Prebuilt packages are not currently available for these platforms.
+- Android: download `app-release.apk` from the [latest release](https://github.com/GT-610/lunadial/releases/latest). A single APK works on every supported device and architecture.
 
 ## Features
 
@@ -25,7 +25,7 @@ LunaDial is a free, open-source clock app for phones, tablets, spare displays, a
 - 12- or 24-hour time, seconds, a second hand, and leading zeros
 - Light, dark, or system appearance, with system, Material You, or custom accent colors
 - A dimmer night display that you can enable manually, schedule, or follow the system theme
-- An option to keep the screen awake and hide Android system controls
+- An option to keep the screen awake
 - Subtle periodic movement during extended night display to reduce OLED burn-in risk
 - English and Simplified Chinese
 
@@ -37,12 +37,40 @@ LunaDial does not need network access and does not collect usage data. Your pref
 
 | Platform | Status |
 |---|---|
-| Android | Primary target. Android 6.0 (API 23) or newer |
-| Windows | Supported. Packages are published with GitHub releases |
-| Linux | Supported through source builds. A packaged release is planned |
-| macOS | Best-effort support through source builds |
-| Web | Available to build, but not a primary target |
-| iOS | Not currently supported |
+| Android | Primary and only target. Android 7.0 (API 24) or newer |
+
+## Building from source
+
+Android Studio is not required; the build only needs a JDK and the Android SDK command-line tools.
+
+Toolchain:
+
+| Component | Version |
+|---|---|
+| JDK | Temurin 25 |
+| Gradle | 9.7.0 (via the wrapper) |
+| Android Gradle plugin | 9.3.1 |
+| Kotlin | 2.4.21 |
+| compileSdk / targetSdk / minSdk | 37 / 36 / 24 |
+
+```bash
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home
+export ANDROID_HOME=/path/to/android-sdk            # needs platforms;android-37.0 and build-tools;37.0.0
+
+./gradlew :app:assembleDebug                        # debug APK
+./gradlew :app:assembleRelease :app:bundleRelease    # release APKs + App Bundle
+```
+
+Release builds are signed when `key.properties` exists in the repository root:
+
+```properties
+storeFile=lunadial-release.jks
+storePassword=…
+keyAlias=…
+keyPassword=…
+```
+
+Otherwise the release build produces unsigned APKs.
 
 ## Help and contributing
 

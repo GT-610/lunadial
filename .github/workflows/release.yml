@@ -14,20 +14,23 @@ jobs:
     name: Build Android release
     runs-on: ubuntu-latest
     environment: Release
-    env:
-      PUB_CACHE: ${{ github.workspace }}/.pub-cache
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.0'
-          cache: true
+          java-version: '25'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install SDK components
+        run: sdkmanager "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+
       - name: Restore Android signing files
         shell: bash
         env:
@@ -42,68 +45,40 @@ jobs:
           : "${ANDROID_KEY_PASSWORD:?Missing ANDROID_KEY_PASSWORD secret}"
           : "${ANDROID_KEY_ALIAS:?Missing ANDROID_KEY_ALIAS secret}"
 
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/lunadial-release.jks
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > lunadial-release.jks
           {
             printf 'storeFile=lunadial-release.jks\n'
             printf 'storePassword=%s\n' "$ANDROID_KEYSTORE_PASSWORD"
             printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
             printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
-          } > android/key.properties
-      - name: Install locked Android dependencies
-        run: flutter pub get --enforce-lockfile
-      - name: Build split Android APKs
-        run: flutter build apk --release --split-per-abi
-      - name: Build Android App Bundle
-        run: flutter build appbundle --release
+          } > key.properties
+
+      - name: Build APK and App Bundle
+        run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
+
+      - name: Report artifact sizes
+        run: |
+          ls -lh app/build/outputs/apk/release/*.apk app/build/outputs/bundle/release/*.aab
+
       - name: Upload Android artifacts
         uses: actions/upload-artifact@v4
         with:
           name: lunadial-android
           path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-            build/app/outputs/flutter-apk/app-x86_64-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
+
       - name: Remove Android signing files
         if: always()
         shell: bash
-        run: rm -f android/key.properties android/lunadial-release.jks
-
-  windows:
-    name: Build Windows release
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.0'
-          cache: true
-      - run: flutter pub get --enforce-lockfile
-      - name: Build Windows application
-        run: flutter build windows --release
-      - name: Package Windows application
-        shell: pwsh
-        run: |
-          Compress-Archive `
-            -Path 'build/windows/x64/runner/Release/*' `
-            -DestinationPath 'lunadial-windows-x64.zip' `
-            -Force
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lunadial-windows-x64
-          path: lunadial-windows-x64.zip
-          if-no-files-found: error
-          retention-days: 14
+        run: rm -f key.properties lunadial-release.jks
 
   publish:
     name: Publish GitHub Release
     if: github.event_name == 'push'
-    needs: [android, windows]
+    needs: [android]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -113,6 +88,7 @@ jobs:
         with:
           path: release-assets
           merge-multiple: true
+
       - name: Create GitHub Release
         shell: bash
         env:
@@ -120,11 +96,8 @@ jobs:
         run: |
           set -euo pipefail
           assets=(
-            release-assets/flutter-apk/app-armeabi-v7a-release.apk
-            release-assets/flutter-apk/app-arm64-v8a-release.apk
-            release-assets/flutter-apk/app-x86_64-release.apk
-            release-assets/bundle/release/app-release.aab
-            release-assets/lunadial-windows-x64.zip
+            release-assets/app-release.apk
+            release-assets/app-release.aab
           )
 
           gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
