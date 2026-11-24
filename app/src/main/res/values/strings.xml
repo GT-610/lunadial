@@ -32,6 +32,13 @@
   <string name="leading_zero">Leading Zero for Hour</string>
   <string name="leading_zero_description">Pad the digital clock hour with a leading zero when needed</string>
   <string name="keep_screen_on">Keep Screen On</string>
+  <string name="screen_brightness">Screen Brightness</string>
+  <string name="screen_brightness_description">Dim this app without changing the system brightness</string>
+  <string name="brightness_gesture">Swipe to Adjust Brightness</string>
+  <string name="brightness_gesture_description">Swipe up or down on the left half of the clock screen</string>
+  <string name="brightness_percent">%1$d%%</string>
+  <string name="follow_system_brightness">Follow System Brightness</string>
+  <string name="follow_system_brightness_description">Use the brightness set on your device</string>
 
   <string name="night_and_burn_in">Night &amp; Burn-In</string>
   <string name="night_display_mode">Night Display Mode</string>
@@ -48,6 +55,9 @@
   <string name="night_mode_end_time">Night Mode End Time</string>
   <string name="burn_in_protection">Burn-In Protection</string>
   <string name="burn_in_protection_description">Apply a subtle periodic shift while the night presentation is active to reduce long-term static image retention</string>
+  <string name="night_auto_dim">Dim During Night Display</string>
+  <string name="night_auto_dim_description">Use a separate, dimmer level while the night presentation is active</string>
+  <string name="night_brightness">Night Brightness</string>
 
   <string name="information">Information</string>
   <string name="version">Version</string>

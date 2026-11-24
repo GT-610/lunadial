@@ -32,6 +32,13 @@
   <string name="leading_zero">小时补零</string>
   <string name="leading_zero_description">需要时在数字时钟的小时前补零</string>
   <string name="keep_screen_on">保持屏幕常亮</string>
+  <string name="screen_brightness">屏幕亮度</string>
+  <string name="screen_brightness_description">在不修改系统亮度的情况下调暗本应用</string>
+  <string name="brightness_gesture">滑动调节亮度</string>
+  <string name="brightness_gesture_description">在时钟界面左半部分上下滑动即可调节亮度</string>
+  <string name="brightness_percent">%1$d%%</string>
+  <string name="follow_system_brightness">跟随系统亮度</string>
+  <string name="follow_system_brightness_description">使用设备当前设置的亮度</string>
 
   <string name="night_and_burn_in">夜间与防烧屏</string>
   <string name="night_display_mode">夜间显示模式</string>
@@ -48,6 +55,9 @@
   <string name="night_mode_end_time">夜间模式结束时间</string>
   <string name="burn_in_protection">防烧屏</string>
   <string name="burn_in_protection_description">夜间显示期间进行细微的周期性位移，降低长期静态画面残留的风险</string>
+  <string name="night_auto_dim">夜间显示时自动变暗</string>
+  <string name="night_auto_dim_description">夜间显示激活时使用单独的、更暗的亮度</string>
+  <string name="night_brightness">夜间亮度</string>
 
   <string name="information">信息</string>
   <string name="version">版本</string>

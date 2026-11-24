@@ -26,6 +26,7 @@ LunaDial is a free, open-source clock app for Android phones and tablets. It is 
 - 12- or 24-hour time, seconds, a second hand, and leading zeros
 - Light, dark, or system appearance, with system, Material You, or custom accent colors
 - A dimmer night display that you can enable manually, schedule, or follow the system theme
+- A screen brightness control for this app only, with an optional swipe gesture and a dimmer night level
 - An option to keep the screen awake
 - Subtle periodic movement during extended night display to reduce OLED burn-in risk
 - English and Simplified Chinese
