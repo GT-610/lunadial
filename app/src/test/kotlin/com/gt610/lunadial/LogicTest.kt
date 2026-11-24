@@ -8,6 +8,7 @@ import com.gt610.lunadial.model.MIN_BRIGHTNESS
 import com.gt610.lunadial.model.brightnessAfterDrag
 import com.gt610.lunadial.model.brightnessPercent
 import com.gt610.lunadial.model.effectiveBrightness
+import com.gt610.lunadial.model.gestureStartBrightness
 import com.gt610.lunadial.model.nightBrightnessActive
 import com.gt610.lunadial.util.clockPattern
 import com.gt610.lunadial.util.monthCells
@@ -136,6 +137,43 @@ class BrightnessTest {
     assertEquals(50, brightnessPercent(0.5f))
     assertEquals(1, brightnessPercent(0f))
     assertEquals(100, brightnessPercent(1f))
+  }
+
+  @Test
+  fun `gesture starts from the live system level while following it`() {
+    val settings = AppSettings(brightnessMode = BrightnessMode.FOLLOW_SYSTEM, screenBrightness = 0.3f)
+    assertEquals(
+      0.8f,
+      gestureStartBrightness(settings, nightActive = false, systemBrightness = 0.8f),
+      0.0001f,
+    )
+  }
+
+  @Test
+  fun `gesture falls back to the stored level without a system reading`() {
+    val settings = AppSettings(brightnessMode = BrightnessMode.FOLLOW_SYSTEM, screenBrightness = 0.3f)
+    assertEquals(
+      0.3f,
+      gestureStartBrightness(settings, nightActive = false, systemBrightness = null),
+      0.0001f,
+    )
+  }
+
+  @Test
+  fun `gesture keeps custom and night levels`() {
+    val custom = AppSettings(brightnessMode = BrightnessMode.CUSTOM, screenBrightness = 0.45f)
+    assertEquals(
+      0.45f,
+      gestureStartBrightness(custom, nightActive = false, systemBrightness = 0.9f),
+      0.0001f,
+    )
+
+    val night = AppSettings(nightAutoDim = true, nightBrightness = 0.15f)
+    assertEquals(
+      0.15f,
+      gestureStartBrightness(night, nightActive = true, systemBrightness = 0.9f),
+      0.0001f,
+    )
   }
 }
 

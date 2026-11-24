@@ -1,6 +1,8 @@
 package com.gt610.lunadial.ui.clock
 
 import android.app.Activity
+import android.content.Context
+import android.provider.Settings
 import android.view.WindowManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -72,6 +74,7 @@ import com.gt610.lunadial.model.NightModeBehavior
 import com.gt610.lunadial.model.brightnessAfterDrag
 import com.gt610.lunadial.model.brightnessPercent
 import com.gt610.lunadial.model.effectiveBrightness
+import com.gt610.lunadial.model.gestureStartBrightness
 import com.gt610.lunadial.model.nightBrightnessActive
 import com.gt610.lunadial.ui.theme.clockColorScheme
 import com.gt610.lunadial.util.ScreenBrightnessOverride
@@ -82,6 +85,9 @@ import kotlin.math.abs
 
 private const val CONTROLS_VISIBLE_MILLIS = 5_000L
 private val CONTENT_MARGIN = 16.dp
+
+/** Top of the 0..255 range used by the system brightness setting. */
+private const val SYSTEM_BRIGHTNESS_MAX = 255f
 
 /** Calendar height divided by its width, used to fit it into the free space. */
 private const val CALENDAR_ASPECT = 0.91f
@@ -398,6 +404,7 @@ private fun Modifier.brightnessSwipe(
   val currentNightActive by rememberUpdatedState(nightActive)
   val currentOnUpdate by rememberUpdatedState(onUpdate)
   val currentOnBrightnessChange by rememberUpdatedState(onBrightnessChange)
+  val currentContext by rememberUpdatedState(LocalContext.current)
 
   return this.then(
     remember {
@@ -410,11 +417,14 @@ private fun Modifier.brightnessSwipe(
           if (down.position.x >= size.width / 2f) return@awaitEachGesture
 
           val nightDriven = nightBrightnessActive(currentSettings, currentNightActive)
-          val start = if (nightDriven) {
-            currentSettings.nightBrightness
+          val systemBrightness = if (
+            !nightDriven && currentSettings.brightnessMode == BrightnessMode.FOLLOW_SYSTEM
+          ) {
+            readSystemBrightness(currentContext)
           } else {
-            currentSettings.screenBrightness
+            null
           }
+          val start = gestureStartBrightness(currentSettings, currentNightActive, systemBrightness)
           var totalY = 0f
           var started = false
 
@@ -445,6 +455,17 @@ private fun Modifier.brightnessSwipe(
       }
     },
   )
+}
+
+/** Current system brightness as 0..1, or null when the setting is unavailable. */
+private fun readSystemBrightness(context: Context): Float? {
+  val raw = Settings.System.getInt(
+    context.contentResolver,
+    Settings.System.SCREEN_BRIGHTNESS,
+    -1,
+  )
+  if (raw < 0) return null
+  return (raw / SYSTEM_BRIGHTNESS_MAX).coerceIn(0f, 1f)
 }
 
 @Composable

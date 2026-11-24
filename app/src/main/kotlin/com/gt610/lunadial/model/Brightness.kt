@@ -23,6 +23,23 @@ fun effectiveBrightness(settings: AppSettings, nightActive: Boolean): Float? = w
 fun nightBrightnessActive(settings: AppSettings, nightActive: Boolean): Boolean =
   nightActive && settings.nightAutoDim
 
+/**
+ * The level a brightness gesture starts from. While the app follows the system
+ * brightness, [systemBrightness] is the live value, so the first drag continues
+ * from what the display already shows instead of jumping to a stored custom
+ * level. A null [systemBrightness] falls back to the stored daytime level.
+ */
+fun gestureStartBrightness(
+  settings: AppSettings,
+  nightActive: Boolean,
+  systemBrightness: Float?,
+): Float = when {
+  nightBrightnessActive(settings, nightActive) -> settings.nightBrightness.toBrightnessLevel()
+  settings.brightnessMode == BrightnessMode.CUSTOM -> settings.screenBrightness.toBrightnessLevel()
+  systemBrightness != null -> systemBrightness.toBrightnessLevel()
+  else -> settings.screenBrightness.toBrightnessLevel()
+}
+
 /** A 0..100 value for labels such as "50%". */
 fun brightnessPercent(brightness: Float): Int =
   (brightness.coerceIn(MIN_BRIGHTNESS, MAX_BRIGHTNESS) * 100f).roundToInt()
