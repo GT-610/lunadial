@@ -42,6 +42,7 @@ fun LunaDialApp(settingsStore: SettingsStore) {
       } else {
         ClockScreen(
           settings = settings,
+          onUpdate = settingsStore::update,
           onOpenSettings = { showSettings = true },
         )
       }
