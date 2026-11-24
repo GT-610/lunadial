@@ -23,8 +23,8 @@ android {
     applicationId = "com.gt610.lunadial"
     minSdk = 24
     targetSdk = 36
-    versionCode = 5
-    versionName = "0.5.1"
+    versionCode = 6
+    versionName = "0.6.0"
   }
 
   signingConfigs {

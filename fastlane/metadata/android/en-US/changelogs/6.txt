@@ -1,0 +1,5 @@
+Adds a screen brightness control for LunaDial alone.
+
+- Set the clock's brightness without touching the system setting
+- Swipe up or down on the left half of the clock screen, with a live percentage
+- A separate, dimmer level for the night display
