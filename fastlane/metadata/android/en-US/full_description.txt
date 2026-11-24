@@ -6,6 +6,7 @@ Features:
 - 12-hour or 24-hour time, optional seconds, second hand and leading zero
 - Light, dark or system appearance, with system, Material You or custom accent colours
 - Night display that is always on, follows a schedule, or follows the system dark theme
+- A screen brightness control that leaves the system setting alone, optional swipe gesture included
 - Subtle periodic movement during night display to reduce OLED burn-in
 - Keeps the screen awake and hides the system bars for desk use
 - English and Simplified Chinese
