@@ -16,7 +16,9 @@ LunaDial is a free, open-source clock app for Android phones and tablets. It is 
 ## Download
 
 - GitHub: Download `app-release.apk` from the [latest release](https://github.com/GT-610/lunadial/releases/latest) for your artitecture.
-- F-Droid: Submission is in progress.
+- F-Droid:
+
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.gt610.lunadial)
 
 ## Features
 
