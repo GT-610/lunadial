@@ -49,6 +49,14 @@ class SettingsStore(context: Context) {
       nightStartMinutes = prefs.getInt(KEY_NIGHT_START, defaults.nightStartMinutes),
       nightEndMinutes = prefs.getInt(KEY_NIGHT_END, defaults.nightEndMinutes),
       burnInProtection = prefs.getBoolean(KEY_BURN_IN, defaults.burnInProtection),
+      brightnessMode = enum(prefs.getString(KEY_BRIGHTNESS_MODE, null), defaults.brightnessMode),
+      screenBrightness = prefs.getFloat(KEY_SCREEN_BRIGHTNESS, defaults.screenBrightness),
+      nightAutoDim = prefs.getBoolean(KEY_NIGHT_AUTO_DIM, defaults.nightAutoDim),
+      nightBrightness = prefs.getFloat(KEY_NIGHT_BRIGHTNESS, defaults.nightBrightness),
+      brightnessGesture = prefs.getBoolean(
+        KEY_BRIGHTNESS_GESTURE,
+        defaults.brightnessGesture,
+      ),
     )
   }
 
@@ -67,6 +75,11 @@ class SettingsStore(context: Context) {
       putInt(KEY_NIGHT_START, settings.nightStartMinutes)
       putInt(KEY_NIGHT_END, settings.nightEndMinutes)
       putBoolean(KEY_BURN_IN, settings.burnInProtection)
+      putString(KEY_BRIGHTNESS_MODE, settings.brightnessMode.name)
+      putFloat(KEY_SCREEN_BRIGHTNESS, settings.screenBrightness)
+      putBoolean(KEY_NIGHT_AUTO_DIM, settings.nightAutoDim)
+      putFloat(KEY_NIGHT_BRIGHTNESS, settings.nightBrightness)
+      putBoolean(KEY_BRIGHTNESS_GESTURE, settings.brightnessGesture)
     }
   }
 
@@ -91,6 +104,11 @@ class SettingsStore(context: Context) {
     const val KEY_NIGHT_START = "nightStartMinutes"
     const val KEY_NIGHT_END = "nightEndMinutes"
     const val KEY_BURN_IN = "burnInProtection"
+    const val KEY_BRIGHTNESS_MODE = "brightnessMode"
+    const val KEY_SCREEN_BRIGHTNESS = "screenBrightness"
+    const val KEY_NIGHT_AUTO_DIM = "nightAutoDim"
+    const val KEY_NIGHT_BRIGHTNESS = "nightBrightness"
+    const val KEY_BRIGHTNESS_GESTURE = "brightnessGesture"
   }
 }
 

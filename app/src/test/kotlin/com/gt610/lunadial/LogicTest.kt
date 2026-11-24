@@ -1,10 +1,19 @@
 package com.gt610.lunadial
 
 import com.gt610.lunadial.data.isWithinNightWindow
+import com.gt610.lunadial.model.AppSettings
+import com.gt610.lunadial.model.BrightnessMode
+import com.gt610.lunadial.model.MAX_BRIGHTNESS
+import com.gt610.lunadial.model.MIN_BRIGHTNESS
+import com.gt610.lunadial.model.brightnessAfterDrag
+import com.gt610.lunadial.model.brightnessPercent
+import com.gt610.lunadial.model.effectiveBrightness
+import com.gt610.lunadial.model.nightBrightnessActive
 import com.gt610.lunadial.util.clockPattern
 import com.gt610.lunadial.util.monthCells
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Calendar
@@ -58,6 +67,75 @@ class ClockPatternTest {
     val zh = Locale.forLanguageTag("zh-CN")
     assertEquals("a hh:mm", clockPattern(zh, use24Hour = false, showSeconds = false, leadingZero = true))
     assertEquals("a h:mm:ss", clockPattern(zh, use24Hour = false, showSeconds = true, leadingZero = false))
+  }
+}
+
+class BrightnessTest {
+
+  @Test
+  fun `following the system means no window override`() {
+    val settings = AppSettings(brightnessMode = BrightnessMode.FOLLOW_SYSTEM)
+    assertNull(effectiveBrightness(settings, nightActive = false))
+  }
+
+  @Test
+  fun `custom level applies by day`() {
+    val settings = AppSettings(brightnessMode = BrightnessMode.CUSTOM, screenBrightness = 0.4f)
+    assertEquals(0.4f, effectiveBrightness(settings, nightActive = false)!!, 0.0001f)
+  }
+
+  @Test
+  fun `night level wins even when following the system`() {
+    val settings = AppSettings(nightAutoDim = true, nightBrightness = 0.1f)
+    assertEquals(0.1f, effectiveBrightness(settings, nightActive = true)!!, 0.0001f)
+  }
+
+  @Test
+  fun `night level is ignored when auto dim is off`() {
+    val settings = AppSettings(
+      brightnessMode = BrightnessMode.CUSTOM,
+      screenBrightness = 0.6f,
+      nightAutoDim = false,
+      nightBrightness = 0.1f,
+    )
+    assertEquals(0.6f, effectiveBrightness(settings, nightActive = true)!!, 0.0001f)
+  }
+
+  @Test
+  fun `stored levels are clamped into the usable range`() {
+    val settings = AppSettings(brightnessMode = BrightnessMode.CUSTOM, screenBrightness = 0f)
+    assertEquals(MIN_BRIGHTNESS, effectiveBrightness(settings, nightActive = false)!!, 0.0001f)
+  }
+
+  @Test
+  fun `night override is active only while dimming is on`() {
+    assertTrue(nightBrightnessActive(AppSettings(nightAutoDim = true), nightActive = true))
+    assertFalse(nightBrightnessActive(AppSettings(nightAutoDim = false), nightActive = true))
+    assertFalse(nightBrightnessActive(AppSettings(nightAutoDim = true), nightActive = false))
+  }
+
+  @Test
+  fun `dragging up brightens and dragging down dims`() {
+    assertEquals(0.599f, brightnessAfterDrag(0.5f, -100f, 1000f), 0.002f)
+    assertEquals(0.401f, brightnessAfterDrag(0.5f, 100f, 1000f), 0.002f)
+  }
+
+  @Test
+  fun `a full height drag covers the whole range`() {
+    assertEquals(MAX_BRIGHTNESS, brightnessAfterDrag(0.5f, -1000f, 1000f), 0.0001f)
+    assertEquals(MIN_BRIGHTNESS, brightnessAfterDrag(0.5f, 1000f, 1000f), 0.0001f)
+  }
+
+  @Test
+  fun `a drag without height leaves the level alone`() {
+    assertEquals(0.5f, brightnessAfterDrag(0.5f, -100f, 0f), 0.0001f)
+  }
+
+  @Test
+  fun `percent rounds and clamps`() {
+    assertEquals(50, brightnessPercent(0.5f))
+    assertEquals(1, brightnessPercent(0f))
+    assertEquals(100, brightnessPercent(1f))
   }
 }
 

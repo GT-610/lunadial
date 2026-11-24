@@ -12,6 +12,9 @@ enum class TimeFormatOption { SYSTEM, TWELVE_HOUR, TWENTY_FOUR_HOUR }
 /** When the calm night presentation is used. */
 enum class NightModeBehavior { OFF, ON, SCHEDULED, FOLLOW_SYSTEM }
 
+/** Where the clock screen's brightness comes from. */
+enum class BrightnessMode { FOLLOW_SYSTEM, CUSTOM }
+
 /** In-app language override. A null tag means "follow the system". */
 enum class LocaleOption(val languageTag: String?) {
   SYSTEM(null),
@@ -21,6 +24,12 @@ enum class LocaleOption(val languageTag: String?) {
 
 /** Default accent, matching the Flutter app's [Colors.green] seed. */
 const val DEFAULT_THEME_COLOR: Int = 0xFF4CAF50.toInt()
+
+/** Brightness used the first time a custom screen brightness is picked. */
+const val DEFAULT_SCREEN_BRIGHTNESS: Float = 0.5f
+
+/** Brightness used while the night presentation dims the screen. */
+const val DEFAULT_NIGHT_BRIGHTNESS: Float = 0.2f
 
 /**
  * Every user preference LunaDial stores. Immutable so that the UI can treat a
@@ -42,6 +51,15 @@ data class AppSettings(
   /** Minutes since midnight, so 07:00 is 420. */
   val nightEndMinutes: Int = 7 * 60,
   val burnInProtection: Boolean = true,
+  val brightnessMode: BrightnessMode = BrightnessMode.FOLLOW_SYSTEM,
+  /** Window brightness for the daytime presentation, 0..1. */
+  val screenBrightness: Float = DEFAULT_SCREEN_BRIGHTNESS,
+  /** Whether the night presentation uses its own, dimmer [nightBrightness]. */
+  val nightAutoDim: Boolean = false,
+  /** Window brightness while the night presentation is active, 0..1. */
+  val nightBrightness: Float = DEFAULT_NIGHT_BRIGHTNESS,
+  /** Whether a vertical swipe on the left half of the clock adjusts brightness. */
+  val brightnessGesture: Boolean = false,
 )
 
 /** Accent presets offered by the theme colour picker. */
