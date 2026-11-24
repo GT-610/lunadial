@@ -403,9 +403,10 @@ private fun Modifier.brightnessSwipe(
     remember {
       Modifier.pointerInput(Unit) {
         awaitEachGesture {
-          if (!currentEnabled) return@awaitEachGesture
-
+          // Await the first down before returning: a block that returns without
+          // waiting would spin, because awaitEachGesture has nothing to wait for.
           val down = awaitFirstDown(requireUnconsumed = false)
+          if (!currentEnabled) return@awaitEachGesture
           if (down.position.x >= size.width / 2f) return@awaitEachGesture
 
           val nightDriven = nightBrightnessActive(currentSettings, currentNightActive)
