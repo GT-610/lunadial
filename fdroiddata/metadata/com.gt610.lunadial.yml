@@ -20,10 +20,22 @@ Builds:
     gradle:
       - assembleRelease
     output: app/build/outputs/apk/release/app-release-unsigned.apk
+  - versionName: 0.5.1
+    versionCode: 5
+    commit: v0.5.1
+    gradle:
+      - assembleRelease
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
+  - versionName: 0.6.0
+    versionCode: 6
+    commit: v0.6.0
+    gradle:
+      - assembleRelease
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
 
 AllowedAPKSigningKeys: f0bb1f0c9c93188df103523dc936b0202d6a956d4de18c76bfde060dc1b415e0
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 0.5.0
-CurrentVersionCode: 4
+CurrentVersion: 0.6.0
+CurrentVersionCode: 6
