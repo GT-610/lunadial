@@ -35,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,11 +60,16 @@ import com.gt610.lunadial.BuildConfig
 import com.gt610.lunadial.R
 import com.gt610.lunadial.model.ACCENT_PRESETS
 import com.gt610.lunadial.model.AppSettings
+import com.gt610.lunadial.model.BrightnessMode
 import com.gt610.lunadial.model.ClockDisplayMode
 import com.gt610.lunadial.model.LocaleOption
+import com.gt610.lunadial.model.MAX_BRIGHTNESS
+import com.gt610.lunadial.model.MIN_BRIGHTNESS
 import com.gt610.lunadial.model.NightModeBehavior
 import com.gt610.lunadial.model.ThemeModeOption
 import com.gt610.lunadial.model.TimeFormatOption
+import com.gt610.lunadial.model.brightnessPercent
+import com.gt610.lunadial.util.ScreenBrightnessOverride
 import com.gt610.lunadial.util.formatMinutesOfDay
 import com.gt610.lunadial.util.rememberLocale
 import com.gt610.lunadial.util.resolveUse24Hour
@@ -75,6 +81,8 @@ private enum class SettingsSheet {
   LANGUAGE,
   TIME_FORMAT,
   NIGHT_MODE,
+  BRIGHTNESS,
+  NIGHT_BRIGHTNESS,
   LICENSE,
 }
 
@@ -88,10 +96,27 @@ fun SettingsScreen(
   val context = LocalContext.current
   val locale = rememberLocale()
   val use24Hour = resolveUse24Hour(context, settings.timeFormat)
+  val brightnessSummary = if (settings.brightnessMode == BrightnessMode.CUSTOM) {
+    stringResource(R.string.brightness_percent, brightnessPercent(settings.screenBrightness))
+  } else {
+    stringResource(R.string.follow_system)
+  }
+  val nightBrightnessSummary =
+    stringResource(R.string.brightness_percent, brightnessPercent(settings.nightBrightness))
 
   var sheet by remember { mutableStateOf<SettingsSheet?>(null) }
   var showStartPicker by remember { mutableStateOf(false) }
   var showEndPicker by remember { mutableStateOf(false) }
+
+  // Preview a level while its sheet is open; the rest of the settings screen
+  // keeps the system brightness so it never becomes unreadable.
+  val previewBrightness = when (sheet) {
+    SettingsSheet.BRIGHTNESS ->
+      if (settings.brightnessMode == BrightnessMode.CUSTOM) settings.screenBrightness else null
+    SettingsSheet.NIGHT_BRIGHTNESS -> settings.nightBrightness
+    else -> null
+  }
+  ScreenBrightnessOverride(brightness = previewBrightness)
 
   Scaffold(
     topBar = {
@@ -184,6 +209,20 @@ fun SettingsScreen(
             checked = settings.keepScreenOn,
             onCheckedChange = { enabled -> onUpdate { it.copy(keepScreenOn = enabled) } },
           )
+          RowDivider()
+          ValueRow(
+            title = stringResource(R.string.screen_brightness),
+            description = stringResource(R.string.screen_brightness_description),
+            value = brightnessSummary,
+            onClick = { sheet = SettingsSheet.BRIGHTNESS },
+          )
+          RowDivider()
+          SwitchRow(
+            title = stringResource(R.string.brightness_gesture),
+            description = stringResource(R.string.brightness_gesture_description),
+            checked = settings.brightnessGesture,
+            onCheckedChange = { enabled -> onUpdate { it.copy(brightnessGesture = enabled) } },
+          )
         }
       }
 
@@ -217,6 +256,21 @@ fun SettingsScreen(
             checked = settings.burnInProtection,
             onCheckedChange = { enabled -> onUpdate { it.copy(burnInProtection = enabled) } },
           )
+          RowDivider()
+          SwitchRow(
+            title = stringResource(R.string.night_auto_dim),
+            description = stringResource(R.string.night_auto_dim_description),
+            checked = settings.nightAutoDim,
+            onCheckedChange = { enabled -> onUpdate { it.copy(nightAutoDim = enabled) } },
+          )
+          if (settings.nightAutoDim) {
+            RowDivider()
+            ValueRow(
+              title = stringResource(R.string.night_brightness),
+              value = nightBrightnessSummary,
+              onClick = { sheet = SettingsSheet.NIGHT_BRIGHTNESS },
+            )
+          }
         }
       }
 
@@ -356,6 +410,40 @@ private fun SettingsBottomSheet(
           }
         }
 
+        SettingsSheet.BRIGHTNESS -> {
+          SheetTitle(stringResource(R.string.screen_brightness))
+          FollowSystemBrightnessRow(
+            followSystem = settings.brightnessMode == BrightnessMode.FOLLOW_SYSTEM,
+            onFollowSystemChange = { follow ->
+              onUpdate {
+                it.copy(
+                  brightnessMode = if (follow) {
+                    BrightnessMode.FOLLOW_SYSTEM
+                  } else {
+                    BrightnessMode.CUSTOM
+                  },
+                )
+              }
+            },
+          )
+          BrightnessSlider(
+            value = settings.screenBrightness,
+            enabled = settings.brightnessMode == BrightnessMode.CUSTOM,
+            onValueChange = { value ->
+              onUpdate { it.copy(screenBrightness = value, brightnessMode = BrightnessMode.CUSTOM) }
+            },
+          )
+        }
+
+        SettingsSheet.NIGHT_BRIGHTNESS -> {
+          SheetTitle(stringResource(R.string.night_brightness))
+          BrightnessSlider(
+            value = settings.nightBrightness,
+            enabled = true,
+            onValueChange = { value -> onUpdate { it.copy(nightBrightness = value) } },
+          )
+        }
+
         SettingsSheet.LICENSE -> {
           SheetTitle(stringResource(R.string.license))
           Text(
@@ -384,6 +472,58 @@ private fun SheetTitle(text: String) {
     style = MaterialTheme.typography.titleMedium,
     modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 4.dp, bottom = 12.dp),
   )
+}
+
+@Composable
+private fun FollowSystemBrightnessRow(
+  followSystem: Boolean,
+  onFollowSystemChange: (Boolean) -> Unit,
+) {
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 24.dp, end = 24.dp, top = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Column(Modifier.weight(1f)) {
+      Text(
+        text = stringResource(R.string.follow_system_brightness),
+        style = MaterialTheme.typography.bodyLarge,
+      )
+      Text(
+        text = stringResource(R.string.follow_system_brightness_description),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
+    }
+    Switch(checked = followSystem, onCheckedChange = onFollowSystemChange)
+  }
+}
+
+@Composable
+private fun BrightnessSlider(
+  value: Float,
+  enabled: Boolean,
+  onValueChange: (Float) -> Unit,
+) {
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 24.dp, vertical = 12.dp),
+  ) {
+    Text(
+      text = stringResource(R.string.brightness_percent, brightnessPercent(value)),
+      style = MaterialTheme.typography.headlineSmall,
+      textAlign = TextAlign.Center,
+      modifier = Modifier.fillMaxWidth(),
+    )
+    Slider(
+      value = value.coerceIn(MIN_BRIGHTNESS, MAX_BRIGHTNESS),
+      onValueChange = { onValueChange(it.coerceIn(MIN_BRIGHTNESS, MAX_BRIGHTNESS)) },
+      valueRange = MIN_BRIGHTNESS..MAX_BRIGHTNESS,
+      enabled = enabled,
+    )
+  }
 }
 
 @Composable
