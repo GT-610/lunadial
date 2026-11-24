@@ -416,20 +416,37 @@ private fun Modifier.brightnessSwipe(
           if (!currentEnabled) return@awaitEachGesture
           if (down.position.x >= size.width / 2f) return@awaitEachGesture
 
-          val nightDriven = nightBrightnessActive(currentSettings, currentNightActive)
-          val systemBrightness = if (
-            !nightDriven && currentSettings.brightnessMode == BrightnessMode.FOLLOW_SYSTEM
-          ) {
-            readSystemBrightness(currentContext)
-          } else {
-            null
+          fun currentStartLevel(): Float {
+            val systemBrightness = if (
+              !nightBrightnessActive(currentSettings, currentNightActive) &&
+              currentSettings.brightnessMode == BrightnessMode.FOLLOW_SYSTEM
+            ) {
+              readSystemBrightness(currentContext)
+            } else {
+              null
+            }
+            return gestureStartBrightness(currentSettings, currentNightActive, systemBrightness)
           }
-          val start = gestureStartBrightness(currentSettings, currentNightActive, systemBrightness)
+
+          var nightDriven = nightBrightnessActive(currentSettings, currentNightActive)
+          var start = currentStartLevel()
           var totalY = 0f
           var started = false
 
           while (true) {
             val change = awaitPointerEvent().changes.firstOrNull { it.id == down.id } ?: break
+
+            // Follow the level the window actually shows. Rebasing when the night
+            // state flips keeps the written field, the indicator and the window in
+            // agreement instead of writing a level that is not on screen.
+            val liveNight = nightBrightnessActive(currentSettings, currentNightActive)
+            if (liveNight != nightDriven) {
+              nightDriven = liveNight
+              start = currentStartLevel()
+              totalY = 0f
+              currentOnBrightnessChange(start)
+            }
+
             totalY += change.positionChange().y
             if (!started) {
               if (abs(totalY) < viewConfiguration.touchSlop) {
